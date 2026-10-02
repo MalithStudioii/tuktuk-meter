@@ -1,0 +1,5 @@
+# Sensitive Admin Tool & Private Keys (Must be kept in a private repo)
+admin-pwa/
+admin-generator.html
+*.pem
+*.key

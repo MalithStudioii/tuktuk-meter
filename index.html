@@ -810,9 +810,65 @@
       border: none;
       padding: 8px 14px;
       border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
       font-size: 0.85rem;
+    }
+    /* NexiaPro™ Branding & Privacy UI */
+    .brand-sub {
+      font-size: 0.65rem;
+      color: #f59e0b;
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .app-footer {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+    .footer-trademark {
+      color: #94a3b8;
+      margin-bottom: 3px;
+    }
+    .nexia-brand {
+      color: #f59e0b;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .footer-links a {
+      color: #38bdf8;
+      text-decoration: none;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      color: #475569;
+      margin-top: 4px;
+    }
+    .privacy-content {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px;
+      max-height: 380px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+    .privacy-content h4 {
+      color: #f59e0b;
+      margin: 12px 0 4px 0;
+      font-size: 0.84rem;
+    }
+    .privacy-content h4:first-child {
+      margin-top: 0;
     }
 
     @media print {
@@ -839,7 +895,10 @@
 
     <!-- Header -->
     <div class="header">
-      <h2>🛺 TUK TUK PRO</h2>
+      <div>
+        <h2 style="margin: 0; line-height: 1.1;">🛺 TUK TUK PRO</h2>
+        <div class="brand-sub">BY NEXIAPRO™</div>
+      </div>
       <div class="header-actions">
         <button class="icon-btn pro-badge-btn" id="headerProBtn" onclick="openProModal()" title="TukTuk Pro සාමාජිකත්වය">👑 PRO</button>
         <button class="icon-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">🗺️ Map</button>
@@ -1202,6 +1261,51 @@
         <button class="save-btn" onclick="shareIncomeReportWhatsApp()" style="background: #25d366;">📲 WhatsApp Share</button>
         <button class="cancel-btn" onclick="closeIncomeReportModal()">Close</button>
       </div>
+    </div>
+
+    <!-- ==================== PRIVACY POLICY & TERMS MODAL ==================== -->
+    <div class="modal" id="privacyModal">
+      <div class="modal-header">
+        <h3 style="color: #38bdf8;">📜 Privacy Policy & Terms</h3>
+        <button class="modal-close-x" onclick="closePrivacyModal()">✕</button>
+      </div>
+
+      <div class="privacy-content">
+        <h4>1. පෞද්ගලිකත්වය සහ GPS ස්ථානීය දත්ත (Location Data Privacy)</h4>
+        <p>TukTuk Pro යෙදුම මඟින් ඔබගේ දුරකථනයේ GPS ස්ථානීය දත්ත (Location Data) භාවිතා කරන්නේ ගමන් කළ දුර (Distance) සහ වේගය (Speed) ගණනය කිරීමට පමණි. ඔබගේ ගමන් මාර්ග කිසිදු බාහිර Server එකකට යැවීමක් හෝ තෙවන පාර්ශවයකට විකිණීමක් සිදු නොවේ. සියල්ල ඔබගේ දුරකථනයේ පමණක් සටහන් වේ.</p>
+
+        <h4>2. දත්ත ගබඩා කිරීම (Local Storage)</h4>
+        <p>ගමන් වාර්තා (Trip History), සැකසුම් (Rates), සහ Profile දත්ත ඔබගේ දුරකථන Browser එකෙහි LocalStorage හි පමණක් තාවකාලිකව ගබඩා වේ. ඔබට අවශ්‍ය ඕනෑම මොහොතක History මකා දැමිය හැක.</p>
+
+        <h4>3. ගාස්තු සහ මීටර් භාවිතයේ කොන්දේසි (Fare Calculation Disclaimer)</h4>
+        <p>මෙම මීටරය රියදුරු සහ මගියා අතර විනිවිදභාවය තහවුරු කිරීම සඳහා සහායක මගපෙන්වීමක් ලෙස නිර්මාණය කර ඇත. GPS සංඥා ශක්තිය අනුව ඉතා සුළු වෙනස්කම් සිදුවිය හැකි බැවින්, අවසන් ගාස්තුව රියදුරු සහ මගියාගේ එකඟතාව මත තීරණය වේ.</p>
+
+        <h4>4. PRO සාමාජිකත්වය සහ Activation (Subscriptions)</h4>
+        <p>PRO සාමාජිකත්ව Activation Keys එක් එක් දුරකථනයේ Device ID එකට බැඳී ඇති අතර වෙනත් දුරකථනයකට මාරු කළ නොහැක. සාර්ථකව සක්‍රීය කිරීමෙන් පසු මුදල් ආපසු ගෙවීම් (Refunds) සිදු නොකෙරේ.</p>
+
+        <h4>5. වෙළඳ ලකුණ සහ හිමිකාරිත්වය (NexiaPro™ Trademark & Copyright)</h4>
+        <p><b>NexiaPro™</b> සහ <b>TukTuk Pro™</b> යනු NexiaPro Technologies සතු නිල වෙළඳ ලකුණු වේ. මෙම යෙදුමේ කේත, අතුරුමුහුණත් සහ බුද්ධිමය දේපළ අවසරයකින් තොරව පිටපත් කිරීම, වෙනස් කිරීම හෝ ප්‍රතිවිකිණීම නීතියෙන් තහනම් වේ.</p>
+        
+        <h4>6. සහය සහ විමසීම් (Contact & Support)</h4>
+        <p>ඕනෑම තාක්ෂණික ගැටලුවක් හෝ විමසීමක් සඳහා NexiaPro නිල WhatsApp සහය සේවාව අමතන්න.</p>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 12px;">
+        <button class="save-btn" onclick="closePrivacyModal()" style="background: #3b82f6;">තේරුම් ගතිමි (I Agree)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Footer & Trademark Branding -->
+  <div class="app-footer">
+    <div class="footer-trademark">
+      Powered by <strong class="nexia-brand">NexiaPro™</strong> • Smart Mobility Solutions
+    </div>
+    <div class="footer-links">
+      <a href="javascript:void(0)" onclick="openPrivacyModal()">Privacy Policy & Terms</a>
+    </div>
+    <div class="footer-copy">
+      © 2026 NexiaPro™. All Rights Reserved.
     </div>
   </div>
 
@@ -1870,11 +1974,12 @@
       if (!currentTripRecord) return;
       const trip = currentTripRecord;
       const pro = getProStatus();
-      const proBadge = pro.isPro ? '\n👑 *Verified TukTuk Pro Driver*' : '';
+      const proBadge = pro.isPro ? '\n👑 *Verified NexiaPro™ Pro Driver*' : '';
       const nightStr = trip.isNightFare ? `\n🌙 *Night Surcharge:* Rs. ${trip.nightFare}` : '';
       const msg = 
 `🛺 *TUK TUK METER PRO RECEIPT*
 ━━━━━━━━━━━━━━━━━━
+🛡️ *NexiaPro™ Verified Digital Bill*
 🔢 *රථ අංකය:* ${trip.vehicleNo}
 👤 *රියදුරු:* ${trip.driverName}${proBadge}
 🆔 *Receipt No:* #${trip.id}
@@ -1890,6 +1995,7 @@
 ━━━━━━━━━━━━━━━━━━
 💵 *මුළු ගාස්තුව:* *Rs. ${trip.totalFare}*
 ━━━━━━━━━━━━━━━━━━
+✨ Powered by *NexiaPro™ Sri Lanka*
 ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
 
       const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
@@ -1989,7 +2095,6 @@
     }
 
     // ==================== PRO & SUBSCRIPTION LOGIC ====================
-    const LICENSE_SALT = "TUKTUK_PRO_2026";
     let selectedProPlan = "30";
 
     function getDeviceId() {
@@ -2269,6 +2374,7 @@
       const msg = 
 `🛺 *TUK TUK PRO - ආදායම් වාර්තාව (FINANCIAL REPORT)*
 ━━━━━━━━━━━━━━━━━━
+🛡️ *Certified by NexiaPro™ Sri Lanka*
 🔢 *රථ අංකය:* ${config.vehicleNo}
 👤 *රියදුරු:* ${config.driverName}
 📅 *දිනය:* ${new Date().toLocaleDateString()}
@@ -2277,10 +2383,19 @@
 📍 *මුළු දුර:* ${totalKm.toFixed(1)} km
 💵 *මුළු ආදායම:* *Rs. ${totalEarnings.toFixed(2)}*
 ━━━━━━━━━━━━━━━━━━
-TukTuk Pro GPS Taxi Meter යෙදුම මඟින් සත්‍යාපිතයි.`;
+✨ Powered by *NexiaPro™ Smart Mobility*`;
 
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank');
+    }
+
+    // ==================== PRIVACY MODAL LOGIC ====================
+    function openPrivacyModal() {
+      document.getElementById("privacyModal").classList.add("show");
+    }
+
+    function closePrivacyModal() {
+      document.getElementById("privacyModal").classList.remove("show");
     }
 
     // ==================== PWA INSTALL LOGIC ====================
