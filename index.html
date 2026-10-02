@@ -814,22 +814,6 @@
       cursor: pointer;
       font-size: 0.85rem;
     }
-    .admin-key-box {
-      background: #020617;
-      border: 1px dashed #ef4444;
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 14px;
-      text-align: left;
-    }
-    .admin-key-box .title {
-      color: #ef4444;
-      font-weight: bold;
-      font-size: 0.82rem;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-    }
 
     @media print {
       body * {
@@ -1086,48 +1070,6 @@
         <input type="text" id="driverQrInfoInput" placeholder="උදා: 0771234567 හෝ Bank Acc">
       </div>
 
-      <!-- PRO Subscription Settings (Owner/Admin) -->
-      <div style="border-top: 1px solid #334155; margin: 12px 0 8px 0; padding-top: 8px; font-size: 0.8rem; color: #f59e0b; font-weight: bold; text-align: left;">
-        👑 PRO Subscription Settings (හිමිකරු සඳහා)
-      </div>
-      <div class="input-group">
-        <label>ගෙවීම් ලැබෙන හිමිකරුගේ WhatsApp අංකය:</label>
-        <input type="text" id="adminPhoneInput" placeholder="94771234567">
-      </div>
-      <div class="input-group">
-        <label>බැංකු නම සහ ගිණුම් විස්තර:</label>
-        <input type="text" id="adminBankDetailsInput" placeholder="Commercial Bank - 8001234567 (TukTuk Pro)">
-      </div>
-
-      <!-- Collapsible Admin Key Generator -->
-      <div class="admin-key-box" id="adminKeyBox">
-        <div class="title">
-          <span>🔑 Admin Key Generator</span>
-          <button type="button" onclick="toggleAdminPanel()" style="background: none; border: none; color: #f59e0b; cursor: pointer; font-size: 0.75rem;">[විවෘත කරන්න]</button>
-        </div>
-        <div id="adminPanelBody" style="display: none; margin-top: 6px;">
-          <div class="input-group" style="margin-bottom: 6px;">
-            <label style="font-size: 0.72rem;">Driver Device ID (උදා: TK-4821):</label>
-            <input type="text" id="adminGenDevId" placeholder="TK-XXXX" style="font-size: 0.82rem; padding: 5px;">
-          </div>
-          <div class="input-group" style="margin-bottom: 6px;">
-            <label style="font-size: 0.72rem;">කාලසීමාව (Plan):</label>
-            <select id="adminGenPlan" style="width: 100%; padding: 6px; background: #0f172a; color: #fff; border: 1px solid #475569; border-radius: 6px; font-size: 0.8rem;">
-              <option value="30">දින 30 (මාසික - රු. 300)</option>
-              <option value="90">දින 90 (මාස 3 - රු. 800)</option>
-              <option value="365">දින 365 (වාර්ෂික - රු. 2,500)</option>
-              <option value="LIFE">Lifetime (සදාකාලික)</option>
-            </select>
-          </div>
-          <button type="button" onclick="adminGenerateLicense()" style="width: 100%; background: #ef4444; color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-top: 4px;">Code එක සාදන්න (Generate Key)</button>
-          <div id="adminGeneratedResult" style="display: none; margin-top: 8px; text-align: center; background: #1e293b; padding: 6px; border-radius: 6px;">
-            <div style="font-size: 0.72rem; color: #94a3b8;">Generated Key:</div>
-            <div id="adminKeyText" style="font-size: 1rem; font-family: monospace; font-weight: bold; color: #10b981; margin: 3px 0;"></div>
-            <button type="button" onclick="adminSendKeyWhatsApp()" style="background: #25d366; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold;">📲 WhatsApp මඟින් යවන්න</button>
-          </div>
-        </div>
-      </div>
-
       <div class="modal-buttons">
         <button class="cancel-btn" onclick="toggleSettingsModal(false)">Cancel</button>
         <button class="save-btn" onclick="saveSettings()">Save Changes</button>
@@ -1205,7 +1147,7 @@
       <div class="activation-card">
         <div style="font-size: 0.78rem; font-weight: bold; color: #f59e0b;">🔑 Activation Code එක ඇතුළත් කරන්න:</div>
         <div class="activation-row">
-          <input type="text" id="licenseKeyInput" placeholder="PRO-30-XXXXXX" maxlength="25">
+          <input type="text" id="licenseKeyInput" placeholder="TKPRO.30.xxxxxx..." maxlength="200">
           <button onclick="applyLicenseKey()">Activate</button>
         </div>
       </div>
@@ -2059,36 +2001,72 @@
       return devId;
     }
 
-    function computeLicenseChecksum(str) {
-      let hash = 5381;
-      for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) + hash) + str.charCodeAt(i);
-        hash = hash & hash;
+    // Cryptographic ECDSA Public Key for Verification (Mathematically unbreakable without Owner Private Key)
+    const PRO_PUBLIC_KEY = {
+      key_ops: ["verify"],
+      ext: true,
+      kty: "EC",
+      x: "ipNPNnQGN5gMElZHOp9cpw0OiONAetGvrcemzETEnXE",
+      y: "PDZA1aEpHNEC8giIIBX5EFi9OX5IvcwrNb1i_FGIHvY",
+      crv: "P-256"
+    };
+
+    let importedPubKey = null;
+    async function getImportedPubKey() {
+      if (!importedPubKey && window.crypto && window.crypto.subtle) {
+        importedPubKey = await crypto.subtle.importKey(
+          'jwk',
+          PRO_PUBLIC_KEY,
+          { name: 'ECDSA', namedCurve: 'P-256' },
+          false,
+          ['verify']
+        );
       }
-      return Math.abs(hash).toString(16).toUpperCase().padStart(6, '0').slice(-6);
+      return importedPubKey;
     }
 
-    function generateLicenseKey(deviceId, durationCode) {
-      const normId = (deviceId || "").trim().toUpperCase();
-      const raw = `${normId}:${durationCode}:${LICENSE_SALT}`;
-      const checksum = computeLicenseChecksum(raw);
-      return `PRO-${durationCode}-${checksum}`;
+    function base64UrlToUint8(base64Url) {
+      let b64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const raw = atob(b64);
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      return arr;
     }
 
-    function verifyLicenseKey(inputKey, deviceId) {
-      if (!inputKey || !deviceId) return null;
-      const cleaned = inputKey.trim().toUpperCase();
-      const parts = cleaned.split("-");
-      if (parts.length !== 3 || parts[0] !== "PRO") return null;
+    async function verifyLicenseToken(token, deviceId) {
+      if (!token || !deviceId) return null;
+      try {
+        const parts = token.trim().split('.');
+        // Format: TKPRO.<PLAN>.<EXPIRY_MS>.<SIGNATURE_BASE64URL>
+        if (parts.length !== 4 || parts[0] !== "TKPRO") return null;
 
-      const durationCode = parts[1]; // '30', '90', '365', 'LIFE'
-      const expectedKey = generateLicenseKey(deviceId, durationCode);
-      if (cleaned === expectedKey) {
-        let days = 30;
-        if (durationCode === "90") days = 90;
-        else if (durationCode === "365") days = 365;
-        else if (durationCode === "LIFE") days = 3650;
-        return { valid: true, days, plan: durationCode };
+        const plan = parts[1];
+        const expiry = parseInt(parts[2], 10);
+        const sigBase64 = parts[3];
+
+        if (isNaN(expiry) || expiry <= Date.now()) return null;
+
+        const payloadStr = `${deviceId.trim().toUpperCase()}|${plan}|${expiry}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(payloadStr);
+        const signature = base64UrlToUint8(sigBase64);
+
+        const pubKey = await getImportedPubKey();
+        if (!pubKey) return null;
+
+        const isValid = await crypto.subtle.verify(
+          { name: 'ECDSA', hash: 'SHA-256' },
+          pubKey,
+          signature,
+          data
+        );
+
+        if (isValid) {
+          return { valid: true, plan, expiry };
+        }
+      } catch (err) {
+        console.warn("License verification error:", err);
       }
       return null;
     }
@@ -2208,20 +2186,19 @@
       window.open(waUrl, '_blank');
     }
 
-    function applyLicenseKey() {
+    async function applyLicenseKey() {
       const input = document.getElementById("licenseKeyInput");
-      const key = input.value.trim().toUpperCase();
+      const key = input.value.trim();
       if (!key) {
         alert("කරුණාකර Activation Code එක ඇතුළත් කරන්න.");
         return;
       }
 
       const devId = getDeviceId();
-      const res = verifyLicenseKey(key, devId);
+      const res = await verifyLicenseToken(key, devId);
 
       if (res && res.valid) {
-        const expiry = Date.now() + (res.days * 24 * 60 * 60 * 1000);
-        const licData = { key, plan: res.plan, expiry, activatedAt: Date.now() };
+        const licData = { key, plan: res.plan, expiry: res.expiry, activatedAt: Date.now() };
         localStorage.setItem('tuktuk_pro_license', JSON.stringify(licData));
         input.value = "";
         updateProUI();
@@ -2231,60 +2208,8 @@
         closeProModal();
       } else {
         playBeep('alarm');
-        alert("❌ වලංගු නොවන Code එකකි! කරුණාකර ඔබගේ Device ID එකට අදාළ නිවැරදි Code එක ලබා දෙන්න.");
+        alert("❌ වලංගු නොවන හෝ මෙම දුරකථනයට නොගැළපෙන Code එකකි! කරුණාකර ඔබගේ Device ID එකට අදාළ නිවැරදි Code එක ලබා දෙන්න.");
       }
-    }
-
-    // Admin Key Generator Logic
-    let adminUnlocked = false;
-    function toggleAdminPanel() {
-      const panel = document.getElementById("adminPanelBody");
-      if (!adminUnlocked) {
-        const pin = prompt("Admin Password ඇතුළත් කරන්න (Default: 7788):");
-        if (pin === "7788" || pin === "1234") {
-          adminUnlocked = true;
-          panel.style.display = "block";
-          document.getElementById("adminGenDevId").value = getDeviceId();
-        } else {
-          alert("වැරදි Password එකක්!");
-        }
-      } else {
-        panel.style.display = panel.style.display === "none" ? "block" : "none";
-      }
-    }
-
-    function adminGenerateLicense() {
-      const devId = document.getElementById("adminGenDevId").value.trim().toUpperCase();
-      const plan = document.getElementById("adminGenPlan").value;
-      if (!devId) {
-        alert("Driver ගේ Device ID එක ඇතුළත් කරන්න!");
-        return;
-      }
-      const key = generateLicenseKey(devId, plan);
-      document.getElementById("adminKeyText").innerText = key;
-      document.getElementById("adminGeneratedResult").style.display = "block";
-      showToast("Key සාදන ලදී: " + key);
-    }
-
-    function adminSendKeyWhatsApp() {
-      const devId = document.getElementById("adminGenDevId").value.trim().toUpperCase();
-      const key = document.getElementById("adminKeyText").innerText;
-      const plan = document.getElementById("adminGenPlan").value;
-      let planText = plan + " දින";
-      if (plan === "LIFE") planText = "Lifetime";
-
-      const msg = 
-`🛺 *TUK TUK METER PRO ACTIVATION CODE*
-━━━━━━━━━━━━━━━━━━
-📱 *Device ID:* ${devId}
-📦 *වලංගු කාලය:* ${planText}
-🔑 *Activation Code:* *${key}*
-━━━━━━━━━━━━━━━━━━
-👉 App එකේ *PRO* වෙත ගොස් Activation Code එක Paste කර Activate කරන්න.
-ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
-
-      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
     }
 
     // ==================== INCOME REPORT LOGIC ====================

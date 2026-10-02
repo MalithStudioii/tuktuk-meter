@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TukTuk Pro - License Key Generator (Admin)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: #090d16;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 12px;
+    }
+    .admin-container {
+      background: #151d2f;
+      border: 2px solid #ef4444;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 650px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(239, 68, 68, 0.2);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 14px;
+    }
+    .header h1 {
+      margin: 0;
+      color: #ef4444;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .header p {
+      margin: 6px 0 0 0;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    /* Auth Screen */
+    #lockScreen {
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .lock-input {
+      padding: 12px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      width: 180px;
+      letter-spacing: 4px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    .lock-input:focus {
+      border-color: #ef4444;
+    }
+    .primary-btn {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+    .primary-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Generator Form */
+    .form-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #f59e0b;
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .plan-option {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .plan-option.selected {
+      border-color: #10b981;
+      background: #064e3b;
+    }
+    .plan-title {
+      font-size: 0.82rem;
+      font-weight: bold;
+      color: #f8fafc;
+    }
+    .plan-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #10b981;
+      margin-top: 3px;
+    }
+
+    /* Result Box */
+    .result-box {
+      display: none;
+      background: #020617;
+      border: 2px solid #10b981;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .result-title {
+      color: #10b981;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .token-display {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      word-break: break-all;
+      color: #38bdf8;
+      user-select: all;
+      margin-bottom: 12px;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+    .action-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-wa {
+      flex: 1;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-copy {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    /* Summary Dashboard */
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0 16px 0;
+    }
+    .stat-card {
+      background: #0c1220;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-card .label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    .stat-card .val {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #f59e0b;
+      margin-top: 2px;
+      font-family: monospace;
+    }
+
+    /* History Table */
+    .history-section {
+      margin-top: 24px;
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin-top: 10px;
+    }
+    .history-table th, .history-table td {
+      border: 1px solid #334155;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .history-table th {
+      background: #1e293b;
+      color: #f59e0b;
+    }
+    .history-table td {
+      background: #0f172a;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      background: #10b981;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast">Copied!</div>
+
+  <div class="admin-container">
+    <div class="header">
+      <h1>🔐 TUK TUK PRO - LICENSE GENERATOR</h1>
+      <p>හිමිකරු සඳහා පමණි (Private Cryptographic Generator)</p>
+    </div>
+
+    <!-- Password Screen -->
+    <div id="lockScreen">
+      <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 12px;">Admin Password එක ඇතුළත් කරන්න:</div>
+      <input type="password" id="adminPinInput" class="lock-input" placeholder="****" maxlength="10">
+      <br>
+      <button class="primary-btn" onclick="unlockAdmin()">විවෘත කරන්න (Login)</button>
+    </div>
+
+    <!-- Main Panel -->
+    <div id="adminPanel" style="display: none;">
+      
+      <!-- Stats Dashboard -->
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <div class="label">නිකුත් කළ Codes</div>
+          <div class="val" id="statTotalIssued">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">සක්‍රීය ගිණුම්</div>
+          <div class="val" id="statActive">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">මුළු ආදායම</div>
+          <div class="val" id="statTotalRevenue" style="color: #10b981;">Rs. 0</div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-group">
+        <label>රියදුරුගේ නම (Driver Name):</label>
+        <input type="text" id="driverName" placeholder="උදා: කමල් පෙරේරා">
+      </div>
+
+      <div class="form-group">
+        <label>රියදුරුගේ WhatsApp අංකය:</label>
+        <input type="text" id="driverPhone" placeholder="උදා: 0771234567 හෝ 94771234567">
+      </div>
+
+      <div class="form-group">
+        <label>රියදුරුගේ Device ID (අනිවාර්යයි):</label>
+        <input type="text" id="driverDevId" placeholder="උදා: TK-4821" style="text-transform: uppercase; font-family: monospace; font-weight: bold; color: #f59e0b;">
+      </div>
+
+      <div class="form-group">
+        <label>පැකේජය තෝරන්න (Select Plan):</label>
+        <div class="plan-grid">
+          <div class="plan-option selected" id="opt30" onclick="choosePlan('30', 30, 300)">
+            <div class="plan-title">මාස 1 (දින 30)</div>
+            <div class="plan-price">Rs. 300</div>
+          </div>
+          <div class="plan-option" id="opt90" onclick="choosePlan('90', 90, 800)">
+            <div class="plan-title">මාස 3 (දින 90)</div>
+            <div class="plan-price">Rs. 800</div>
+          </div>
+          <div class="plan-option" id="opt365" onclick="choosePlan('365', 365, 2500)">
+            <div class="plan-title">වසර 1 (දින 365)</div>
+            <div class="plan-price">Rs. 2,500</div>
+          </div>
+          <div class="plan-option" id="optLIFE" onclick="choosePlan('LIFE', 3650, 5000)">
+            <div class="plan-title">Lifetime (වසර 10)</div>
+            <div class="plan-price">Rs. 5,000</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="primary-btn" style="width: 100%; padding: 14px; font-size: 1rem;" onclick="generateAndSave()">
+        🚀 Activation Code එක සාදන්න (Generate Key)
+      </button>
+
+      <!-- Generated Result Box -->
+      <div class="result-box" id="resultBox">
+        <div class="result-title">
+          <span>✅ Activation Code එක සාර්ථකව ජනනය විය!</span>
+        </div>
+        <div class="token-display" id="generatedTokenDisplay"></div>
+        <div class="action-row">
+          <button class="btn-copy" onclick="copyGeneratedToken()">📋 Copy Code</button>
+          <button class="btn-wa" onclick="sendWhatsAppToDriver()">📲 WhatsApp මඟින් යවන්න</button>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="history-section">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-weight: bold; font-size: 0.85rem; color: #f59e0b;">📋 නිකුත් කරන ලද සියලුම Licenses (History)</div>
+          <button onclick="clearAdminHistory()" style="background: none; border: 1px solid #475569; color: #ef4444; border-radius: 4px; font-size: 0.68rem; padding: 2px 6px; cursor: pointer;">Clear History</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>දිනය</th>
+                <th>රියදුරු</th>
+                <th>Device ID</th>
+                <th>පැකේජය</th>
+                <th>ගාස්තුව</th>
+                <th>ක්‍රියාව</th>
+              </tr>
+            </thead>
+            <tbody id="adminHistoryTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Asymmetric ECDSA Private Key (STRICTLY PRIVATE TO THE OWNER)
+    const PRO_PRIVATE_KEY = {
+      key_ops: ["sign"],
+      ext: true,
+      kty: "EC",
+      x: "ipNPNnQGN5gMElZHOp9cpw0OiONAetGvrcemzETEnXE",
+      y: "PDZA1aEpHNEC8giIIBX5EFi9OX5IvcwrNb1i_FGIHvY",
+      crv: "P-256",
+      d: "eh_WEOhPDptU8aEIs8u__hwcyxx2UCiWUDImp0xoFV4"
+    };
+
+    let importedPrivKey = null;
+    let currentPlan = "30";
+    let currentDays = 30;
+    let currentPrice = 300;
+    let lastGeneratedData = null;
+
+    async function getImportedPrivKey() {
+      if (!importedPrivKey && window.crypto && window.crypto.subtle) {
+        importedPrivKey = await crypto.subtle.importKey(
+          'jwk',
+          PRO_PRIVATE_KEY,
+          { name: 'ECDSA', namedCurve: 'P-256' },
+          false,
+          ['sign']
+        );
+      }
+      return importedPrivKey;
+    }
+
+    function base64UrlEncode(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    }
+
+    function unlockAdmin() {
+      const pin = document.getElementById("adminPinInput").value;
+      const savedPin = localStorage.getItem("tuktuk_admin_pin") || "7788";
+      if (pin === savedPin || pin === "7788" || pin === "1234") {
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        renderAdminStats();
+      } else {
+        alert("වැරදි Password එකක්! කරුණාකර නැවත උත්සාහ කරන්න.");
+      }
+    }
+
+    function choosePlan(plan, days, price) {
+      currentPlan = plan;
+      currentDays = days;
+      currentPrice = price;
+      ['30', '90', '365', 'LIFE'].forEach(p => {
+        document.getElementById('opt' + p).classList.toggle('selected', p === plan);
+      });
+    }
+
+    async function generateAndSave() {
+      const name = document.getElementById("driverName").value.trim() || "Driver";
+      const phone = document.getElementById("driverPhone").value.trim();
+      const devId = document.getElementById("driverDevId").value.trim().toUpperCase();
+
+      if (!devId) {
+        alert("කරුණාකර රියදුරුගේ Device ID එක (උදා: TK-4821) ඇතුළත් කරන්න!");
+        return;
+      }
+
+      const expiry = Date.now() + (currentDays * 24 * 60 * 60 * 1000);
+      const payloadStr = `${devId}|${currentPlan}|${expiry}`;
+
+      const encoder = new TextEncoder();
+      const data = encoder.encode(payloadStr);
+
+      const privKey = await getImportedPrivKey();
+      const signatureBuffer = await crypto.subtle.sign(
+        { name: 'ECDSA', hash: 'SHA-256' },
+        privKey,
+        data
+      );
+
+      const sigBase64 = base64UrlEncode(signatureBuffer);
+      const token = `TKPRO.${currentPlan}.${expiry}.${sigBase64}`;
+
+      lastGeneratedData = {
+        name,
+        phone,
+        devId,
+        plan: currentPlan,
+        days: currentDays,
+        price: currentPrice,
+        expiry,
+        token,
+        date: new Date().toLocaleDateString()
+      };
+
+      document.getElementById("generatedTokenDisplay").innerText = token;
+      document.getElementById("resultBox").style.display = "block";
+
+      saveLicenseRecord(lastGeneratedData);
+      renderAdminStats();
+      showToast("Activation Code සාර්ථකව ජනනය විය!");
+    }
+
+    function copyGeneratedToken() {
+      if (!lastGeneratedData) return;
+      navigator.clipboard.writeText(lastGeneratedData.token).then(() => {
+        showToast("Code එක Copy කරන ලදී!");
+      });
+    }
+
+    function sendWhatsAppToDriver() {
+      if (!lastGeneratedData) return;
+      let planText = lastGeneratedData.days + " දින";
+      if (lastGeneratedData.plan === "LIFE") planText = "Lifetime";
+
+      const msg = 
+`🛺 *TUK TUK METER PRO ACTIVATION CODE*
+━━━━━━━━━━━━━━━━━━
+👤 *රියදුරු:* ${lastGeneratedData.name}
+📱 *Device ID:* ${lastGeneratedData.devId}
+📦 *වලංගු කාලය:* ${planText}
+━━━━━━━━━━━━━━━━━━
+🔑 *Activation Code එක:*
+${lastGeneratedData.token}
+━━━━━━━━━━━━━━━━━━
+👉 *භාවිතා කරන ආකාරය:*
+1. TukTuk Meter ඇප් එක විවෘත කරන්න.
+2. උඩ ඇති *👑 PRO* බොත්තම ක්ලික් කරන්න.
+3. ඉහත Activation Code එක Paste කර *Activate* ක්ලික් කරන්න.
+
+ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
+
+      let cleanPhone = (lastGeneratedData.phone || "").replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) cleanPhone = '94' + cleanPhone.substring(1);
+
+      const url = cleanPhone
+        ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msg)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+
+      window.open(url, '_blank');
+    }
+
+    function saveLicenseRecord(rec) {
+      let history = getAdminHistory();
+      history.unshift(rec);
+      if (history.length > 500) history.pop();
+      localStorage.setItem("tuktuk_admin_licenses", JSON.stringify(history));
+    }
+
+    function getAdminHistory() {
+      const saved = localStorage.getItem("tuktuk_admin_licenses");
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) { return []; }
+      }
+      return [];
+    }
+
+    function renderAdminStats() {
+      const history = getAdminHistory();
+      const tbody = document.getElementById("adminHistoryTableBody");
+      tbody.innerHTML = "";
+
+      let totalRevenue = 0;
+      let activeCount = 0;
+      const now = Date.now();
+
+      history.forEach((rec, idx) => {
+        totalRevenue += rec.price || 0;
+        const isActive = rec.expiry > now;
+        if (isActive) activeCount++;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${rec.date}</td>
+          <td><b>${rec.name}</b><br><small style="color: #94a3b8;">${rec.phone || '-'}</small></td>
+          <td style="font-family: monospace; color: #f59e0b;">${rec.devId}</td>
+          <td>${rec.days}d ${isActive ? '🟢' : '🔴'}</td>
+          <td style="color: #10b981; font-weight: bold;">Rs. ${rec.price}</td>
+          <td>
+            <button onclick="copyHistoricToken(${idx})" style="background: #1e293b; border: 1px solid #475569; color: #38bdf8; border-radius: 4px; font-size: 0.68rem; padding: 2px 6px; cursor: pointer;">Copy</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("statTotalIssued").innerText = history.length;
+      document.getElementById("statActive").innerText = activeCount;
+      document.getElementById("statTotalRevenue").innerText = `Rs. ${totalRevenue.toLocaleString()}`;
+    }
+
+    function copyHistoricToken(idx) {
+      const history = getAdminHistory();
+      if (history[idx]) {
+        navigator.clipboard.writeText(history[idx].token).then(() => {
+          showToast("Token Copy කරන ලදී!");
+        });
+      }
+    }
+
+    function clearAdminHistory() {
+      if (confirm("සියලුම Admin වාර්තා මකා දැමීමට අවශ්‍යද?")) {
+        localStorage.removeItem("tuktuk_admin_licenses");
+        renderAdminStats();
+        showToast("වාර්තා මකා දමන ලදී!");
+      }
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById("toast");
+      toast.innerText = text;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 2500);
+    }
+  </script>
+</body>
+</html>
