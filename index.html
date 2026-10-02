@@ -278,6 +278,10 @@
       width: 100%;
       background: #0f172a;
     }
+    /* Dark mode styling for free OpenStreetMap tiles */
+    #map .leaflet-tile {
+      filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(90%);
+    }
     .map-container.collapsed #map {
       height: 0px;
     }
@@ -1128,8 +1132,9 @@
         attributionControl: false
       }).setView([6.9271, 79.8612], 14);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
       routePolyline = L.polyline([], {
