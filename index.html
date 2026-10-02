@@ -628,14 +628,218 @@
       opacity: 1;
     }
 
+    /* PRO & Monetization UI */
+    .pro-badge-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      font-weight: 800;
+      border: 1px solid #fbbf24;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+      animation: proPulse 2.5s infinite;
+    }
+    @keyframes proPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.8); }
+    }
+    .pro-status-banner {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .pro-status-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .pro-status-sub {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+    .device-id-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #020617;
+      border: 1px dashed #f59e0b;
+      color: #f59e0b;
+      font-family: monospace;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .plan-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .plan-card.active {
+      border-color: #f59e0b;
+      background: #1c263c;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    .plan-tag {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: 0.58rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .plan-dur {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .plan-price {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #10b981;
+      margin-top: 3px;
+    }
+    .plan-sub {
+      font-size: 0.62rem;
+      color: #64748b;
+    }
+    .pro-features-list {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .pro-feature-item {
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bank-info-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: left;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+    .bank-info-box .title {
+      font-weight: bold;
+      color: #f59e0b;
+      margin-bottom: 4px;
+    }
+    .whatsapp-order-btn {
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.92rem;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+    .activation-card {
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 6px;
+      text-align: left;
+    }
+    .activation-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .activation-row input {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      font-family: monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .activation-row input:focus {
+      border-color: #f59e0b;
+    }
+    .activation-row button {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .admin-key-box {
+      background: #020617;
+      border: 1px dashed #ef4444;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 14px;
+      text-align: left;
+    }
+    .admin-key-box .title {
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
     @media print {
       body * {
         visibility: hidden;
       }
-      #receiptPrintArea, #receiptPrintArea * {
+      #receiptPrintArea, #receiptPrintArea *,
+      #incomeReportPrintArea, #incomeReportPrintArea * {
         visibility: visible;
       }
-      #receiptPrintArea {
+      #receiptPrintArea, #incomeReportPrintArea {
         position: absolute;
         left: 0;
         top: 0;
@@ -653,6 +857,7 @@
     <div class="header">
       <h2>🛺 TUK TUK PRO</h2>
       <div class="header-actions">
+        <button class="icon-btn pro-badge-btn" id="headerProBtn" onclick="openProModal()" title="TukTuk Pro සාමාජිකත්වය">👑 PRO</button>
         <button class="icon-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">🗺️ Map</button>
         <button class="icon-btn" onclick="openHistoryModal()" title="ගමන් වාර්තා">📋 History</button>
         <button class="icon-btn" onclick="toggleSettingsModal(true)" title="සැකසුම්">⚙️ Rates</button>
@@ -829,6 +1034,9 @@
         </div>
       </div>
 
+      <!-- Income Report button in history modal -->
+      <button class="icon-btn" onclick="openIncomeReportModal()" style="width: 100%; margin-bottom: 8px; justify-content: center; background: #1e3a8a; border-color: #3b82f6; color: #93c5fd; padding: 7px; font-weight: bold;">📊 ආදායම් වාර්තාව (Income Report)</button>
+
       <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px;">මෑතකදී ගිය ගමන් (Recent Trips):</div>
       <div class="history-list" id="historyListContainer"></div>
 
@@ -877,9 +1085,180 @@
         <label>LANKAQR / Pay Account ID (Pay Text/Account):</label>
         <input type="text" id="driverQrInfoInput" placeholder="උදා: 0771234567 හෝ Bank Acc">
       </div>
+
+      <!-- PRO Subscription Settings (Owner/Admin) -->
+      <div style="border-top: 1px solid #334155; margin: 12px 0 8px 0; padding-top: 8px; font-size: 0.8rem; color: #f59e0b; font-weight: bold; text-align: left;">
+        👑 PRO Subscription Settings (හිමිකරු සඳහා)
+      </div>
+      <div class="input-group">
+        <label>ගෙවීම් ලැබෙන හිමිකරුගේ WhatsApp අංකය:</label>
+        <input type="text" id="adminPhoneInput" placeholder="94771234567">
+      </div>
+      <div class="input-group">
+        <label>බැංකු නම සහ ගිණුම් විස්තර:</label>
+        <input type="text" id="adminBankDetailsInput" placeholder="Commercial Bank - 8001234567 (TukTuk Pro)">
+      </div>
+
+      <!-- Collapsible Admin Key Generator -->
+      <div class="admin-key-box" id="adminKeyBox">
+        <div class="title">
+          <span>🔑 Admin Key Generator</span>
+          <button type="button" onclick="toggleAdminPanel()" style="background: none; border: none; color: #f59e0b; cursor: pointer; font-size: 0.75rem;">[විවෘත කරන්න]</button>
+        </div>
+        <div id="adminPanelBody" style="display: none; margin-top: 6px;">
+          <div class="input-group" style="margin-bottom: 6px;">
+            <label style="font-size: 0.72rem;">Driver Device ID (උදා: TK-4821):</label>
+            <input type="text" id="adminGenDevId" placeholder="TK-XXXX" style="font-size: 0.82rem; padding: 5px;">
+          </div>
+          <div class="input-group" style="margin-bottom: 6px;">
+            <label style="font-size: 0.72rem;">කාලසීමාව (Plan):</label>
+            <select id="adminGenPlan" style="width: 100%; padding: 6px; background: #0f172a; color: #fff; border: 1px solid #475569; border-radius: 6px; font-size: 0.8rem;">
+              <option value="30">දින 30 (මාසික - රු. 300)</option>
+              <option value="90">දින 90 (මාස 3 - රු. 800)</option>
+              <option value="365">දින 365 (වාර්ෂික - රු. 2,500)</option>
+              <option value="LIFE">Lifetime (සදාකාලික)</option>
+            </select>
+          </div>
+          <button type="button" onclick="adminGenerateLicense()" style="width: 100%; background: #ef4444; color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-top: 4px;">Code එක සාදන්න (Generate Key)</button>
+          <div id="adminGeneratedResult" style="display: none; margin-top: 8px; text-align: center; background: #1e293b; padding: 6px; border-radius: 6px;">
+            <div style="font-size: 0.72rem; color: #94a3b8;">Generated Key:</div>
+            <div id="adminKeyText" style="font-size: 1rem; font-family: monospace; font-weight: bold; color: #10b981; margin: 3px 0;"></div>
+            <button type="button" onclick="adminSendKeyWhatsApp()" style="background: #25d366; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold;">📲 WhatsApp මඟින් යවන්න</button>
+          </div>
+        </div>
+      </div>
+
       <div class="modal-buttons">
         <button class="cancel-btn" onclick="toggleSettingsModal(false)">Cancel</button>
         <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- ==================== PRO UPGRADE & ACTIVATION MODAL ==================== -->
+    <div class="modal" id="proModal">
+      <div class="modal-header">
+        <h3 style="color: #f59e0b;">👑 TUK TUK PRO සාමාජිකත්වය</h3>
+        <button class="modal-close-x" onclick="closeProModal()">✕</button>
+      </div>
+
+      <!-- Current Status Banner -->
+      <div class="pro-status-banner">
+        <div class="pro-status-title" id="proStatusTitle">
+          <span>👑 PRO TRIAL සක්‍රීයයි</span>
+        </div>
+        <div class="pro-status-sub" id="proStatusSub">දින 7 ක නොමිලේ අත්හදා බැලීමේ කාලය</div>
+        <div style="margin-top: 6px;">
+          <span style="font-size: 0.72rem; color: #94a3b8;">ඔබගේ Device ID:</span><br>
+          <span class="device-id-badge" onclick="copyDeviceId()" title="Copy කිරීමට ක්ලික් කරන්න">
+            <span id="displayDeviceId">TK-0000</span> 📋
+          </span>
+        </div>
+      </div>
+
+      <!-- Pro Features List -->
+      <div class="pro-features-list">
+        <div style="font-weight: bold; font-size: 0.82rem; color: #f59e0b; margin-bottom: 6px;">PRO හි විශේෂ ප්‍රතිලාභ:</div>
+        <div class="pro-feature-item"><span>🚀</span> <span><b>අසීමිත ගමන් වාර්තා</b> (Unlimited History & Search)</span></div>
+        <div class="pro-feature-item"><span>📄</span> <span><b>මාසික ආදායම් වාර්තාව</b> (PDF/Print Financial Report)</span></div>
+        <div class="pro-feature-item"><span>🧾</span> <span><b>Custom WhatsApp Branding</b> (ඔබගේම නම සහිත බිල්පත)</span></div>
+        <div class="pro-feature-item"><span>⭐</span> <span><b>Verified Driver Badge & Priority Support</b></span></div>
+      </div>
+
+      <!-- Pricing Plans -->
+      <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px; text-align: left;">පැකේජයක් තෝරාගන්න (Select Plan):</div>
+      <div class="plan-grid">
+        <label class="plan-card active" id="planCard30" onclick="selectPlan('30')">
+          <input type="radio" name="proPlan" value="30" checked style="display: none;">
+          <div class="plan-dur">මාස 1 (දින 30)</div>
+          <div class="plan-price">Rs. 300</div>
+          <div class="plan-sub">රු. 10 / දිනකට</div>
+        </label>
+        <label class="plan-card" id="planCard90" onclick="selectPlan('90')">
+          <input type="radio" name="proPlan" value="90" style="display: none;">
+          <span class="plan-tag">වාසිදායකයි</span>
+          <div class="plan-dur">මාස 3 (දින 90)</div>
+          <div class="plan-price">Rs. 800</div>
+          <div class="plan-sub">රු. 100 ක් ඉතිරි</div>
+        </label>
+        <label class="plan-card" id="planCard365" onclick="selectPlan('365')">
+          <input type="radio" name="proPlan" value="365" style="display: none;">
+          <span class="plan-tag" style="background: #10b981;">Best Value</span>
+          <div class="plan-dur">වසර 1 (දින 365)</div>
+          <div class="plan-price">Rs. 2,500</div>
+          <div class="plan-sub">රු. 1,100ක් ඉතිරි</div>
+        </label>
+      </div>
+
+      <!-- Payment / Bank Details -->
+      <div class="bank-info-box">
+        <div class="title">🏦 ගෙවීම් තොරතුරු (LANKAQR & Bank Transfer)</div>
+        <div id="proBankInfoText">Commercial Bank | Acc: 8001234567 | Name: TukTuk Pro</div>
+        <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 4px;">මුදල් තැන්පත් කර Slip පතේ ඡායාරූපය WhatsApp වෙත එවන්න.</div>
+      </div>
+
+      <!-- WhatsApp Order Button -->
+      <button class="whatsapp-order-btn" onclick="openWhatsAppOrder()">
+        <span>📲 Slip පත WhatsApp එවා Code එක ගන්න</span>
+      </button>
+
+      <!-- Enter Activation Code -->
+      <div class="activation-card">
+        <div style="font-size: 0.78rem; font-weight: bold; color: #f59e0b;">🔑 Activation Code එක ඇතුළත් කරන්න:</div>
+        <div class="activation-row">
+          <input type="text" id="licenseKeyInput" placeholder="PRO-30-XXXXXX" maxlength="25">
+          <button onclick="applyLicenseKey()">Activate</button>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 14px;">
+        <button class="cancel-btn" onclick="closeProModal()">Close</button>
+      </div>
+    </div>
+
+    <!-- ==================== INCOME REPORT MODAL ==================== -->
+    <div class="modal" id="incomeReportModal">
+      <div class="modal-header">
+        <h3 style="color: #3b82f6;">📊 මාසික ආදායම් වාර්තාව (Income Report)</h3>
+        <button class="modal-close-x" onclick="closeIncomeReportModal()">✕</button>
+      </div>
+
+      <div id="incomeReportPrintArea">
+        <div style="background: #fff; color: #0f172a; padding: 16px; border-radius: 12px; font-family: sans-serif; text-align: left;">
+          <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 12px;">
+            <h2 style="margin: 0; font-size: 1.3rem; color: #0f172a;">🛺 TUK TUK PRO - ආදායම් සහතික වාර්තාව</h2>
+            <div style="font-size: 0.75rem; color: #475569;" id="rptGeneratedDate">දිනය: --/--/----</div>
+            <div style="font-size: 0.8rem; font-weight: bold; margin-top: 4px;" id="rptVehicleLine">රථ අංකය: -- | රියදුරු: --</div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+            <div style="background: #f1f5f9; padding: 8px; border-radius: 6px;">
+              <div style="font-size: 0.75rem; color: #64748b;">මුළු ගමන් වාර (Trips):</div>
+              <div style="font-size: 1.2rem; font-weight: bold; color: #0f172a;" id="rptTotalTrips">0</div>
+            </div>
+            <div style="background: #f1f5f9; padding: 8px; border-radius: 6px;">
+              <div style="font-size: 0.75rem; color: #64748b;">මුළු දුර (Total Distance):</div>
+              <div style="font-size: 1.2rem; font-weight: bold; color: #0f172a;" id="rptTotalKm">0 km</div>
+            </div>
+            <div style="background: #f1f5f9; padding: 8px; border-radius: 6px;">
+              <div style="font-size: 0.75rem; color: #64748b;">Waiting කාලය:</div>
+              <div style="font-size: 1.2rem; font-weight: bold; color: #0f172a;" id="rptTotalWait">0 min</div>
+            </div>
+            <div style="background: #ecfdf5; border: 1px solid #10b981; padding: 8px; border-radius: 6px;">
+              <div style="font-size: 0.75rem; color: #065f46; font-weight: bold;">මුළු ආදායම (Total Earnings):</div>
+              <div style="font-size: 1.3rem; font-weight: 800; color: #047857;" id="rptTotalEarnings">Rs. 0.00</div>
+            </div>
+          </div>
+
+          <div style="font-size: 0.75rem; color: #475569; text-align: center; border-top: 1px dashed #cbd5e1; padding-top: 8px; margin-top: 12px;">
+            මෙම වාර්තාව TukTuk Pro GPS Taxi Meter යෙදුම මඟින් ස්වයංක්‍රීයව සටහන් කරන ලද නිල ගමන් දත්ත වේ.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 12px;">
+        <button class="save-btn" onclick="window.print()" style="background: #3b82f6;">🖨️ Print / Save PDF</button>
+        <button class="save-btn" onclick="shareIncomeReportWhatsApp()" style="background: #25d366;">📲 WhatsApp Share</button>
+        <button class="cancel-btn" onclick="closeIncomeReportModal()">Close</button>
       </div>
     </div>
   </div>
@@ -938,7 +1317,9 @@
       driverName: "Driver",
       driverQrInfo: "0771234567",
       voiceEnabled: true,
-      nightFareActive: false
+      nightFareActive: false,
+      adminPhone: "94771234567",
+      adminBankDetails: "Commercial Bank - 8001234567 (TukTuk Pro)"
     };
 
     function loadSavedSettings() {
@@ -958,6 +1339,11 @@
       document.getElementById("vehicleNoInput").value = config.vehicleNo || "";
       document.getElementById("driverNameInput").value = config.driverName || "";
       document.getElementById("driverQrInfoInput").value = config.driverQrInfo || "";
+      document.getElementById("adminPhoneInput").value = config.adminPhone || "94771234567";
+      document.getElementById("adminBankDetailsInput").value = config.adminBankDetails || "Commercial Bank - 8001234567 (TukTuk Pro)";
+      
+      const proBankText = document.getElementById("proBankInfoText");
+      if (proBankText) proBankText.innerText = config.adminBankDetails || "Commercial Bank - 8001234567 (TukTuk Pro)";
 
       // Check Auto Night Time (10 PM to 5 AM)
       checkAutoNightTime();
@@ -973,7 +1359,12 @@
       config.vehicleNo = document.getElementById("vehicleNoInput").value || "WP AB-1234";
       config.driverName = document.getElementById("driverNameInput").value || "Driver";
       config.driverQrInfo = document.getElementById("driverQrInfoInput").value || "0771234567";
+      config.adminPhone = document.getElementById("adminPhoneInput").value || "94771234567";
+      config.adminBankDetails = document.getElementById("adminBankDetailsInput").value || "Commercial Bank - 8001234567 (TukTuk Pro)";
       
+      const proBankText = document.getElementById("proBankInfoText");
+      if (proBankText) proBankText.innerText = config.adminBankDetails;
+
       localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
       toggleSettingsModal(false);
       updateFare();
@@ -1536,12 +1927,14 @@
     function shareWhatsAppReceipt() {
       if (!currentTripRecord) return;
       const trip = currentTripRecord;
+      const pro = getProStatus();
+      const proBadge = pro.isPro ? '\n👑 *Verified TukTuk Pro Driver*' : '';
       const nightStr = trip.isNightFare ? `\n🌙 *Night Surcharge:* Rs. ${trip.nightFare}` : '';
       const msg = 
 `🛺 *TUK TUK METER PRO RECEIPT*
 ━━━━━━━━━━━━━━━━━━
 🔢 *රථ අංකය:* ${trip.vehicleNo}
-👤 *රියදුරු:* ${trip.driverName}
+👤 *රියදුරු:* ${trip.driverName}${proBadge}
 🆔 *Receipt No:* #${trip.id}
 📅 *දිනය:* ${trip.date}
 ⏰ *වේලාව:* ${trip.startTime} - ${trip.endTime}
@@ -1653,6 +2046,318 @@
       document.getElementById("settingsModal").classList.toggle("show", show);
     }
 
+    // ==================== PRO & SUBSCRIPTION LOGIC ====================
+    const LICENSE_SALT = "TUKTUK_PRO_2026";
+    let selectedProPlan = "30";
+
+    function getDeviceId() {
+      let devId = localStorage.getItem('tuktuk_device_id');
+      if (!devId) {
+        devId = 'TK-' + Math.floor(1000 + Math.random() * 9000);
+        localStorage.setItem('tuktuk_device_id', devId);
+      }
+      return devId;
+    }
+
+    function computeLicenseChecksum(str) {
+      let hash = 5381;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i);
+        hash = hash & hash;
+      }
+      return Math.abs(hash).toString(16).toUpperCase().padStart(6, '0').slice(-6);
+    }
+
+    function generateLicenseKey(deviceId, durationCode) {
+      const normId = (deviceId || "").trim().toUpperCase();
+      const raw = `${normId}:${durationCode}:${LICENSE_SALT}`;
+      const checksum = computeLicenseChecksum(raw);
+      return `PRO-${durationCode}-${checksum}`;
+    }
+
+    function verifyLicenseKey(inputKey, deviceId) {
+      if (!inputKey || !deviceId) return null;
+      const cleaned = inputKey.trim().toUpperCase();
+      const parts = cleaned.split("-");
+      if (parts.length !== 3 || parts[0] !== "PRO") return null;
+
+      const durationCode = parts[1]; // '30', '90', '365', 'LIFE'
+      const expectedKey = generateLicenseKey(deviceId, durationCode);
+      if (cleaned === expectedKey) {
+        let days = 30;
+        if (durationCode === "90") days = 90;
+        else if (durationCode === "365") days = 365;
+        else if (durationCode === "LIFE") days = 3650;
+        return { valid: true, days, plan: durationCode };
+      }
+      return null;
+    }
+
+    function getProStatus() {
+      const devId = getDeviceId();
+      const savedLicense = localStorage.getItem('tuktuk_pro_license');
+      const trialStarted = localStorage.getItem('tuktuk_trial_started');
+
+      if (savedLicense) {
+        try {
+          const lic = JSON.parse(savedLicense);
+          if (lic.expiry && Date.now() < lic.expiry) {
+            const daysLeft = Math.ceil((lic.expiry - Date.now()) / (1000 * 60 * 60 * 24));
+            return { isPro: true, isTrial: false, daysLeft, expiry: lic.expiry, plan: lic.plan };
+          }
+        } catch (e) {}
+      }
+
+      // Check 7-Day Free Trial
+      if (!trialStarted) {
+        const trialExpiry = Date.now() + (7 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('tuktuk_trial_started', Date.now().toString());
+        localStorage.setItem('tuktuk_trial_expiry', trialExpiry.toString());
+        return { isPro: true, isTrial: true, daysLeft: 7, expiry: trialExpiry, plan: 'TRIAL' };
+      } else {
+        const trialExpiry = parseInt(localStorage.getItem('tuktuk_trial_expiry')) || 0;
+        if (Date.now() < trialExpiry) {
+          const daysLeft = Math.ceil((trialExpiry - Date.now()) / (1000 * 60 * 60 * 24));
+          return { isPro: true, isTrial: true, daysLeft, expiry: trialExpiry, plan: 'TRIAL' };
+        }
+      }
+
+      return { isPro: false, isTrial: false, daysLeft: 0, expiry: 0, plan: 'EXPIRED' };
+    }
+
+    function updateProUI() {
+      const pro = getProStatus();
+      const headerBtn = document.getElementById("headerProBtn");
+      const statusTitle = document.getElementById("proStatusTitle");
+      const statusSub = document.getElementById("proStatusSub");
+      const displayId = document.getElementById("displayDeviceId");
+
+      if (displayId) displayId.innerText = getDeviceId();
+      if (!headerBtn || !statusTitle || !statusSub) return;
+
+      if (pro.isPro && !pro.isTrial) {
+        headerBtn.innerText = `👑 PRO (${pro.daysLeft}d)`;
+        headerBtn.style.background = "linear-gradient(135deg, #10b981, #059669)";
+        headerBtn.style.color = "#fff";
+        statusTitle.innerHTML = `<span>👑 PRO UNLOCKED (${pro.daysLeft} දින ඉතිරිව ඇත)</span>`;
+        statusTitle.style.color = "#10b981";
+        const dateStr = new Date(pro.expiry).toLocaleDateString();
+        statusSub.innerText = `වලංගු කාලය: ${dateStr} දක්වා`;
+      } else if (pro.isPro && pro.isTrial) {
+        headerBtn.innerText = `👑 TRIAL (${pro.daysLeft}d)`;
+        headerBtn.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+        headerBtn.style.color = "#0f172a";
+        statusTitle.innerHTML = `<span>👑 FREE TRIAL (${pro.daysLeft} දින ඉතිරිව ඇත)</span>`;
+        statusTitle.style.color = "#f59e0b";
+        statusSub.innerText = "දින 7 ක නොමිලේ අත්හදා බැලීමේ කාලය සක්‍රීයයි.";
+      } else {
+        headerBtn.innerText = `👑 UPGRADE`;
+        headerBtn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+        headerBtn.style.color = "#fff";
+        statusTitle.innerHTML = `<span>⚠️ PRO සාමාජිකත්වය කල් ඉකුත් වී ඇත</span>`;
+        statusTitle.style.color = "#ef4444";
+        statusSub.innerText = "Pro පහසුකම් දිගටම ලබාගැනීමට පහතින් සක්‍රීය කරගන්න.";
+      }
+    }
+
+    function openProModal() {
+      updateProUI();
+      document.getElementById("proModal").classList.add("show");
+    }
+
+    function closeProModal() {
+      document.getElementById("proModal").classList.remove("show");
+    }
+
+    function selectPlan(plan) {
+      selectedProPlan = plan;
+      ['30', '90', '365'].forEach(p => {
+        const el = document.getElementById('planCard' + p);
+        if (el) el.classList.toggle('active', p === plan);
+      });
+      const radio = document.querySelector(`input[name="proPlan"][value="${plan}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    function copyDeviceId() {
+      const devId = getDeviceId();
+      navigator.clipboard.writeText(devId).then(() => {
+        showToast("Device ID Copy කරන ලදී: " + devId);
+      }).catch(() => {
+        showToast("Device ID: " + devId);
+      });
+    }
+
+    function openWhatsAppOrder() {
+      const devId = getDeviceId();
+      let planText = "මාස 1 (දින 30) - රු. 300";
+      if (selectedProPlan === "90") planText = "මාස 3 (දින 90) - රු. 800";
+      if (selectedProPlan === "365") planText = "වසර 1 (දින 365) - රු. 2,500";
+
+      const msg = 
+`🛺 *TUK TUK METER PRO සක්‍රීය කිරීමේ ඉල්ලීම*
+━━━━━━━━━━━━━━━━━━
+📱 *මගේ Device ID:* ${devId}
+📦 *තෝරාගත් පැකේජය:* ${planText}
+💵 *ගෙවීම් Slip පත:* (මෙහි අමුණා ඇත)
+━━━━━━━━━━━━━━━━━━
+කරුණාකර මගේ Activation Code එක ලබා දෙන්න. ස්තූතියි!`;
+
+      const cleanPhone = (config.adminPhone || "94771234567").replace(/[^0-9]/g, '');
+      const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    function applyLicenseKey() {
+      const input = document.getElementById("licenseKeyInput");
+      const key = input.value.trim().toUpperCase();
+      if (!key) {
+        alert("කරුණාකර Activation Code එක ඇතුළත් කරන්න.");
+        return;
+      }
+
+      const devId = getDeviceId();
+      const res = verifyLicenseKey(key, devId);
+
+      if (res && res.valid) {
+        const expiry = Date.now() + (res.days * 24 * 60 * 60 * 1000);
+        const licData = { key, plan: res.plan, expiry, activatedAt: Date.now() };
+        localStorage.setItem('tuktuk_pro_license', JSON.stringify(licData));
+        input.value = "";
+        updateProUI();
+        playBeep('start');
+        speakAlert("Congratulations! TukTuk Meter Pro is now fully activated.");
+        alert("🎉 සුභ පැතුම්! TukTuk Meter Pro සාර්ථකව සක්‍රීය විය!");
+        closeProModal();
+      } else {
+        playBeep('alarm');
+        alert("❌ වලංගු නොවන Code එකකි! කරුණාකර ඔබගේ Device ID එකට අදාළ නිවැරදි Code එක ලබා දෙන්න.");
+      }
+    }
+
+    // Admin Key Generator Logic
+    let adminUnlocked = false;
+    function toggleAdminPanel() {
+      const panel = document.getElementById("adminPanelBody");
+      if (!adminUnlocked) {
+        const pin = prompt("Admin Password ඇතුළත් කරන්න (Default: 7788):");
+        if (pin === "7788" || pin === "1234") {
+          adminUnlocked = true;
+          panel.style.display = "block";
+          document.getElementById("adminGenDevId").value = getDeviceId();
+        } else {
+          alert("වැරදි Password එකක්!");
+        }
+      } else {
+        panel.style.display = panel.style.display === "none" ? "block" : "none";
+      }
+    }
+
+    function adminGenerateLicense() {
+      const devId = document.getElementById("adminGenDevId").value.trim().toUpperCase();
+      const plan = document.getElementById("adminGenPlan").value;
+      if (!devId) {
+        alert("Driver ගේ Device ID එක ඇතුළත් කරන්න!");
+        return;
+      }
+      const key = generateLicenseKey(devId, plan);
+      document.getElementById("adminKeyText").innerText = key;
+      document.getElementById("adminGeneratedResult").style.display = "block";
+      showToast("Key සාදන ලදී: " + key);
+    }
+
+    function adminSendKeyWhatsApp() {
+      const devId = document.getElementById("adminGenDevId").value.trim().toUpperCase();
+      const key = document.getElementById("adminKeyText").innerText;
+      const plan = document.getElementById("adminGenPlan").value;
+      let planText = plan + " දින";
+      if (plan === "LIFE") planText = "Lifetime";
+
+      const msg = 
+`🛺 *TUK TUK METER PRO ACTIVATION CODE*
+━━━━━━━━━━━━━━━━━━
+📱 *Device ID:* ${devId}
+📦 *වලංගු කාලය:* ${planText}
+🔑 *Activation Code:* *${key}*
+━━━━━━━━━━━━━━━━━━
+👉 App එකේ *PRO* වෙත ගොස් Activation Code එක Paste කර Activate කරන්න.
+ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    // ==================== INCOME REPORT LOGIC ====================
+    function openIncomeReportModal() {
+      const pro = getProStatus();
+      if (!pro.isPro) {
+        closeHistoryModal();
+        openProModal();
+        alert("ආදායම් වාර්තාව ලබා ගැනීමට PRO සාමාජිකත්වය අවශ්‍ය වේ!");
+        return;
+      }
+
+      const history = getStoredHistory();
+      let totalTrips = history.length;
+      let totalKm = 0;
+      let totalEarnings = 0;
+      let totalWaitSec = 0;
+
+      history.forEach(t => {
+        totalEarnings += parseFloat(t.totalFare) || 0;
+        totalKm += parseFloat(t.distance) || 0;
+        if (t.waitingTimeStr) {
+          const parts = t.waitingTimeStr.split(":");
+          if (parts.length === 2) {
+            totalWaitSec += (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+          }
+        }
+      });
+
+      const totalWaitMins = Math.floor(totalWaitSec / 60);
+
+      document.getElementById("rptGeneratedDate").innerText = `දිනය: ${new Date().toLocaleDateString()} (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
+      document.getElementById("rptVehicleLine").innerText = `රථ අංකය: ${config.vehicleNo} | රියදුරු: ${config.driverName}`;
+      document.getElementById("rptTotalTrips").innerText = totalTrips;
+      document.getElementById("rptTotalKm").innerText = `${totalKm.toFixed(1)} km`;
+      document.getElementById("rptTotalWait").innerText = `${totalWaitMins} min`;
+      document.getElementById("rptTotalEarnings").innerText = `Rs. ${totalEarnings.toFixed(2)}`;
+
+      document.getElementById("incomeReportModal").classList.add("show");
+    }
+
+    function closeIncomeReportModal() {
+      document.getElementById("incomeReportModal").classList.remove("show");
+    }
+
+    function shareIncomeReportWhatsApp() {
+      const history = getStoredHistory();
+      let totalTrips = history.length;
+      let totalKm = 0;
+      let totalEarnings = 0;
+
+      history.forEach(t => {
+        totalEarnings += parseFloat(t.totalFare) || 0;
+        totalKm += parseFloat(t.distance) || 0;
+      });
+
+      const msg = 
+`🛺 *TUK TUK PRO - ආදායම් වාර්තාව (FINANCIAL REPORT)*
+━━━━━━━━━━━━━━━━━━
+🔢 *රථ අංකය:* ${config.vehicleNo}
+👤 *රියදුරු:* ${config.driverName}
+📅 *දිනය:* ${new Date().toLocaleDateString()}
+━━━━━━━━━━━━━━━━━━
+📋 *මුළු ගමන් වාර:* ${totalTrips}
+📍 *මුළු දුර:* ${totalKm.toFixed(1)} km
+💵 *මුළු ආදායම:* *Rs. ${totalEarnings.toFixed(2)}*
+━━━━━━━━━━━━━━━━━━
+TukTuk Pro GPS Taxi Meter යෙදුම මඟින් සත්‍යාපිතයි.`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
     // ==================== PWA INSTALL LOGIC ====================
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -1687,6 +2392,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedSettings();
       initMap();
+      getDeviceId();
+      updateProUI();
     });
   </script>
 </body>
