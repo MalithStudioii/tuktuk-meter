@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TukTuk Meter Pro</title>
+  
+  <!-- PWA Meta & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TukTuk Meter">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #090d16;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 12px;
+    }
+    .meter-box {
+      background: #151d2f;
+      border: 2px solid #f59e0b;
+      border-radius: 24px;
+      padding: 18px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 25px rgba(245, 158, 11, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Top Bar & Badges */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #f59e0b;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 5px;
+    }
+    .icon-btn {
+      background: #222f46;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 5px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .icon-btn:hover {
+      background: #2d3e5e;
+      border-color: #f59e0b;
+    }
+    .icon-btn.active-glow {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: bold;
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+
+    /* Status Indicators Row */
+    .indicators-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0c1220;
+      padding: 6px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 0.72rem;
+      border: 1px solid #1e293b;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      background: #64748b;
+    }
+    .badge-dot.good { background: #10b981; box-shadow: 0 0 8px #10b981; }
+    .badge-dot.fair { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    .badge-dot.poor { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+    .badge-dot.active { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+
+    /* Quick Feature Bar (Night & Voice & Install) */
+    .quick-feature-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .feature-pill {
+      flex: 1;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .feature-pill.active {
+      background: #1e293b;
+      border-color: #f59e0b;
+      color: #f59e0b;
+      font-weight: 600;
+    }
+    .feature-pill.install-pill {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      display: none;
+    }
+
+    /* Fare Display Section */
+    .display {
+      background: #020617;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #1e293b;
+      text-align: center;
+      position: relative;
+    }
+    .fare-label {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .night-tag {
+      background: #7c3aed;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      letter-spacing: 0;
+      display: none;
+    }
+    .fare-container {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin: 4px 0 10px 0;
+    }
+    .fare-currency {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+    .fare {
+      font-size: 3.4rem;
+      font-weight: 800;
+      color: #10b981;
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 1px;
+    }
+    
+    /* Stats Grid */
+    .grid-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      border-top: 1px solid #1e293b;
+      padding-top: 10px;
+    }
+    .stat-item {
+      background: #0c1220;
+      padding: 8px;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #1a253a;
+      transition: all 0.3s;
+    }
+    .stat-item .title {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .stat-item .val {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #f1f5f9;
+      font-family: monospace;
+    }
+
+    /* Overspeed Flashing Warning */
+    @keyframes speedFlash {
+      0% { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); }
+      50% { border-color: #f59e0b; background: rgba(239, 68, 68, 0.4); }
+      100% { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); }
+    }
+    .stat-item.overspeed {
+      animation: speedFlash 0.6s infinite;
+      border-color: #ef4444 !important;
+    }
+    .stat-item.overspeed .val {
+      color: #ef4444 !important;
+    }
+
+    /* Map Box */
+    .map-container {
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #2d3e5e;
+      position: relative;
+      transition: height 0.3s ease;
+    }
+    .map-header {
+      background: #0c1220;
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      border-bottom: 1px solid #1e293b;
+    }
+    #map {
+      height: 165px;
+      width: 100%;
+      background: #0f172a;
+    }
+    .map-container.collapsed #map {
+      height: 0px;
+    }
+
+    /* Action Button */
+    .action-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 1.25rem;
+      border: none;
+      padding: 15px;
+      width: 100%;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3);
+    }
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+    .action-btn.active {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+    }
+    
+    #status {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+    #status.warning {
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    /* Modals System */
+    .modal {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 13, 22, 0.96);
+      border-radius: 20px;
+      padding: 20px;
+      flex-direction: column;
+      z-index: 1000;
+      backdrop-filter: blur(6px);
+      overflow-y: auto;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px;
+    }
+    .modal-header h3 {
+      margin: 0;
+      color: #f59e0b;
+      font-size: 1.15rem;
+    }
+    .modal-close-x {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* Form Fields */
+    .input-group {
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .input-group input:focus {
+      border-color: #f59e0b;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .save-btn {
+      flex: 1;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .cancel-btn {
+      flex: 1;
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    /* Modal Tabs for Receipt & Payments */
+    .modal-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .tab-btn.active {
+      background: #f59e0b;
+      color: #0f172a;
+      border-color: #f59e0b;
+    }
+
+    /* Receipt Card */
+    .receipt-card {
+      background: #ffffff;
+      color: #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      margin-bottom: 12px;
+      border: 1px dashed #94a3b8;
+    }
+    .receipt-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+    .receipt-sub {
+      text-align: center;
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .receipt-divider {
+      border-top: 1px dashed #cbd5e1;
+      margin: 6px 0;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    .receipt-row.bold {
+      font-weight: bold;
+      font-size: 1.05rem;
+      color: #0f172a;
+      margin-top: 6px;
+    }
+
+    .share-btn-wa {
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 11px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .share-btn-print {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* LANKAQR & Cash Calc Box */
+    .qr-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #qrcode {
+      display: inline-block;
+      padding: 8px;
+      background: #fff;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+    .quick-cash-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 8px 0;
+    }
+    .quick-cash-btn {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f1f5f9;
+      padding: 7px 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .cash-balance-box {
+      background: #020617;
+      border: 1px solid #10b981;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* History Summary Card */
+    .history-summary {
+      background: #0c1220;
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .history-summary-item .title {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+    .history-summary-item .val {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #f59e0b;
+      font-family: monospace;
+    }
+    .history-list {
+      max-height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+    .history-item {
+      background: #0c1220;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-item-left {
+      text-align: left;
+    }
+    .history-item-time {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+    .history-item-stats {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+    .history-item-fare {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #10b981;
+      font-family: monospace;
+    }
+
+    .toast {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 2000;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #receiptPrintArea, #receiptPrintArea * {
+        visibility: visible;
+      }
+      #receiptPrintArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="meter-box">
+    <div id="toast" class="toast">Saved!</div>
+
+    <!-- Header -->
+    <div class="header">
+      <h2>🛺 TUK TUK PRO</h2>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">🗺️ Map</button>
+        <button class="icon-btn" onclick="openHistoryModal()" title="ගමන් වාර්තා">📋 History</button>
+        <button class="icon-btn" onclick="toggleSettingsModal(true)" title="සැකසුම්">⚙️ Rates</button>
+      </div>
+    </div>
+
+    <!-- Quick Features Bar: Night Mode, Voice Alerts, Install PWA -->
+    <div class="quick-feature-bar">
+      <button class="feature-pill" id="nightFarePill" onclick="toggleNightFareManual()">
+        <span id="nightPillIcon">🌙</span>
+        <span id="nightPillText">Night Rate (+15%)</span>
+      </button>
+      <button class="feature-pill active" id="voiceTogglePill" onclick="toggleVoiceAlerts()">
+        <span id="voicePillIcon">🔊</span>
+        <span id="voicePillText">Voice Alerts</span>
+      </button>
+      <button class="feature-pill install-pill" id="pwaInstallBtn" onclick="installPWA()">
+        📥 Install App
+      </button>
+    </div>
+
+    <!-- Status Indicators (Wake Lock & GPS Accuracy) -->
+    <div class="indicators-row">
+      <div class="badge" id="wakeLockBadge">
+        <span class="badge-dot" id="wakeLockDot"></span>
+        <span id="wakeLockText">Screen Standby</span>
+      </div>
+      <div class="badge" id="gpsAccuracyBadge">
+        <span class="badge-dot" id="gpsAccuracyDot"></span>
+        <span id="gpsAccuracyText">GPS Searching...</span>
+      </div>
+    </div>
+    
+    <!-- Display Box -->
+    <div class="display">
+      <div class="fare-label">
+        <span>TOTAL FARE (LKR)</span>
+        <span class="night-tag" id="nightTagBadge">🌙 NIGHT +15%</span>
+      </div>
+      <div class="fare-container">
+        <span class="fare-currency">Rs.</span>
+        <span class="fare" id="fareDisplay">0.00</span>
+      </div>
+      
+      <div class="grid-stats">
+        <div class="stat-item">
+          <div class="title">දුර (Distance)</div>
+          <div class="val"><span id="distDisplay">0.00</span> km</div>
+        </div>
+        <div class="stat-item" id="speedStatItem">
+          <div class="title">වේගය (Speed)</div>
+          <div class="val"><span id="speedDisplay">0</span> km/h</div>
+        </div>
+        <div class="stat-item">
+          <div class="title">Waiting Time</div>
+          <div class="val" id="waitingTimeDisplay">00:00</div>
+        </div>
+        <div class="stat-item">
+          <div class="title">Waiting Charge</div>
+          <div class="val">Rs. <span id="waitingChargeDisplay">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Route Map -->
+    <div class="map-container" id="mapContainer">
+      <div class="map-header">
+        <span>📍 සජීවී ගමන් මාර්ගය (Live Path)</span>
+        <span id="mapPointCount">ලක්ෂ්‍ය: 0</span>
+      </div>
+      <div id="map"></div>
+    </div>
+
+    <!-- Trip Action Button -->
+    <button id="toggleBtn" class="action-btn" onclick="toggleTrip()">START TRIP</button>
+    <div id="status">GPS සක්‍රීය කිරීමට සූදානම්</div>
+
+    <!-- ==================== RECEIPT & PAY MODAL ==================== -->
+    <div class="modal" id="receiptModal">
+      <div class="modal-header">
+        <h3 id="receiptModalTitle">🧾 Trip Bill & Payment</h3>
+        <button class="modal-close-x" onclick="closeReceiptModal()">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabReceiptBtn" onclick="switchReceiptTab('receipt')">🧾 බිල්පත (Receipt)</button>
+        <button class="tab-btn" id="tabPaymentBtn" onclick="switchReceiptTab('payment')">💳 LANKAQR / Cash</button>
+      </div>
+
+      <!-- Tab 1: Receipt -->
+      <div id="tabReceiptContent">
+        <div class="receipt-card" id="receiptPrintArea">
+          <div class="receipt-title">🛺 TUK TUK METER PRO</div>
+          <div class="receipt-sub" id="rcptVehicleLine">Vehicle: WP AB-1234 | Driver: Kamal</div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row"><span>Receipt ID:</span><span id="rcptId">#TK-1001</span></div>
+          <div class="receipt-row"><span>දිනය (Date):</span><span id="rcptDate">2026-10-02</span></div>
+          <div class="receipt-row"><span>කාලය (Time):</span><span id="rcptTime">07:30 PM - 07:45 PM</span></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row"><span>මුළු දුර (Distance):</span><span id="rcptDist">4.20 km</span></div>
+          <div class="receipt-row"><span>Waiting කාලය:</span><span id="rcptWait">03:15 min</span></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row"><span>මූලික ගාස්තුව (1km):</span><span id="rcptBase">Rs. 120.00</span></div>
+          <div class="receipt-row"><span>අතිරේක දුර ගාස්තුව:</span><span id="rcptExtraDist">Rs. 288.00</span></div>
+          <div class="receipt-row"><span>Waiting ගාස්තුව:</span><span id="rcptWaitFare">Rs. 18.00</span></div>
+          <div class="receipt-row" id="rcptNightRow" style="display: none; color: #7c3aed; font-weight: bold;">
+            <span>රාත්‍රී අමතර ගාස්තුව (Night Rate):</span><span id="rcptNightFare">Rs. 0.00</span>
+          </div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row bold"><span>මුළු ගාස්තුව (TOTAL):</span><span id="rcptTotal">Rs. 426.00</span></div>
+          <div class="receipt-divider"></div>
+          <div style="text-align: center; font-size: 0.72rem; color: #64748b; margin-top: 4px;">
+            ස්තූතියි! සුභ ගමනක් වේවා! 🙏
+          </div>
+        </div>
+
+        <button class="share-btn-wa" onclick="shareWhatsAppReceipt()">
+          <span>📲 WhatsApp එකෙන් බිල යවන්න</span>
+        </button>
+        <button class="share-btn-print" onclick="window.print()">
+          <span>🖨️ Receipt එක Print කරන්න</span>
+        </button>
+      </div>
+
+      <!-- Tab 2: LANKAQR & Cash Calc -->
+      <div id="tabPaymentContent" style="display: none;">
+        <div class="qr-box">
+          <div style="font-size: 0.85rem; color: #f59e0b; font-weight: 600;">LANKAQR / Digital Pay</div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">ඕනෑම Banking App එකකින් Scan කර ගෙවන්න</div>
+          <div id="qrcode"></div>
+          <div style="font-size: 1.15rem; font-weight: bold; color: #10b981;" id="qrAmountDisplay">Rs. 0.00</div>
+        </div>
+
+        <!-- Cash Calculator -->
+        <div style="background: #0c1220; padding: 12px; border-radius: 10px; border: 1px solid #1e293b;">
+          <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">💵 මගියා දුන් මුදල (Cash Given):</div>
+          <input type="number" id="cashGivenInput" placeholder="මුදල ඇතුළත් කරන්න" oninput="calculateBalance()" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #475569; background: #020617; color: #fff; font-size: 1rem;">
+          
+          <div class="quick-cash-row">
+            <button class="quick-cash-btn" onclick="setCash(500)">500</button>
+            <button class="quick-cash-btn" onclick="setCash(1000)">1,000</button>
+            <button class="quick-cash-btn" onclick="setCash(2000)">2,000</button>
+            <button class="quick-cash-btn" onclick="setCash(5000)">5,000</button>
+          </div>
+
+          <div class="cash-balance-box">
+            <div style="font-size: 0.75rem; color: #94a3b8;">ආපසු දිය යුතු ඉතිරි මුදල (Balance):</div>
+            <div style="font-size: 1.3rem; font-weight: bold; color: #10b981;" id="balanceDisplay">Rs. 0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HISTORY MODAL ==================== -->
+    <div class="modal" id="historyModal">
+      <div class="modal-header">
+        <h3>📋 ගමන් වාර්තා (Trip History)</h3>
+        <button class="modal-close-x" onclick="closeHistoryModal()">✕</button>
+      </div>
+
+      <!-- Today's Summary -->
+      <div class="history-summary">
+        <div class="history-summary-item">
+          <div class="title">අද ආදායම</div>
+          <div class="val" id="histTodayEarnings">Rs. 0</div>
+        </div>
+        <div class="history-summary-item">
+          <div class="title">ගමන් වාර</div>
+          <div class="val" id="histTodayCount">0</div>
+        </div>
+        <div class="history-summary-item">
+          <div class="title">මුළු දුර</div>
+          <div class="val" id="histTodayKm">0 km</div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px;">මෑතකදී ගිය ගමන් (Recent Trips):</div>
+      <div class="history-list" id="historyListContainer"></div>
+
+      <div class="modal-buttons" style="margin-top: 12px;">
+        <button class="cancel-btn" onclick="clearTripHistory()">🗑️ History මකන්න</button>
+        <button class="save-btn" onclick="closeHistoryModal()">Close</button>
+      </div>
+    </div>
+
+    <!-- ==================== SETTINGS MODAL ==================== -->
+    <div class="modal" id="settingsModal">
+      <div class="modal-header">
+        <h3>⚙️ Meter Rates & Profile</h3>
+        <button class="modal-close-x" onclick="toggleSettingsModal(false)">✕</button>
+      </div>
+
+      <div class="input-group">
+        <label>පළමු 1 km ගාස්තුව (Rs):</label>
+        <input type="number" id="baseRateInput" value="120" step="1">
+      </div>
+      <div class="input-group">
+        <label>ඉන්පසු සෑම 1 km සඳහා ගාස්තුව (Rs):</label>
+        <input type="number" id="afterFirstKmInput" value="90" step="1">
+      </div>
+      <div class="input-group">
+        <label>Waiting Charge (මිනිත්තුවකට - Rs):</label>
+        <input type="number" id="waitingRateInput" value="6" step="1">
+      </div>
+      <div class="input-group">
+        <label>රාත්‍රී අමතර ප්‍රතිශතය (Night Surcharge %):</label>
+        <input type="number" id="nightSurchargeInput" value="15" step="1">
+      </div>
+      <div class="input-group">
+        <label>උපරිම වේග සීමාව (Max Speed Limit - km/h):</label>
+        <input type="number" id="speedLimitInput" value="40" step="1">
+      </div>
+      <div class="input-group">
+        <label>ත්‍රිරෝද රථ අංකය (Vehicle No):</label>
+        <input type="text" id="vehicleNoInput" placeholder="උදා: WP AB-1234">
+      </div>
+      <div class="input-group">
+        <label>රියදුරුගේ නම (Driver Name):</label>
+        <input type="text" id="driverNameInput" placeholder="උදා: කමල් පෙරේරා">
+      </div>
+      <div class="input-group">
+        <label>LANKAQR / Pay Account ID (Pay Text/Account):</label>
+        <input type="text" id="driverQrInfoInput" placeholder="උදා: 0771234567 හෝ Bank Acc">
+      </div>
+      <div class="modal-buttons">
+        <button class="cancel-btn" onclick="toggleSettingsModal(false)">Cancel</button>
+        <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    // Audio Context for Beeps & Overspeed Alarm
+    let audioCtx = null;
+    function playBeep(type = 'start') {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        if (type === 'start') {
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'stop') {
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
+        } else if (type === 'alarm') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(950, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(650, audioCtx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        }
+      } catch (e) {
+        console.warn("Audio unavailable:", e);
+      }
+    }
+
+    // Config & Persistence
+    let config = {
+      baseRate: 120,
+      afterFirstKmRate: 90,
+      waitingRatePerMin: 6,
+      nightSurchargePercent: 15,
+      speedLimit: 40,
+      vehicleNo: "WP AB-1234",
+      driverName: "Driver",
+      driverQrInfo: "0771234567",
+      voiceEnabled: true,
+      nightFareActive: false
+    };
+
+    function loadSavedSettings() {
+      const saved = localStorage.getItem('tuktuk_rates_config');
+      if (saved) {
+        try {
+          config = { ...config, ...JSON.parse(saved) };
+        } catch (e) {
+          console.error("Failed to parse saved config", e);
+        }
+      }
+      document.getElementById("baseRateInput").value = config.baseRate;
+      document.getElementById("afterFirstKmInput").value = config.afterFirstKmRate;
+      document.getElementById("waitingRateInput").value = config.waitingRatePerMin;
+      document.getElementById("nightSurchargeInput").value = config.nightSurchargePercent;
+      document.getElementById("speedLimitInput").value = config.speedLimit;
+      document.getElementById("vehicleNoInput").value = config.vehicleNo || "";
+      document.getElementById("driverNameInput").value = config.driverName || "";
+      document.getElementById("driverQrInfoInput").value = config.driverQrInfo || "";
+
+      // Check Auto Night Time (10 PM to 5 AM)
+      checkAutoNightTime();
+      updateVoiceUI();
+    }
+
+    function saveSettings() {
+      config.baseRate = parseFloat(document.getElementById("baseRateInput").value) || 120;
+      config.afterFirstKmRate = parseFloat(document.getElementById("afterFirstKmInput").value) || 90;
+      config.waitingRatePerMin = parseFloat(document.getElementById("waitingRateInput").value) || 6;
+      config.nightSurchargePercent = parseFloat(document.getElementById("nightSurchargeInput").value) || 15;
+      config.speedLimit = parseFloat(document.getElementById("speedLimitInput").value) || 40;
+      config.vehicleNo = document.getElementById("vehicleNoInput").value || "WP AB-1234";
+      config.driverName = document.getElementById("driverNameInput").value || "Driver";
+      config.driverQrInfo = document.getElementById("driverQrInfoInput").value || "0771234567";
+      
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+      toggleSettingsModal(false);
+      updateFare();
+      showToast("සැකසුම් සාර්ථකව Save විය!");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    // ==================== VOICE ALERTS (TEXT TO SPEECH) ====================
+    function toggleVoiceAlerts() {
+      config.voiceEnabled = !config.voiceEnabled;
+      updateVoiceUI();
+      if (config.voiceEnabled) {
+        speakAlert("Voice alerts enabled");
+        showToast("Voice Alerts On විය");
+      } else {
+        showToast("Voice Alerts Off විය");
+      }
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+    }
+
+    function updateVoiceUI() {
+      const pill = document.getElementById("voiceTogglePill");
+      const icon = document.getElementById("voicePillIcon");
+      const text = document.getElementById("voicePillText");
+      if (config.voiceEnabled) {
+        pill.classList.add("active");
+        icon.innerText = "🔊";
+        text.innerText = "Voice Alerts ON";
+      } else {
+        pill.classList.remove("active");
+        icon.innerText = "🔇";
+        text.innerText = "Voice Muted";
+      }
+    }
+
+    function speakAlert(text) {
+      if (!config.voiceEnabled || !('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn("Speech error:", e);
+      }
+    }
+
+    // ==================== NIGHT FARE LOGIC ====================
+    function checkAutoNightTime() {
+      const currentHour = new Date().getHours();
+      // Between 22:00 (10 PM) and 05:00 (5 AM)
+      if (currentHour >= 22 || currentHour < 5) {
+        config.nightFareActive = true;
+      }
+      updateNightFareUI();
+    }
+
+    function toggleNightFareManual() {
+      config.nightFareActive = !config.nightFareActive;
+      updateNightFareUI();
+      updateFare();
+      showToast(config.nightFareActive ? "රාත්‍රී ගාස්තු සක්‍රීය විය!" : "සාමාන්‍ය ගාස්තු සක්‍රීය විය!");
+    }
+
+    function updateNightFareUI() {
+      const pill = document.getElementById("nightFarePill");
+      const tag = document.getElementById("nightTagBadge");
+      if (config.nightFareActive) {
+        pill.classList.add("active");
+        tag.style.display = "inline-block";
+        tag.innerText = `🌙 NIGHT +${config.nightSurchargePercent}%`;
+      } else {
+        pill.classList.remove("active");
+        tag.style.display = "none";
+      }
+    }
+
+    // Screen Wake Lock API
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          updateWakeLockUI(true);
+          wakeLock.addEventListener('release', () => {
+            updateWakeLockUI(false);
+          });
+        } catch (err) {
+          console.warn(`Wake Lock Error: ${err.message}`);
+          updateWakeLockUI(false);
+        }
+      } else {
+        updateWakeLockUI(false, "Not Supported");
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+          wakeLock = null;
+          updateWakeLockUI(false);
+        }).catch(() => {});
+      }
+    }
+
+    function updateWakeLockUI(isActive, customText = null) {
+      const dot = document.getElementById("wakeLockDot");
+      const text = document.getElementById("wakeLockText");
+      if (isActive) {
+        dot.className = "badge-dot active";
+        text.innerText = "Screen On (Locked)";
+      } else {
+        dot.className = "badge-dot";
+        text.innerText = customText || "Screen Normal";
+      }
+    }
+
+    document.addEventListener('visibilitychange', async () => {
+      if (tripActive && wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+      }
+    });
+
+    // Tracking Variables
+    let totalDistance = 0;
+    let lastCoords = null;
+    let tripActive = false;
+    let watchId = null;
+    let waitingSeconds = 0;
+    let tripSeconds = 0;
+    let timerInterval = null;
+    let currentSpeed = 0;
+    let tripStartTime = null;
+    let overspeedAlertCooldown = 0;
+
+    let currentTripRecord = null;
+    let qrcodeInstance = null;
+
+    // Map & Route variables
+    let map = null;
+    let routePolyline = null;
+    let startMarker = null;
+    let currentMarker = null;
+    let routeCoordinates = [];
+
+    function initMap() {
+      map = L.map('map', {
+        zoomControl: true,
+        attributionControl: false
+      }).setView([6.9271, 79.8612], 14);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19
+      }).addTo(map);
+
+      routePolyline = L.polyline([], {
+        color: '#f59e0b',
+        weight: 5,
+        opacity: 0.85,
+        smoothFactor: 1
+      }).addTo(map);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude, accuracy } = pos.coords;
+            map.setView([latitude, longitude], 15);
+            updateGpsUI(accuracy);
+          },
+          () => {},
+          { enableHighAccuracy: true, timeout: 5000 }
+        );
+      }
+    }
+
+    function toggleMap() {
+      const container = document.getElementById("mapContainer");
+      const btn = document.getElementById("mapToggleBtn");
+      container.classList.toggle("collapsed");
+      if (container.classList.contains("collapsed")) {
+        btn.innerText = "🗺️ Map (Show)";
+      } else {
+        btn.innerText = "🗺️ Map (Hide)";
+        setTimeout(() => map.invalidateSize(), 350);
+      }
+    }
+
+    function updateGpsUI(accuracy) {
+      const dot = document.getElementById("gpsAccuracyDot");
+      const text = document.getElementById("gpsAccuracyText");
+      if (accuracy <= 15) {
+        dot.className = "badge-dot good";
+        text.innerText = `GPS High (±${Math.round(accuracy)}m)`;
+      } else if (accuracy <= 30) {
+        dot.className = "badge-dot fair";
+        text.innerText = `GPS Fair (±${Math.round(accuracy)}m)`;
+      } else {
+        dot.className = "badge-dot poor";
+        text.innerText = `GPS Weak (±${Math.round(accuracy)}m)`;
+      }
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; 
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+          Math.cos((lat2 * Math.PI) / 180) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function updateFare() {
+      let fare = 0;
+      if (totalDistance > 0) {
+        if (totalDistance <= 1) {
+          fare = config.baseRate;
+        } else {
+          fare = config.baseRate + (totalDistance - 1) * config.afterFirstKmRate;
+        }
+      }
+
+      const waitingFare = Math.floor(waitingSeconds / 60) * config.waitingRatePerMin;
+      let subTotal = fare + waitingFare;
+
+      // Night Surcharge Calculation
+      let nightCharge = 0;
+      if (config.nightFareActive && subTotal > 0) {
+        nightCharge = subTotal * (config.nightSurchargePercent / 100);
+      }
+
+      const totalFare = subTotal + nightCharge;
+
+      document.getElementById("distDisplay").innerText = totalDistance.toFixed(2);
+      document.getElementById("fareDisplay").innerText = Math.round(totalFare).toFixed(2);
+      document.getElementById("waitingChargeDisplay").innerText = waitingFare;
+    }
+
+    function startTripTimers() {
+      timerInterval = setInterval(() => {
+        if (tripActive) {
+          tripSeconds++;
+          if (overspeedAlertCooldown > 0) overspeedAlertCooldown--;
+
+          // Waiting Time: currentSpeed < 2.5 km/h
+          if (currentSpeed < 2.5) {
+            waitingSeconds++;
+            const mins = Math.floor(waitingSeconds / 60).toString().padStart(2, '0');
+            const secs = (waitingSeconds % 60).toString().padStart(2, '0');
+            document.getElementById("waitingTimeDisplay").innerText = `${mins}:${secs}`;
+            
+            if (waitingSeconds % 60 === 0) {
+              updateFare();
+            }
+          }
+        }
+      }, 1000);
+    }
+
+    function toggleTrip() {
+      const btn = document.getElementById("toggleBtn");
+      const status = document.getElementById("status");
+
+      if (!tripActive) {
+        if (!navigator.geolocation) {
+          alert("Browser එකේ Geolocation support කරන්නේ නෑ!");
+          return;
+        }
+
+        playBeep('start');
+        requestWakeLock();
+        speakAlert("Trip started. Safe journey!");
+
+        // Reset variables
+        totalDistance = 0;
+        waitingSeconds = 0;
+        tripSeconds = 0;
+        currentSpeed = 0;
+        lastCoords = null;
+        tripActive = true;
+        routeCoordinates = [];
+        tripStartTime = new Date();
+        overspeedAlertCooldown = 0;
+
+        btn.innerText = "END TRIP";
+        btn.classList.add("active");
+        status.innerText = "GPS Tracking Active... ගමන් කරමින් පවතී";
+        status.classList.remove("warning");
+        document.getElementById("waitingTimeDisplay").innerText = "00:00";
+        document.getElementById("mapPointCount").innerText = "ලක්ෂ්‍ය: 0";
+        updateFare();
+
+        if (routePolyline) routePolyline.setLatLngs([]);
+        if (startMarker) map.removeLayer(startMarker);
+        if (currentMarker) map.removeLayer(currentMarker);
+
+        startTripTimers();
+
+        watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude, speed, accuracy } = position.coords;
+            updateGpsUI(accuracy);
+
+            currentSpeed = speed ? (speed * 3.6) : 0;
+            document.getElementById("speedDisplay").innerText = Math.round(currentSpeed);
+
+            // ==================== OVERSPEED CHECK ====================
+            const speedBox = document.getElementById("speedStatItem");
+            if (currentSpeed > config.speedLimit) {
+              speedBox.classList.add("overspeed");
+              status.innerText = `⚠️ වේග සීමාව (${config.speedLimit} km/h) ඉක්මවා ඇත! කරුණාකර වේගය අඩු කරන්න.`;
+              status.classList.add("warning");
+              
+              if (overspeedAlertCooldown === 0) {
+                playBeep('alarm');
+                speakAlert("Speed limit exceeded! Please slow down.");
+                overspeedAlertCooldown = 10; // Beep every 10 seconds if overspeeding persists
+              }
+            } else {
+              speedBox.classList.remove("overspeed");
+              if (status.classList.contains("warning")) {
+                status.classList.remove("warning");
+                status.innerText = "GPS Tracking Active... ගමන් කරමින් පවතී";
+              }
+            }
+
+            if (accuracy > 30) {
+              status.innerText = `GPS දුර්වලයි (±${Math.round(accuracy)}m). නිවැරදි සංඥා බලාපොරොත්තුවෙන්...`;
+              return;
+            }
+
+            const currentLatLng = [latitude, longitude];
+
+            if (!startMarker) {
+              startMarker = L.circleMarker(currentLatLng, {
+                radius: 8,
+                fillColor: '#10b981',
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 1
+              }).addTo(map).bindPopup("ගමන ආරම්භ කළ ස්ථානය").openPopup();
+              
+              map.setView(currentLatLng, 16);
+            }
+
+            if (!currentMarker) {
+              currentMarker = L.circleMarker(currentLatLng, {
+                radius: 8,
+                fillColor: '#f59e0b',
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 1
+              }).addTo(map);
+            } else {
+              currentMarker.setLatLng(currentLatLng);
+            }
+
+            routeCoordinates.push(currentLatLng);
+            routePolyline.setLatLngs(routeCoordinates);
+            document.getElementById("mapPointCount").innerText = `ලක්ෂ්‍ය: ${routeCoordinates.length}`;
+
+            map.panTo(currentLatLng, { animate: true });
+
+            if (lastCoords) {
+              const stepDist = calculateDistance(
+                lastCoords.latitude,
+                lastCoords.longitude,
+                latitude,
+                longitude
+              );
+
+              if (currentSpeed >= 2.5 && stepDist >= 0.005 && stepDist < 0.08) {
+                totalDistance += stepDist;
+                updateFare();
+              }
+            }
+
+            lastCoords = { latitude, longitude };
+          },
+          (err) => {
+            status.innerText = "GPS Error: " + err.message;
+            const dot = document.getElementById("gpsAccuracyDot");
+            dot.className = "badge-dot poor";
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 6000,
+          }
+        );
+      } else {
+        // END TRIP ACTION
+        playBeep('stop');
+        releaseWakeLock();
+        tripActive = false;
+        clearInterval(timerInterval);
+        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        
+        btn.innerText = "START NEW TRIP";
+        btn.classList.remove("active");
+        status.innerText = "Trip එක සාර්ථකව අවසන් විය!";
+        status.classList.remove("warning");
+        document.getElementById("speedStatItem").classList.remove("overspeed");
+        
+        const finalFare = document.getElementById("fareDisplay").innerText;
+        speakAlert(`Trip completed. Total fare is Rupees ${Math.round(finalFare)}`);
+
+        if (currentMarker) {
+          currentMarker.bindPopup(`ගමන අවසන්: Rs. ${finalFare}`).openPopup();
+        }
+
+        if (routeCoordinates.length > 1) {
+          map.fitBounds(routePolyline.getBounds(), { padding: [25, 25] });
+        }
+
+        finishAndRecordTrip();
+      }
+    }
+
+    function finishAndRecordTrip() {
+      const now = new Date();
+      let baseFare = totalDistance > 0 ? config.baseRate : 0;
+      let extraDistFare = totalDistance > 1 ? (totalDistance - 1) * config.afterFirstKmRate : 0;
+      let waitingFare = Math.floor(waitingSeconds / 60) * config.waitingRatePerMin;
+      let subTotal = baseFare + extraDistFare + waitingFare;
+      let nightFare = (config.nightFareActive && subTotal > 0) ? (subTotal * (config.nightSurchargePercent / 100)) : 0;
+      let totalFare = Math.round(subTotal + nightFare);
+
+      currentTripRecord = {
+        id: "TK-" + Math.floor(1000 + Math.random() * 9000),
+        startTime: tripStartTime ? tripStartTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--",
+        endTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: now.toLocaleDateString(),
+        distance: totalDistance.toFixed(2),
+        waitingTimeStr: document.getElementById("waitingTimeDisplay").innerText,
+        baseFare: baseFare.toFixed(2),
+        extraDistFare: extraDistFare.toFixed(2),
+        waitingFare: waitingFare.toFixed(2),
+        nightFare: nightFare.toFixed(2),
+        isNightFare: config.nightFareActive,
+        totalFare: totalFare.toFixed(2),
+        vehicleNo: config.vehicleNo,
+        driverName: config.driverName,
+        driverQrInfo: config.driverQrInfo
+      };
+
+      saveTripToHistory(currentTripRecord);
+      openReceiptModal(currentTripRecord);
+    }
+
+    // ==================== RECEIPT & PAYMENTS LOGIC ====================
+    function openReceiptModal(trip) {
+      document.getElementById("rcptVehicleLine").innerText = `Vehicle: ${trip.vehicleNo} | Driver: ${trip.driverName}`;
+      document.getElementById("rcptId").innerText = `#${trip.id}`;
+      document.getElementById("rcptDate").innerText = trip.date;
+      document.getElementById("rcptTime").innerText = `${trip.startTime} - ${trip.endTime}`;
+      document.getElementById("rcptDist").innerText = `${trip.distance} km`;
+      document.getElementById("rcptWait").innerText = `${trip.waitingTimeStr} min`;
+      document.getElementById("rcptBase").innerText = `Rs. ${trip.baseFare}`;
+      document.getElementById("rcptExtraDist").innerText = `Rs. ${trip.extraDistFare}`;
+      document.getElementById("rcptWaitFare").innerText = `Rs. ${trip.waitingFare}`;
+      
+      const nightRow = document.getElementById("rcptNightRow");
+      if (trip.isNightFare && parseFloat(trip.nightFare) > 0) {
+        nightRow.style.display = "flex";
+        document.getElementById("rcptNightFare").innerText = `Rs. ${trip.nightFare}`;
+      } else {
+        nightRow.style.display = "none";
+      }
+
+      document.getElementById("rcptTotal").innerText = `Rs. ${trip.totalFare}`;
+
+      // Reset Payment Tab
+      document.getElementById("qrAmountDisplay").innerText = `Rs. ${trip.totalFare}`;
+      document.getElementById("cashGivenInput").value = "";
+      document.getElementById("balanceDisplay").innerText = "Rs. 0.00";
+
+      generateQRCode(trip);
+
+      switchReceiptTab('receipt');
+      document.getElementById("receiptModal").classList.add("show");
+    }
+
+    function closeReceiptModal() {
+      document.getElementById("receiptModal").classList.remove("show");
+    }
+
+    function switchReceiptTab(tab) {
+      const receiptBtn = document.getElementById("tabReceiptBtn");
+      const paymentBtn = document.getElementById("tabPaymentBtn");
+      const receiptContent = document.getElementById("tabReceiptContent");
+      const paymentContent = document.getElementById("tabPaymentContent");
+
+      if (tab === 'receipt') {
+        receiptBtn.classList.add("active");
+        paymentBtn.classList.remove("active");
+        receiptContent.style.display = "block";
+        paymentContent.style.display = "none";
+      } else {
+        receiptBtn.classList.remove("active");
+        paymentBtn.classList.add("active");
+        receiptContent.style.display = "none";
+        paymentContent.style.display = "block";
+      }
+    }
+
+    function generateQRCode(trip) {
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = "";
+      
+      const paymentText = `LANKAQR:${trip.driverQrInfo || "TUKTUKPRO"};AMT:${trip.totalFare};REF:${trip.id}`;
+
+      try {
+        qrcodeInstance = new QRCode(qrContainer, {
+          text: paymentText,
+          width: 140,
+          height: 140,
+          colorDark: "#0f172a",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (e) {
+        console.warn("QR Error:", e);
+      }
+    }
+
+    function calculateBalance() {
+      if (!currentTripRecord) return;
+      const given = parseFloat(document.getElementById("cashGivenInput").value) || 0;
+      const total = parseFloat(currentTripRecord.totalFare) || 0;
+      const balance = given - total;
+      
+      const balanceElem = document.getElementById("balanceDisplay");
+      if (balance >= 0) {
+        balanceElem.style.color = "#10b981";
+        balanceElem.innerText = `Rs. ${balance.toFixed(2)}`;
+      } else {
+        balanceElem.style.color = "#ef4444";
+        balanceElem.innerText = `තව රු. ${Math.abs(balance).toFixed(2)} ක් මදි`;
+      }
+    }
+
+    function setCash(val) {
+      document.getElementById("cashGivenInput").value = val;
+      calculateBalance();
+    }
+
+    function shareWhatsAppReceipt() {
+      if (!currentTripRecord) return;
+      const trip = currentTripRecord;
+      const nightStr = trip.isNightFare ? `\n🌙 *Night Surcharge:* Rs. ${trip.nightFare}` : '';
+      const msg = 
+`🛺 *TUK TUK METER PRO RECEIPT*
+━━━━━━━━━━━━━━━━━━
+🔢 *රථ අංකය:* ${trip.vehicleNo}
+👤 *රියදුරු:* ${trip.driverName}
+🆔 *Receipt No:* #${trip.id}
+📅 *දිනය:* ${trip.date}
+⏰ *වේලාව:* ${trip.startTime} - ${trip.endTime}
+━━━━━━━━━━━━━━━━━━
+📍 *මුළු දුර:* ${trip.distance} km
+⏳ *Waiting කාලය:* ${trip.waitingTimeStr} min
+
+💰 *මූලික ගාස්තුව (1km):* Rs. ${trip.baseFare}
+🚗 *අතිරේක දුර ගාස්තුව:* Rs. ${trip.extraDistFare}
+⏱️ *Waiting ගාස්තුව:* Rs. ${trip.waitingFare}${nightStr}
+━━━━━━━━━━━━━━━━━━
+💵 *මුළු ගාස්තුව:* *Rs. ${trip.totalFare}*
+━━━━━━━━━━━━━━━━━━
+ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
+
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    // ==================== HISTORY LOGIC ====================
+    function saveTripToHistory(trip) {
+      let history = getStoredHistory();
+      history.unshift(trip);
+      if (history.length > 100) history.pop();
+      localStorage.setItem('tuktuk_trip_history', JSON.stringify(history));
+    }
+
+    function getStoredHistory() {
+      const saved = localStorage.getItem('tuktuk_trip_history');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          return [];
+        }
+      }
+      return [];
+    }
+
+    function openHistoryModal() {
+      renderHistory();
+      document.getElementById("historyModal").classList.add("show");
+    }
+
+    function closeHistoryModal() {
+      document.getElementById("historyModal").classList.remove("show");
+    }
+
+    function renderHistory() {
+      const history = getStoredHistory();
+      const listContainer = document.getElementById("historyListContainer");
+      listContainer.innerHTML = "";
+
+      const todayStr = new Date().toLocaleDateString();
+      let todayEarnings = 0;
+      let todayCount = 0;
+      let todayKm = 0;
+
+      if (history.length === 0) {
+        listContainer.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px;">ගමන් වාර්තා කිසිවක් නැත</div>`;
+      } else {
+        history.forEach((trip, index) => {
+          if (trip.date === todayStr) {
+            todayEarnings += parseFloat(trip.totalFare) || 0;
+            todayKm += parseFloat(trip.distance) || 0;
+            todayCount++;
+          }
+
+          const item = document.createElement("div");
+          item.className = "history-item";
+          item.innerHTML = `
+            <div class="history-item-left">
+              <div class="history-item-time">#${trip.id} • ${trip.date} (${trip.startTime})</div>
+              <div class="history-item-stats">📍 ${trip.distance} km • ⏳ ${trip.waitingTimeStr} ${trip.isNightFare ? '• 🌙' : ''}</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="history-item-fare">Rs. ${trip.totalFare}</div>
+              <button onclick='viewPastReceipt(${index})' style="background: #1e293b; border: 1px solid #475569; color: #f59e0b; border-radius: 4px; font-size: 0.7rem; padding: 2px 6px; cursor: pointer; margin-top: 3px;">Receipt</button>
+            </div>
+          `;
+          listContainer.appendChild(item);
+        });
+      }
+
+      document.getElementById("histTodayEarnings").innerText = `Rs. ${Math.round(todayEarnings)}`;
+      document.getElementById("histTodayCount").innerText = todayCount;
+      document.getElementById("histTodayKm").innerText = `${todayKm.toFixed(1)} km`;
+    }
+
+    function viewPastReceipt(index) {
+      const history = getStoredHistory();
+      if (history[index]) {
+        currentTripRecord = history[index];
+        closeHistoryModal();
+        openReceiptModal(currentTripRecord);
+      }
+    }
+
+    function clearTripHistory() {
+      if (confirm("ඔබට සියලුම ගමන් වාර්තා (History) මකා දැමීමට අවශ්‍යද?")) {
+        localStorage.removeItem('tuktuk_trip_history');
+        renderHistory();
+        showToast("History මකා දමන ලදී!");
+      }
+    }
+
+    // Modal Toggles
+    function toggleSettingsModal(show) {
+      document.getElementById("settingsModal").classList.toggle("show", show);
+    }
+
+    // ==================== PWA INSTALL LOGIC ====================
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById("pwaInstallBtn");
+      if (installBtn) installBtn.style.display = "inline-flex";
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            document.getElementById("pwaInstallBtn").style.display = "none";
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch((err) => {
+          console.log('ServiceWorker registration error: ', err);
+        });
+      });
+    }
+
+    // Initialize on Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedSettings();
+      initMap();
+    });
+  </script>
+</body>
+</html>

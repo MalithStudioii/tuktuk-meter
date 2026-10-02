@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151d2f"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="amberGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="emeraldGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <!-- Background with rounded squircle -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="98" fill="none" stroke="#f59e0b" stroke-width="8" stroke-opacity="0.8"/>
+  
+  <!-- Outer Gauge Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#1e293b" stroke-width="24"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#amberGlow)" stroke-width="24" stroke-dasharray="850" stroke-dashoffset="300" stroke-linecap="round"/>
+
+  <!-- Tuk Tuk Graphic Silhouette / Symbol -->
+  <g transform="translate(106, 120)">
+    <!-- Cabin Roof -->
+    <path d="M 50 150 C 60 70, 120 40, 200 40 L 250 40 C 270 40, 280 60, 280 80 L 270 170 C 270 190, 250 200, 230 200 L 70 200 C 50 200, 40 180, 50 150 Z" fill="url(#amberGlow)"/>
+    <!-- Windshield -->
+    <path d="M 190 60 L 250 60 C 260 60, 265 70, 260 85 L 245 130 C 240 140, 230 145, 220 145 L 180 145 Z" fill="#090d16" opacity="0.85"/>
+    <!-- Wheels -->
+    <circle cx="85" cy="215" r="38" fill="#334155" stroke="#f59e0b" stroke-width="8"/>
+    <circle cx="85" cy="215" r="14" fill="#f8fafc"/>
+    <circle cx="235" cy="215" r="38" fill="#334155" stroke="#f59e0b" stroke-width="8"/>
+    <circle cx="235" cy="215" r="14" fill="#f8fafc"/>
+    <!-- Headlight beam -->
+    <polygon points="275,130 320,110 320,160" fill="url(#emeraldGlow)" opacity="0.8"/>
+  </g>
+
+  <!-- Speedometer Needle -->
+  <polygon points="256,256 250,140 256,120 262,140" fill="#ef4444"/>
+  <circle cx="256" cy="256" r="18" fill="#ffffff" stroke="#ef4444" stroke-width="6"/>
+
+  <!-- Brand Text -->
+  <text x="256" y="440" font-family="Arial, sans-serif" font-weight="900" font-size="38" fill="#f59e0b" text-anchor="middle" letter-spacing="4">TUKTUK PRO</text>
+</svg>
