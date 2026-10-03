@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuktuk-meter-v4';
+const CACHE_NAME = 'tuktuk-meter-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -38,20 +38,30 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first with cache fallback
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.status === 200 && event.request.method === 'GET') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
-  );
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // App core assets and vendor libraries
+  if (url.origin === self.location.origin || 
+      url.hostname.includes('unpkg.com') || 
+      url.hostname.includes('cdnjs.cloudflare.com')) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          }
+          return networkResponse;
+        });
+      }).catch(() => caches.match(event.request))
+    );
+  } else {
+    // External map tiles and other dynamic network requests - fetch directly from network
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+  }
 });
