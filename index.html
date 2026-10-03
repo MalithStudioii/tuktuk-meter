@@ -1605,11 +1605,10 @@
           attributionControl: false
         }).setView([6.9271, 79.8612], 15);
 
-        // CartoDB Dark Matter tiles - high performance, native dark theme, ultra sharp
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Standard 2D OpenStreetMap - clean, reliable, no API key required
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
-          subdomains: 'abcd',
-          attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+          attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
         routePolyline = L.polyline([], {
