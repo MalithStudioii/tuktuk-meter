@@ -1257,22 +1257,49 @@
       background: #0f172a;
     }
 
-    /* Photo Crop & Zoom Modal */
+    /* Photo Crop & Zoom Modal Overlay */
+    .crop-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 7, 15, 0.95);
+      z-index: 4500;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+      animation: cropFadeIn 0.2s ease-out;
+    }
+    .crop-modal-overlay.show {
+      display: flex;
+    }
+    @keyframes cropFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
     .crop-modal-card {
       background: #0f172a;
       border: 2px solid #f59e0b;
       border-radius: 24px;
-      padding: 20px;
-      max-width: 340px;
+      padding: 18px 14px;
+      max-width: 320px;
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(245, 158, 11, 0.4);
       position: relative;
+      box-sizing: border-box;
+      max-height: 92vh;
+      overflow-y: auto;
     }
     .crop-viewport {
       position: relative;
-      width: 250px;
-      height: 250px;
+      width: 240px;
+      height: 240px;
       margin: 0 auto 12px auto;
       border-radius: 16px;
       overflow: hidden;
@@ -1937,6 +1964,85 @@
         <button class="save-btn" onclick="closePrivacyModal()" style="background: #3b82f6;">තේරුම් ගතිමි (I Agree)</button>
       </div>
     </div>
+
+    <!-- ==================== USER GUIDE / INTRODUCTION MODAL ==================== -->
+    <div id="guideModal" class="modal">
+      <div class="modal-header">
+        <h3 style="color: #f59e0b; display: flex; align-items: center; gap: 6px;">
+          📖 TukTuk Pro භාවිතා කරන ආකාරය (User Guide)
+        </h3>
+        <button class="modal-close-x" onclick="closeGuideModal()">✕</button>
+      </div>
+
+      <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+        ශ්‍රී ලංකාවේ ත්‍රිරෝද රථ සහ කුලී රථ රියදුරු මහත්වරුන් සහ මගීන් සඳහා වන නවීනතම GPS ඩිජිටල් මීටර් පද්ධතියයි.
+      </div>
+
+      <div class="guide-card-list">
+        <div class="guide-item">
+          <div class="guide-item-title">🚀 1. මීටරය ආරම්භ කිරීම සහ අවසන් කිරීම (Start & End Trip)</div>
+          <div class="guide-item-body">
+            • මගියා රථයට නැගි පසු කොළ පැහැති <b>"START TRIP"</b> බොත්තම ඔබන්න.<br>
+            • ගමන අවසානයේ රතු පැහැති <b>"END TRIP"</b> බොත්තම ඔබන්න. එවිට ස්වයංක්‍රීයව සම්පූර්ණ බිල්පත (Receipt) තිරයේ දිස්වේ.<br>
+            • ගමන අතරතුර දුරකථන තිරය නිවී නොයන ලෙස (Wake Lock) ස්වයංක්‍රීයව සක්‍රීය වේ.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">💰 2. ගාස්තු ගණනය වීම (Fare Calculation & Waiting Charge)</div>
+          <div class="guide-item-body">
+            • <span class="guide-highlight">පළමු කිලෝමීටරය:</span> ආරම්භයේදීම මූලික අවම ගාස්තුව (Base Rate - උදා: Rs. 120) සටහන් වේ. මගියා පළමු 1km ඇතුළත ඕනෑම දුරක් ගියද අවම ගාස්තුව අදාළ වේ.<br>
+            • <span class="guide-highlight">ඉදිරි කිලෝමීටර් සඳහා:</span> පළමු 1km පසුවන සෑම කිලෝමීටරයකටම ඔබ නියම කළ අනුපාතය (Next Km Rate - උදා: Rs. 100/km) එකතු වේ.<br>
+            • <span class="guide-highlight">වේටිං ගාස්තු (Waiting Charge):</span> රථය තදබදයක හෝ නවතා ඇති විට (වේගය 2.5 km/h ට අඩු වූ විට) මිනිත්තුවකට නියමිත ගාස්තුව (Waiting per min) ස්වයංක්‍රීයව එකතු වේ.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🌙 3. රාත්‍රී අමතර ගාස්තුව (Night Mode +15%)</div>
+          <div class="guide-item-body">
+            • රාත්‍රී 10:00 සිට අලුයම 5:00 දක්වා ගමන් සඳහා ඉහළ ඇති <b>"🌙 Night Rate"</b> බොත්තම ඔබා රාත්‍රී ගාස්තු සක්‍රීය කළ හැක. මුළු ගාස්තුවට ස්වයංක්‍රීයව +15% ක් එකතු වේ.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🪪 4. ඩිජිටල් රියදුරු හැඳුනුම්පත (Certified Driver ID Card)</div>
+          <div class="guide-item-body">
+            • ඉහළ ඇති <b>"👤 Profile"</b> බොත්තමෙන් ඔබේ නම, රථ අංකය, TukTuk Stand එක සහ ඡායාරූපය ඇතුළත් කරගන්න.<br>
+            • ඔබේ ඡායාරූපය කැමති පරිදි <span class="guide-highlight">Crop & Zoom</span> කර ලස්සනට සකස් කරගත හැක.<br>
+            • එහි ඇති <b>WhatsApp QR</b> එක මගීන්ට Scan කිරීමට දීමෙන් ඔවුන්ට දුරකථන අංක Type නොකර කෙළින්ම ඔබේ WhatsApp වෙත සම්බන්ධ වී ඉදිරි හයර් ලබාගත හැක.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">💳 5. LANKAQR ගෙවීම් ලබාගැනීම (Direct Bank Payment)</div>
+          <div class="guide-item-body">
+            • සැකසුම් (Rates ⚙️) මඟින් ඔබේ බැංකු LANKAQR එක හෝ ගෙවීම් QR ඡායාරූපය ඇතුළත් කරගන්න.<br>
+            • ගමන අවසානයේ බිල්පතේ ඇති <b>"💳 LANKAQR"</b> බොත්තමෙන් මගියාට පෙන්වා, ඕනෑම බැංකු ඇප් එකකින් (Commercial, BOC, Sampath, FriMi, eZ Cash, Genie ආදී) ක්ෂණිකව මුදල් ලබාගත හැක.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🧾 6. බිල්පත් සහ දෛනික ආදායම් වාර්තාව (Receipts & Income Report)</div>
+          <div class="guide-item-body">
+            • එක් එක් ගමන අවසානයේ මගියාගේ WhatsApp වෙත නිල බිල්පත (E-Receipt) යැවිය හැක.<br>
+            • <b>"📋 History"</b> බොත්තමෙන් දවසේ සම්පූර්ණ ගමන් වාර, මුළු ආදායම, මුළු දුර සහ Waiting කාලය සහිත <b>Income Report</b> එකක් Print කිරීමට හෝ WhatsApp Share කිරීමට හැක.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">👑 7. PRO සාමාජිකත්වය සක්‍රීය කිරීම</div>
+          <div class="guide-item-body">
+            • දින 30ක හෝ වාර්ෂික PRO බලපත්‍රය සක්‍රීය කිරීමට ඉහළ ඇති <b>"👑 PRO"</b> බොත්තම ඔබා ඔබේ Device ID එක ලබාගෙන Activation Key එක ලබාගන්න.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="closeGuideModal()" style="background: #f59e0b; color: #0f172a; font-weight: bold; width: 100%;">
+          තේරුම් ගතිමි (Close Guide)
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- App Footer & Trademark Branding -->
@@ -1986,7 +2092,7 @@
 
       <!-- Viewport with circular frame -->
       <div class="crop-viewport" id="cropViewport">
-        <canvas id="cropCanvas" width="280" height="280"></canvas>
+        <canvas id="cropCanvas" width="240" height="240"></canvas>
         <div class="crop-circle-overlay"></div>
       </div>
 
@@ -2006,85 +2112,6 @@
           Cancel
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- ==================== USER GUIDE / INTRODUCTION MODAL ==================== -->
-  <div id="guideModal" class="modal">
-    <div class="modal-header">
-      <h3 style="color: #f59e0b; display: flex; align-items: center; gap: 6px;">
-        📖 TukTuk Pro භාවිතා කරන ආකාරය (User Guide)
-      </h3>
-      <button class="modal-close-x" onclick="closeGuideModal()">✕</button>
-    </div>
-
-    <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
-      ශ්‍රී ලංකාවේ ත්‍රිරෝද රථ සහ කුලී රථ රියදුරු මහත්වරුන් සහ මගීන් සඳහා වන නවීනතම GPS ඩිජිටල් මීටර් පද්ධතියයි.
-    </div>
-
-    <div class="guide-card-list">
-      <div class="guide-item">
-        <div class="guide-item-title">🚀 1. මීටරය ආරම්භ කිරීම සහ අවසන් කිරීම (Start & End Trip)</div>
-        <div class="guide-item-body">
-          • මගියා රථයට නැගි පසු කොළ පැහැති <b>"START TRIP"</b> බොත්තම ඔබන්න.<br>
-          • ගමන අවසානයේ රතු පැහැති <b>"END TRIP"</b> බොත්තම ඔබන්න. එවිට ස්වයංක්‍රීයව සම්පූර්ණ බිල්පත (Receipt) තිරයේ දිස්වේ.<br>
-          • ගමන අතරතුර දුරකථන තිරය නිවී නොයන ලෙස (Wake Lock) ස්වයංක්‍රීයව සක්‍රීය වේ.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">💰 2. ගාස්තු ගණනය වීම (Fare Calculation & Waiting Charge)</div>
-        <div class="guide-item-body">
-          • <span class="guide-highlight">පළමු කිලෝමීටරය:</span> ආරම්භයේදීම මූලික අවම ගාස්තුව (Base Rate - උදා: Rs. 120) සටහන් වේ. මගියා පළමු 1km ඇතුළත ඕනෑම දුරක් ගියද අවම ගාස්තුව අදාළ වේ.<br>
-          • <span class="guide-highlight">ඉදිරි කිලෝමීටර් සඳහා:</span> පළමු 1km පසුවන සෑම කිලෝමීටරයකටම ඔබ නියම කළ අනුපාතය (Next Km Rate - උදා: Rs. 100/km) එකතු වේ.<br>
-          • <span class="guide-highlight">වේටිං ගාස්තු (Waiting Charge):</span> රථය තදබදයක හෝ නවතා ඇති විට (වේගය 2.5 km/h ට අඩු වූ විට) මිනිත්තුවකට නියමිත ගාස්තුව (Waiting per min) ස්වයංක්‍රීයව එකතු වේ.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">🌙 3. රාත්‍රී අමතර ගාස්තුව (Night Mode +15%)</div>
-        <div class="guide-item-body">
-          • රාත්‍රී 10:00 සිට අලුයම 5:00 දක්වා ගමන් සඳහා ඉහළ ඇති <b>"🌙 Night Rate"</b> බොත්තම ඔබා රාත්‍රී ගාස්තු සක්‍රීය කළ හැක. මුළු ගාස්තුවට ස්වයංක්‍රීයව +15% ක් එකතු වේ.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">🪪 4. ඩිජිටල් රියදුරු හැඳුනුම්පත (Certified Driver ID Card)</div>
-        <div class="guide-item-body">
-          • ඉහළ ඇති <b>"👤 Profile"</b> බොත්තමෙන් ඔබේ නම, රථ අංකය, TukTuk Stand එක සහ ඡායාරූපය ඇතුළත් කරගන්න.<br>
-          • ඔබේ ඡායාරූපය කැමති පරිදි <span class="guide-highlight">Crop & Zoom</span> කර ලස්සනට සකස් කරගත හැක.<br>
-          • එහි ඇති <b>WhatsApp QR</b> එක මගීන්ට Scan කිරීමට දීමෙන් ඔවුන්ට දුරකථන අංක Type නොකර කෙළින්ම ඔබේ WhatsApp වෙත සම්බන්ධ වී ඉදිරි හයර් ලබාගත හැක.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">💳 5. LANKAQR ගෙවීම් ලබාගැනීම (Direct Bank Payment)</div>
-        <div class="guide-item-body">
-          • සැකසුම් (Rates ⚙️) මඟින් ඔබේ බැංකු LANKAQR එක හෝ ගෙවීම් QR ඡායාරූපය ඇතුළත් කරගන්න.<br>
-          • ගමන අවසානයේ බිල්පතේ ඇති <b>"💳 LANKAQR"</b> බොත්තමෙන් මගියාට පෙන්වා, ඕනෑම බැංකු ඇප් එකකින් (Commercial, BOC, Sampath, FriMi, eZ Cash, Genie ආදී) ක්ෂණිකව මුදල් ලබාගත හැක.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">🧾 6. බිල්පත් සහ දෛනික ආදායම් වාර්තාව (Receipts & Income Report)</div>
-        <div class="guide-item-body">
-          • එක් එක් ගමන අවසානයේ මගියාගේ WhatsApp වෙත නිල බිල්පත (E-Receipt) යැවිය හැක.<br>
-          • <b>"📋 History"</b> බොත්තමෙන් දවසේ සම්පූර්ණ ගමන් වාර, මුළු ආදායම, මුළු දුර සහ Waiting කාලය සහිත <b>Income Report</b> එකක් Print කිරීමට හෝ WhatsApp Share කිරීමට හැක.
-        </div>
-      </div>
-
-      <div class="guide-item">
-        <div class="guide-item-title">👑 7. PRO සාමාජිකත්වය සක්‍රීය කිරීම</div>
-        <div class="guide-item-body">
-          • දින 30ක හෝ වාර්ෂික PRO බලපත්‍රය සක්‍රීය කිරීමට ඉහළ ඇති <b>"👑 PRO"</b> බොත්තම ඔබා ඔබේ Device ID එක ලබාගෙන Activation Key එක ලබාගන්න.
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-buttons">
-      <button class="save-btn" onclick="closeGuideModal()" style="background: #f59e0b; color: #0f172a; font-weight: bold; width: 100%;">
-        තේරුම් ගතිමි (Close Guide)
-      </button>
     </div>
   </div>
 
@@ -3609,7 +3636,7 @@
       ctx.clip();
 
       // Draw cropped area
-      ctx.translate(outSize / 2 + (cropPanX * (outSize / 280)), outSize / 2 + (cropPanY * (outSize / 280)));
+      ctx.translate(outSize / 2 + (cropPanX * (outSize / 240)), outSize / 2 + (cropPanY * (outSize / 240)));
       ctx.scale(cropZoom, cropZoom);
 
       const aspect = cropImg.width / cropImg.height;
