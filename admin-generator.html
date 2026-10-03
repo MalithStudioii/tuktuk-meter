@@ -429,9 +429,9 @@
     }
 
     function unlockAdmin() {
-      const pin = document.getElementById("adminPinInput").value;
-      const savedPin = localStorage.getItem("tuktuk_admin_pin") || "7788";
-      if (pin === savedPin || pin === "7788" || pin === "1234") {
+      const pin = document.getElementById("adminPinInput").value.trim();
+      const savedPin = localStorage.getItem("tuktuk_admin_pin") || "91101";
+      if (pin === savedPin || pin === "91101") {
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("adminPanel").style.display = "block";
         renderAdminStats();

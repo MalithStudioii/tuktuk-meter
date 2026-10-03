@@ -19,6 +19,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Google Identity Services (GIS) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     * {
@@ -68,20 +70,29 @@
     }
     .header-actions {
       display: flex;
-      gap: 5px;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
     .icon-btn {
       background: #222f46;
       border: 1px solid #334155;
       color: #f8fafc;
-      padding: 5px 8px;
+      padding: 4px 7px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
+    }
+    .header-avatar-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #f59e0b;
     }
     .icon-btn:hover {
       background: #2d3e5e;
@@ -887,15 +898,258 @@
       margin-top: 0;
     }
 
+    /* Driver Profile & ID Card Styles */
+    .id-card-wrapper {
+      background: linear-gradient(145deg, #0b1329, #1e293b);
+      border: 2px solid #f59e0b;
+      border-radius: 16px;
+      padding: 16px;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6), 0 0 15px rgba(245, 158, 11, 0.2);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .id-card-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f59e0b, #10b981, #38bdf8, #f59e0b);
+    }
+    .id-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .id-card-brand {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #f59e0b;
+      letter-spacing: 1px;
+    }
+    .id-card-badge {
+      background: #10b981;
+      color: #0f172a;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .id-card-body {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .id-avatar-box {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      flex-shrink: 0;
+    }
+    .id-avatar-img {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 2.5px solid #f59e0b;
+      object-fit: cover;
+      background: #1e293b;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .id-verified-tick {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #10b981;
+      color: #fff;
+      border: 2px solid #0f172a;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .id-driver-info {
+      flex: 1;
+    }
+    .id-driver-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .id-driver-stand {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+    .id-number-plate {
+      display: inline-block;
+      background: #020617;
+      border: 2px solid #f59e0b;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 2px 10px;
+      border-radius: 6px;
+      margin-top: 6px;
+      letter-spacing: 1.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    .id-details-grid {
+      background: #0c1220;
+      border-radius: 10px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 0.74rem;
+      border: 1px solid #1e293b;
+      margin-bottom: 12px;
+    }
+    .id-detail-item .lbl {
+      color: #64748b;
+      font-size: 0.65rem;
+    }
+    .id-detail-item .val {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+    .id-qr-section {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 10px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .id-qr-box {
+      width: 76px;
+      height: 76px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .id-qr-box img {
+      width: 76px;
+      height: 76px;
+    }
+    .id-qr-info {
+      text-align: left;
+      font-size: 0.75rem;
+    }
+    .id-qr-info .qr-title {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 0.85rem;
+    }
+    .id-qr-info .qr-desc {
+      color: #475569;
+      font-size: 0.68rem;
+      margin-top: 2px;
+    }
+
+    /* Google Sign-in Card */
+    .google-auth-card {
+      background: #0c1220;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .google-btn-custom {
+      background: #ffffff;
+      color: #1f2937;
+      border: 1px solid #d1d5db;
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+      width: 100%;
+      max-width: 280px;
+    }
+    .google-btn-custom:hover {
+      background: #f3f4f6;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .google-account-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1e293b;
+      border: 1px solid #10b981;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .google-account-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .google-account-left img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .google-logout-btn {
+      background: none;
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .photo-upload-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .photo-preview-circle {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: 2px dashed #f59e0b;
+      object-fit: cover;
+      background: #0f172a;
+    }
+
     @media print {
       body * {
         visibility: hidden;
       }
       #receiptPrintArea, #receiptPrintArea *,
-      #incomeReportPrintArea, #incomeReportPrintArea * {
+      #incomeReportPrintArea, #incomeReportPrintArea *,
+      #profilePrintArea, #profilePrintArea * {
         visibility: visible;
       }
-      #receiptPrintArea, #incomeReportPrintArea {
+      #receiptPrintArea, #incomeReportPrintArea, #profilePrintArea {
         position: absolute;
         left: 0;
         top: 0;
@@ -917,6 +1171,10 @@
       </div>
       <div class="header-actions">
         <button class="icon-btn pro-badge-btn" id="headerProBtn" onclick="openProModal()" title="TukTuk Pro සාමාජිකත්වය">👑 PRO</button>
+        <button class="icon-btn" onclick="openProfileModal()" id="headerProfileBtn" title="රියදුරු පැතිකඩ (Driver Profile)">
+          <span id="headerProfileIcon">👤</span>
+          <span id="headerProfileText">Profile</span>
+        </button>
         <button class="icon-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">🗺️ Map</button>
         <button class="icon-btn" onclick="openHistoryModal()" title="ගමන් වාර්තා">📋 History</button>
         <button class="icon-btn" onclick="toggleSettingsModal(true)" title="සැකසුම්">⚙️ Rates</button>
@@ -1066,6 +1324,150 @@
             <div style="font-size: 0.75rem; color: #94a3b8;">ආපසු දිය යුතු ඉතිරි මුදල (Balance):</div>
             <div style="font-size: 1.3rem; font-weight: bold; color: #10b981;" id="balanceDisplay">Rs. 0.00</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== DRIVER PROFILE & DIGITAL ID MODAL ==================== -->
+    <div class="modal" id="profileModal">
+      <div class="modal-header">
+        <h3 id="profileModalTitle">🪪 Driver Profile & ID Card</h3>
+        <button class="modal-close-x" onclick="closeProfileModal()">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabIdCardBtn" onclick="switchProfileTab('card')">🪪 හැඳුනුම්පත (Digital ID)</button>
+        <button class="tab-btn" id="tabEditProfileBtn" onclick="switchProfileTab('edit')">✏️ තොරතුරු සංස්කරණය (Edit)</button>
+      </div>
+
+      <!-- Tab 1: Digital ID Card -->
+      <div id="tabIdCardContent">
+        <div class="id-card-wrapper" id="profilePrintArea">
+          <div class="id-card-shine"></div>
+          
+          <div class="id-card-header">
+            <div class="id-card-brand">🛺 NEXIAPRO™ DRIVER ID CARD</div>
+            <div class="id-card-badge" id="idCardStatusBadge">👑 PRO MEMBER</div>
+          </div>
+
+          <div class="id-card-body">
+            <div class="id-avatar-box">
+              <img id="idCardAvatarImg" class="id-avatar-img" src="icon.svg" alt="Driver Avatar">
+              <div class="id-verified-tick" title="තහවුරු කළ රියදුරු">✓</div>
+            </div>
+            <div class="id-driver-info">
+              <div class="id-driver-name" id="idCardDriverName">Driver</div>
+              <div class="id-driver-stand" id="idCardStandDisplay">📍 Colombo 03 Stand</div>
+              <div class="id-number-plate" id="idCardPlateDisplay">WP AB-1234</div>
+            </div>
+          </div>
+
+          <div class="id-details-grid">
+            <div class="id-detail-item">
+              <div class="lbl">සාමාජික අංකය (Member ID):</div>
+              <div class="val" id="idCardMemberId">NXP-1001</div>
+            </div>
+            <div class="id-detail-item">
+              <div class="lbl">WhatsApp / Phone:</div>
+              <div class="val" id="idCardPhoneDisplay">077 123 4567</div>
+            </div>
+            <div class="id-detail-item">
+              <div class="lbl">සේවා තත්ත්වය (Rating):</div>
+              <div class="val">⭐⭐⭐⭐⭐ 5.0 (Certified)</div>
+            </div>
+            <div class="id-detail-item">
+              <div class="lbl">හදිසි ඇමතුම් (Emergency):</div>
+              <div class="val" id="idCardEmergDisplay">119 / Police</div>
+            </div>
+          </div>
+
+          <!-- Passenger Scan to Hire / Save Contact QR -->
+          <div class="id-qr-section">
+            <div class="id-qr-box" id="driverProfileQrContainer"></div>
+            <div class="id-qr-info">
+              <div class="qr-title">📲 Scan කර WhatsApp Hire එකක් දාන්න</div>
+              <div class="qr-desc">මගීන්ට මෙම QR එක Scan කර රියදුරුගේ WhatsApp එකට කෙළින්ම පණිවිඩයක් එවීමට හෝ අංකය Save කරගත හැක.</div>
+            </div>
+          </div>
+
+          <div style="font-size: 0.65rem; color: #94a3b8; text-align: center;">
+            Official Digital ID Card powered by NexiaPro™ Mobility Services • Sri Lanka
+          </div>
+        </div>
+
+        <button class="share-btn-wa" onclick="shareDriverIdWhatsApp()">
+          <span>📲 WhatsApp එකෙන් ID Card එක Share කරන්න</span>
+        </button>
+        <button class="share-btn-print" onclick="window.print()">
+          <span>🖨️ ID Card එක Print කරන්න</span>
+        </button>
+      </div>
+
+      <!-- Tab 2: Edit Details & Google Auth -->
+      <div id="tabEditProfileContent" style="display: none;">
+        
+        <!-- Google Sign-in Card -->
+        <div class="google-auth-card">
+          <div style="font-size: 0.82rem; font-weight: bold; color: #f59e0b; margin-bottom: 4px;">⚡ 1-Click Google Sign-In</div>
+          <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 10px;">Google ගිණුමෙන් Login වී ඔබේ Photo එක සහ නම එක ක්ලික් එකෙන් ලබාගන්න</div>
+          
+          <div id="googleLoggedOutBox">
+            <button class="google-btn-custom" onclick="triggerGoogleSignIn()">
+              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              <span>Sign in with Google</span>
+            </button>
+            <div id="googleGsiContainer" style="margin-top: 8px; display: flex; justify-content: center;"></div>
+          </div>
+
+          <div id="googleLoggedInBox" class="google-account-badge" style="display: none;">
+            <div class="google-account-left">
+              <img id="googleUserPhoto" src="icon.svg" alt="Google Profile">
+              <div>
+                <div style="font-size: 0.82rem; font-weight: bold; color: #fff;" id="googleUserName">Google User</div>
+                <div style="font-size: 0.68rem; color: #94a3b8;" id="googleUserEmail">user@gmail.com</div>
+              </div>
+            </div>
+            <button class="google-logout-btn" onclick="logoutGoogle()">Sign Out</button>
+          </div>
+        </div>
+
+        <!-- Custom Photo Upload Row -->
+        <div class="photo-upload-row">
+          <img id="editPhotoPreview" class="photo-preview-circle" src="icon.svg" alt="Preview">
+          <div style="text-align: left; flex: 1;">
+            <label style="font-size: 0.78rem; font-weight: bold; color: #cbd5e1; display: block; margin-bottom: 4px;">රියදුරුගේ ඡායාරූපය (Photo):</label>
+            <input type="file" id="driverPhotoFileInput" accept="image/*" onchange="handlePhotoUpload(event)" style="font-size: 0.75rem; color: #94a3b8; width: 100%;">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>රියදුරුගේ සම්පූර්ණ නම (Driver Name):</label>
+          <input type="text" id="profDriverNameInput" placeholder="උදා: කමල් පෙරේරා">
+        </div>
+
+        <div class="input-group">
+          <label>ත්‍රිරෝද රථ අංකය (Vehicle Plate No):</label>
+          <input type="text" id="profVehicleNoInput" placeholder="උදා: WP AB-1234" style="text-transform: uppercase;">
+        </div>
+
+        <div class="input-group">
+          <label>WhatsApp / දුරකථන අංකය (Phone):</label>
+          <input type="tel" id="profPhoneInput" placeholder="උදා: 0771234567" inputmode="numeric">
+        </div>
+
+        <div class="input-group">
+          <label>TukTuk Stand එක / නගරය (Stand / Location):</label>
+          <input type="text" id="profStandInput" placeholder="උදා: කොළඹ 03 / නුගේගොඩ Stand">
+        </div>
+
+        <div class="input-group">
+          <label>හදිසි ඇමතුම් අංකය (Emergency Contact):</label>
+          <input type="tel" id="profEmergInput" placeholder="උදා: 0712345678 හෝ 119">
+        </div>
+
+        <div class="modal-buttons" style="margin-top: 14px;">
+          <button class="cancel-btn" onclick="closeProfileModal()">Cancel</button>
+          <button class="save-btn" onclick="saveDriverProfile()">💾 Save Profile</button>
         </div>
       </div>
     </div>
@@ -2442,6 +2844,307 @@
       window.open(url, '_blank');
     }
 
+    // ==================== DRIVER PROFILE & DIGITAL ID LOGIC ====================
+    let driverProfile = {
+      name: "Kamal Perera",
+      vehicleNo: "WP AB-1234",
+      phone: "0771234567",
+      stand: "Colombo 03 Stand",
+      emergencyPhone: "119 / Police",
+      photoUrl: "",
+      memberId: "NXP-1001",
+      googleEmail: "",
+      googleName: "",
+      isGoogleUser: false
+    };
+
+    let profileQrInstance = null;
+
+    function loadDriverProfile() {
+      const saved = localStorage.getItem('tuktuk_driver_profile');
+      if (saved) {
+        try {
+          driverProfile = { ...driverProfile, ...JSON.parse(saved) };
+        } catch (e) {
+          console.error("Error loading driver profile", e);
+        }
+      } else {
+        if (config.driverName) driverProfile.name = config.driverName;
+        if (config.vehicleNo) driverProfile.vehicleNo = config.vehicleNo;
+        if (config.driverQrInfo) driverProfile.phone = config.driverQrInfo;
+      }
+
+      const devId = getDeviceId();
+      driverProfile.memberId = "NXP-" + (devId.replace(/[^0-9A-Z]/g, '') || "1001").slice(-4);
+
+      updateDriverProfileUI();
+    }
+
+    function updateDriverProfileUI() {
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val || "";
+      };
+      setVal("profDriverNameInput", driverProfile.name);
+      setVal("profVehicleNoInput", driverProfile.vehicleNo);
+      setVal("profPhoneInput", driverProfile.phone);
+      setVal("profStandInput", driverProfile.stand);
+      setVal("profEmergInput", driverProfile.emergencyPhone);
+
+      const avatarSrc = driverProfile.photoUrl || "icon.svg";
+      const cardAvatar = document.getElementById("idCardAvatarImg");
+      const editPreview = document.getElementById("editPhotoPreview");
+      if (cardAvatar) cardAvatar.src = avatarSrc;
+      if (editPreview) editPreview.src = avatarSrc;
+
+      const headerIcon = document.getElementById("headerProfileIcon");
+      if (headerIcon) {
+        if (driverProfile.photoUrl) {
+          headerIcon.innerHTML = `<img src="${driverProfile.photoUrl}" class="header-avatar-thumb" alt="Avatar">`;
+        } else {
+          headerIcon.innerText = "👤";
+        }
+      }
+
+      const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = txt;
+      };
+      setText("idCardDriverName", driverProfile.name || "Driver");
+      setText("idCardStandDisplay", "📍 " + (driverProfile.stand || "Stand / City"));
+      setText("idCardPlateDisplay", driverProfile.vehicleNo || "WP AB-1234");
+      setText("idCardMemberId", driverProfile.memberId || "NXP-1001");
+      setText("idCardPhoneDisplay", driverProfile.phone || "077 123 4567");
+      setText("idCardEmergDisplay", driverProfile.emergencyPhone || "119 / Police");
+
+      const pro = getProStatus();
+      const idBadge = document.getElementById("idCardStatusBadge");
+      if (idBadge) {
+        if (pro.isPro) {
+          idBadge.innerText = "👑 PRO MEMBER";
+          idBadge.style.background = "#10b981";
+          idBadge.style.color = "#0f172a";
+        } else {
+          idBadge.innerText = "STANDARD DRIVER";
+          idBadge.style.background = "#334155";
+          idBadge.style.color = "#cbd5e1";
+        }
+      }
+
+      const loggedOutBox = document.getElementById("googleLoggedOutBox");
+      const loggedInBox = document.getElementById("googleLoggedInBox");
+      if (driverProfile.isGoogleUser) {
+        if (loggedOutBox) loggedOutBox.style.display = "none";
+        if (loggedInBox) loggedInBox.style.display = "flex";
+        setText("googleUserName", driverProfile.googleName || driverProfile.name);
+        setText("googleUserEmail", driverProfile.googleEmail);
+        const gPhoto = document.getElementById("googleUserPhoto");
+        if (gPhoto) gPhoto.src = driverProfile.photoUrl || "icon.svg";
+      } else {
+        if (loggedOutBox) loggedOutBox.style.display = "block";
+        if (loggedInBox) loggedInBox.style.display = "none";
+      }
+
+      renderProfileQr();
+    }
+
+    function renderProfileQr() {
+      const container = document.getElementById("driverProfileQrContainer");
+      if (!container || typeof QRCode === 'undefined') return;
+      container.innerHTML = "";
+
+      const phoneDigits = (driverProfile.phone || "").replace(/[^0-9]/g, '');
+      const intlPhone = phoneDigits.startsWith("0") ? "94" + phoneDigits.slice(1) : phoneDigits;
+      const waText = encodeURIComponent(`Hi ${driverProfile.name}, I would like to book a TukTuk hire (Vehicle: ${driverProfile.vehicleNo}).`);
+      const qrData = intlPhone ? `https://wa.me/${intlPhone}?text=${waText}` : `TEL:${driverProfile.phone}`;
+
+      try {
+        profileQrInstance = new QRCode(container, {
+          text: qrData,
+          width: 76,
+          height: 76,
+          colorDark: "#0f172a",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (err) {
+        console.warn("Profile QR generation error:", err);
+      }
+    }
+
+    function openProfileModal() {
+      loadDriverProfile();
+      switchProfileTab('card');
+      document.getElementById("profileModal").classList.add("show");
+    }
+
+    function closeProfileModal() {
+      document.getElementById("profileModal").classList.remove("show");
+    }
+
+    function switchProfileTab(tab) {
+      const cardBtn = document.getElementById("tabIdCardBtn");
+      const editBtn = document.getElementById("tabEditProfileBtn");
+      const cardContent = document.getElementById("tabIdCardContent");
+      const editContent = document.getElementById("tabEditProfileContent");
+
+      if (tab === 'card') {
+        if (cardBtn) cardBtn.classList.add("active");
+        if (editBtn) editBtn.classList.remove("active");
+        if (cardContent) cardContent.style.display = "block";
+        if (editContent) editContent.style.display = "none";
+        renderProfileQr();
+      } else {
+        if (cardBtn) cardBtn.classList.remove("active");
+        if (editBtn) editBtn.classList.add("active");
+        if (cardContent) cardContent.style.display = "none";
+        if (editContent) editContent.style.display = "block";
+      }
+    }
+
+    function handlePhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        alert("ඡායාරූපයේ ප්‍රමාණය 2MB ට වඩා අඩු විය යුතුය.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        driverProfile.photoUrl = e.target.result;
+        const preview = document.getElementById("editPhotoPreview");
+        if (preview) preview.src = driverProfile.photoUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveDriverProfile() {
+      const getVal = (id, fallback) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : fallback;
+      };
+
+      driverProfile.name = getVal("profDriverNameInput", driverProfile.name || "Driver");
+      driverProfile.vehicleNo = getVal("profVehicleNoInput", driverProfile.vehicleNo || "WP AB-1234").toUpperCase();
+      driverProfile.phone = getVal("profPhoneInput", driverProfile.phone || "0771234567");
+      driverProfile.stand = getVal("profStandInput", driverProfile.stand || "Colombo Stand");
+      driverProfile.emergencyPhone = getVal("profEmergInput", driverProfile.emergencyPhone || "119 / Police");
+
+      // Sync with Meter global config & receipt settings
+      config.driverName = driverProfile.name;
+      config.vehicleNo = driverProfile.vehicleNo;
+      config.driverQrInfo = driverProfile.phone;
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+
+      // Save Profile
+      localStorage.setItem('tuktuk_driver_profile', JSON.stringify(driverProfile));
+
+      updateDriverProfileUI();
+      switchProfileTab('card');
+      showToast("Profile එක සාර්ථකව Save විය! ✅");
+    }
+
+    function shareDriverIdWhatsApp() {
+      const msg = 
+`🛺 *NEXIAPRO™ CERTIFIED DRIVER ID CARD*
+━━━━━━━━━━━━━━━━━━
+👤 *රියදුරුගේ නම:* ${driverProfile.name}
+🔢 *රථ අංකය:* ${driverProfile.vehicleNo}
+📍 *TukTuk Stand:* ${driverProfile.stand}
+📞 *දුරකථන / WhatsApp:* ${driverProfile.phone}
+🆔 *සාමාජික අංකය:* ${driverProfile.memberId}
+⭐ *සේවා තත්ත්වය:* ⭐⭐⭐⭐⭐ 5.0 (Certified)
+━━━━━━━━━━━━━━━━━━
+මගී ඔබගේ සුරක්ෂිත, විශ්වාසනීය සහ සාධාරණ මීටර් ගමන් සඳහා අප අමතන්න! 🙏
+📲 Live Meter App: https://tuktuk-meter.vercel.app`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    // ==================== GOOGLE SIGN-IN LOGIC ====================
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        console.error("JWT Decode error:", e);
+        return null;
+      }
+    }
+
+    function handleGoogleLoginResponse(response) {
+      if (!response || !response.credential) return;
+      const data = parseJwt(response.credential);
+      if (data) {
+        driverProfile.name = data.name || driverProfile.name;
+        driverProfile.googleName = data.name;
+        driverProfile.googleEmail = data.email;
+        driverProfile.photoUrl = data.picture || driverProfile.photoUrl;
+        driverProfile.isGoogleUser = true;
+
+        config.driverName = driverProfile.name;
+        localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+        localStorage.setItem('tuktuk_driver_profile', JSON.stringify(driverProfile));
+
+        updateDriverProfileUI();
+        showToast(`Google Login සාර්ථකයි! සාදරයෙන් පිළිගනිමු, ${data.name}! 🎉`);
+      }
+    }
+
+    function triggerGoogleSignIn() {
+      if (window.google && google.accounts && google.accounts.id) {
+        try {
+          google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+              handlePromptGoogleEmail();
+            }
+          });
+        } catch (e) {
+          handlePromptGoogleEmail();
+        }
+      } else {
+        handlePromptGoogleEmail();
+      }
+    }
+
+    function handlePromptGoogleEmail() {
+      const email = prompt("ඔබගේ Google Email ලිපිනය ඇතුළත් කරන්න (උදා: driver@gmail.com):", driverProfile.googleEmail || "");
+      if (email && email.includes("@")) {
+        const defaultName = email.split("@")[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const name = prompt("ඔබගේ සම්පූර්ණ නම තහවුරු කරන්න:", driverProfile.name !== "Driver" ? driverProfile.name : defaultName) || defaultName;
+        driverProfile.name = name;
+        driverProfile.googleName = name;
+        driverProfile.googleEmail = email;
+        driverProfile.isGoogleUser = true;
+        if (!driverProfile.photoUrl) {
+          driverProfile.photoUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`;
+        }
+        config.driverName = name;
+        localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+        localStorage.setItem('tuktuk_driver_profile', JSON.stringify(driverProfile));
+        updateDriverProfileUI();
+        showToast("Google ගිණුම සාර්ථකව සම්බන්ධ විය! ✅");
+      }
+    }
+
+    function logoutGoogle() {
+      if (confirm("ඔබට Google ගිණුමෙන් ඉවත් වීමට (Sign Out) අවශ්‍යද?")) {
+        driverProfile.isGoogleUser = false;
+        driverProfile.googleEmail = "";
+        driverProfile.googleName = "";
+        localStorage.setItem('tuktuk_driver_profile', JSON.stringify(driverProfile));
+        updateDriverProfileUI();
+        showToast("Google ගිණුමෙන් ඉවත් විය.");
+      }
+    }
+
     // ==================== PRIVACY MODAL LOGIC ====================
     function openPrivacyModal() {
       document.getElementById("privacyModal").classList.add("show");
@@ -2484,6 +3187,7 @@
     // Initialize on Page Load
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedSettings();
+      loadDriverProfile();
       initMap();
       getDeviceId();
       updateProUI();
