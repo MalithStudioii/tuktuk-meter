@@ -1029,13 +1029,22 @@
     }
     .id-qr-section {
       background: #ffffff;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 10px;
       color: #0f172a;
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .id-qr-section:hover, .id-qr-section:active {
+      transform: scale(1.02);
+      border-color: #f59e0b;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
     .id-qr-box {
       width: 76px;
@@ -1044,10 +1053,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     .id-qr-box img {
       width: 76px;
       height: 76px;
+    }
+    .id-qr-zoom-hint {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: #f59e0b;
+      color: #0f172a;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 900;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     .id-qr-info {
       text-align: left;
@@ -1057,11 +1083,102 @@
       font-weight: 800;
       color: #0f172a;
       font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     .id-qr-info .qr-desc {
       color: #475569;
       font-size: 0.68rem;
       margin-top: 2px;
+    }
+
+    /* Full Screen QR Modal */
+    .fs-qr-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 7, 15, 0.95);
+      z-index: 3500;
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fsQrFadeIn 0.25s ease-out;
+    }
+    .fs-qr-overlay.show {
+      display: flex;
+    }
+    @keyframes fsQrFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .fs-qr-card {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(245, 158, 11, 0.5);
+      border: 3px solid #f59e0b;
+      position: relative;
+    }
+    .fs-qr-close-btn {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .fs-qr-close-btn:hover {
+      background: #e2e8f0;
+      color: #ef4444;
+    }
+    .fs-qr-plate {
+      display: inline-block;
+      background: #020617;
+      color: #fff;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      padding: 4px 14px;
+      border-radius: 6px;
+      margin: 6px 0 14px 0;
+      letter-spacing: 2px;
+      border: 1px solid #475569;
+    }
+    .fs-qr-image-box {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px auto;
+      width: 250px;
+      height: 250px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .fs-qr-image-box img {
+      width: 240px !important;
+      height: 240px !important;
     }
 
     /* Google Sign-in Card */
@@ -1301,11 +1418,12 @@
 
       <!-- Tab 2: LANKAQR & Cash Calc -->
       <div id="tabPaymentContent" style="display: none;">
-        <div class="qr-box">
+        <div class="qr-box" onclick="openFullscreenQr('payment')" style="cursor: pointer;" title="ලොකු කර බැලීමට Click කරන්න (Full Screen)">
           <div style="font-size: 0.85rem; color: #f59e0b; font-weight: 600;">LANKAQR / Digital Pay</div>
           <div style="font-size: 0.75rem; color: #94a3b8;">ඕනෑම Banking App එකකින් Scan කර ගෙවන්න</div>
           <div id="qrcode"></div>
           <div style="font-size: 1.15rem; font-weight: bold; color: #10b981;" id="qrAmountDisplay">Rs. 0.00</div>
+          <div style="font-size: 0.7rem; color: #f59e0b; font-weight: bold; margin-top: 4px;">🔍 Click කර Full Screen කරන්න</div>
         </div>
 
         <!-- Cash Calculator -->
@@ -1382,11 +1500,16 @@
           </div>
 
           <!-- Passenger Scan to Hire / Save Contact QR -->
-          <div class="id-qr-section">
-            <div class="id-qr-box" id="driverProfileQrContainer"></div>
+          <div class="id-qr-section" onclick="openFullscreenQr('profile')" title="ලොකු කර බැලීමට Click කරන්න (Full Screen Zoom)">
+            <div class="id-qr-box">
+              <div id="driverProfileQrContainer"></div>
+              <span class="id-qr-zoom-hint" title="Full Screen">🔍</span>
+            </div>
             <div class="id-qr-info">
-              <div class="qr-title">📲 Scan කර WhatsApp Hire එකක් දාන්න</div>
-              <div class="qr-desc">මගීන්ට මෙම QR එක Scan කර රියදුරුගේ WhatsApp එකට කෙළින්ම පණිවිඩයක් එවීමට හෝ අංකය Save කරගත හැක.</div>
+              <div class="qr-title">
+                <span>📲 Scan කර WhatsApp Hire එකක් දාන්න</span>
+              </div>
+              <div class="qr-desc">මගීන්ට මෙම QR එක Scan කර WhatsApp වෙත කෙළින්ම සම්බන්ධ විය හැක. <br><b style="color: #f59e0b; display: inline-flex; align-items: center; gap: 3px; margin-top: 3px;">🔍 Click කර Full Screen කරන්න</b></div>
             </div>
           </div>
 
@@ -1727,7 +1850,24 @@
     </div>
   </div>
 
-
+  <!-- ==================== FULLSCREEN QR MODAL ==================== -->
+  <div id="fullscreenQrModal" class="fs-qr-overlay" onclick="closeFullscreenQr(event)">
+    <div class="fs-qr-card" onclick="event.stopPropagation()">
+      <button class="fs-qr-close-btn" onclick="closeFullscreenQr()">✕</button>
+      <div style="font-size: 0.72rem; font-weight: 800; color: #f59e0b; letter-spacing: 1px;">🛺 TUK TUK PRO • SCAN TO CONNECT</div>
+      <h3 style="margin: 4px 0 2px 0; color: #0f172a; font-size: 1.25rem;" id="fsQrTitle">Driver</h3>
+      <div class="fs-qr-plate" id="fsQrPlate">WP AB-1234</div>
+      
+      <div class="fs-qr-image-box" id="fsQrContainer"></div>
+      
+      <div style="font-size: 0.85rem; font-weight: 700; color: #10b981;" id="fsQrSub">📲 ඕනෑම කැමරාවකින් Scan කරන්න</div>
+      <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;" id="fsQrDesc">දුර සිටත් මගීන්ට පහසුවෙන් Scan කරගත හැක.</div>
+      
+      <button class="primary-btn" onclick="closeFullscreenQr()" style="margin-top: 14px; background: #0f172a; color: #fff; padding: 10px; font-size: 0.85rem; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer;">
+        ✕ Close (වසා දමන්න)
+      </button>
+    </div>
+  </div>
 
   <script>
     // Audio Context for Beeps & Overspeed Alarm
@@ -2970,6 +3110,65 @@
       } catch (err) {
         console.warn("Profile QR generation error:", err);
       }
+    }
+
+    // ==================== FULLSCREEN QR LOGIC ====================
+    let fsQrInstance = null;
+
+    function openFullscreenQr(type) {
+      const modal = document.getElementById("fullscreenQrModal");
+      const container = document.getElementById("fsQrContainer");
+      const titleEl = document.getElementById("fsQrTitle");
+      const plateEl = document.getElementById("fsQrPlate");
+      const subEl = document.getElementById("fsQrSub");
+      const descEl = document.getElementById("fsQrDesc");
+
+      if (!container || typeof QRCode === 'undefined') return;
+      container.innerHTML = "";
+
+      let qrData = "";
+
+      if (type === 'payment' && currentTripRecord) {
+        titleEl.innerText = "LANKAQR Digital Payment";
+        plateEl.innerText = `Rs. ${currentTripRecord.totalFare}`;
+        subEl.innerText = "💳 Banking App එකෙන් Scan කර ගෙවන්න";
+        descEl.innerText = `Driver: ${currentTripRecord.driverName} | Ref: #${currentTripRecord.id}`;
+        qrData = `LANKAQR:${currentTripRecord.driverQrInfo || "TUKTUKPRO"};AMT:${currentTripRecord.totalFare};REF:${currentTripRecord.id}`;
+      } else {
+        titleEl.innerText = driverProfile.name || "Driver";
+        plateEl.innerText = driverProfile.vehicleNo || "WP AB-1234";
+        subEl.innerText = "📲 Scan කර WhatsApp Hire එකක් දාන්න";
+        descEl.innerText = `TukTuk Stand: ${driverProfile.stand || "City Stand"} | Phone: ${driverProfile.phone}`;
+
+        const phoneDigits = (driverProfile.phone || "").replace(/[^0-9]/g, '');
+        const intlPhone = phoneDigits.startsWith("0") ? "94" + phoneDigits.slice(1) : phoneDigits;
+        const waText = encodeURIComponent(`Hi ${driverProfile.name}, I would like to book a TukTuk hire (Vehicle: ${driverProfile.vehicleNo}).`);
+        qrData = intlPhone ? `https://wa.me/${intlPhone}?text=${waText}` : `TEL:${driverProfile.phone}`;
+      }
+
+      try {
+        fsQrInstance = new QRCode(container, {
+          text: qrData,
+          width: 240,
+          height: 240,
+          colorDark: "#0f172a",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (err) {
+        console.warn("Fullscreen QR generation error:", err);
+      }
+
+      playBeep('start');
+      modal.classList.add("show");
+    }
+
+    function closeFullscreenQr(event) {
+      if (event && event.target && event.target.closest('.fs-qr-card') && !event.target.classList.contains('fs-qr-close-btn') && event.target.tagName !== 'BUTTON') {
+        return;
+      }
+      const modal = document.getElementById("fullscreenQrModal");
+      if (modal) modal.classList.remove("show");
     }
 
     function openProfileModal() {
