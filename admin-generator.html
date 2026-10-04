@@ -773,20 +773,33 @@ Output strictly valid JSON with this schema:
           if (listResp.ok) {
             const listData = await listResp.json();
             if (listData.models && Array.isArray(listData.models)) {
-              const capable = listData.models.filter(m => 
-                m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
-              ).map(m => m.name.replace(/^models\//, ''));
+              const capable = listData.models.filter(m => {
+                const name = (m.name || '').toLowerCase();
+                const methods = m.supportedGenerationMethods || [];
+                if (!methods.includes("generateContent")) return false;
+                // Strictly exclude models that do not support vision/image input (like TTS, Audio, Embeddings)
+                if (name.includes('tts') || name.includes('audio') || name.includes('embed') || name.includes('imagen') || name.includes('text-embedding') || name.includes('realtime') || name.includes('live') || name.includes('voice')) return false;
+                return true;
+              }).map(m => m.name.replace(/^models\//, ''));
 
-              // Sort with preference: flash models first, then others
+              // Sort with preference: pure multimodal flash models first, then pro, then others
               capable.sort((a, b) => {
-                const aFlash = a.includes('flash') ? 1 : 0;
-                const bFlash = b.includes('flash') ? 1 : 0;
-                return bFlash - aFlash;
+                const aName = a.toLowerCase();
+                const bName = b.toLowerCase();
+                const score = (n) => {
+                  if (n === 'gemini-2.0-flash' || n === 'gemini-2.5-flash') return 100;
+                  if (n.startsWith('gemini-2') && n.includes('flash')) return 90;
+                  if (n.includes('flash') && !n.includes('lite')) return 80;
+                  if (n.includes('flash-lite')) return 70;
+                  if (n.includes('pro')) return 60;
+                  return 10;
+                };
+                return score(bName) - score(aName);
               });
 
               if (capable.length > 0) {
                 targetModels = capable;
-                console.log("Discovered available Gemini models:", targetModels);
+                console.log("Discovered available vision Gemini models:", targetModels);
               }
             }
           } else {
@@ -804,11 +817,11 @@ Output strictly valid JSON with this schema:
         // Fallback list if discovery didn't find models
         if (targetModels.length === 0) {
           targetModels = [
-            'gemini-2.5-flash',
             'gemini-2.0-flash',
+            'gemini-2.5-flash',
             'gemini-2.5-flash-lite',
-            'gemini-1.5-flash-8b',
-            'gemini-1.5-pro'
+            'gemini-1.5-pro',
+            'gemini-1.5-flash-8b'
           ];
         }
 
@@ -828,16 +841,20 @@ Output strictly valid JSON with this schema:
               data = await resp.json();
               console.log(`Gemini analysis succeeded using model: ${model}`);
               break;
-            } else if (resp.status === 404) {
-              console.warn(`Model ${model} returned 404, trying next...`);
-              continue;
             } else {
               const errText = await resp.text();
-              throw new Error(`Gemini API Error (${resp.status}): ${errText}`);
+              console.warn(`Model ${model} failed (${resp.status}):`, errText);
+              lastError = new Error(`Gemini model ${model} failed (${resp.status}): ${errText}`);
+              // If status 404 (not found) or 400 (modality/TTS not supported) or 429, try next model!
+              if (resp.status === 404 || resp.status === 400 || resp.status === 429) {
+                continue;
+              } else {
+                throw lastError;
+              }
             }
           } catch (e) {
             lastError = e;
-            if (e.message && (e.message.includes('404') || e.message.includes('not found') || e.message.includes('NOT_FOUND'))) {
+            if (e.message && (e.message.includes('404') || e.message.includes('400') || e.message.includes('429') || e.message.includes('modality') || e.message.includes('not found') || e.message.includes('NOT_FOUND'))) {
               continue;
             }
             throw e;
