@@ -1,9 +1,12 @@
-const CACHE_NAME = 'tuktuk-meter-v18';
+const CACHE_NAME = 'tuktuk-meter-v19';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './icon.svg',
+  './icon-512.png',
+  './icon-192.png',
+  './icon.png',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
