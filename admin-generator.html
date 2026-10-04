@@ -765,6 +765,15 @@ Output strictly valid JSON with this schema:
           }
         };
 
+        const baseCandidateModels = [
+          'gemini-2.0-flash',
+          'gemini-2.5-flash',
+          'gemini-2.5-flash-lite',
+          'gemini-1.5-pro',
+          'gemini-1.5-flash-8b',
+          'gemini-flash-latest'
+        ];
+
         // Dynamic Model Discovery: Ask Google which models support generateContent for this key
         let targetModels = [];
         try {
@@ -782,24 +791,29 @@ Output strictly valid JSON with this schema:
                 return true;
               }).map(m => m.name.replace(/^models\//, ''));
 
-              // Sort with preference: pure multimodal flash models first, then pro, then others
-              capable.sort((a, b) => {
-                const aName = a.toLowerCase();
-                const bName = b.toLowerCase();
-                const score = (n) => {
-                  if (n === 'gemini-2.0-flash' || n === 'gemini-2.5-flash') return 100;
-                  if (n.startsWith('gemini-2') && n.includes('flash')) return 90;
-                  if (n.includes('flash') && !n.includes('lite')) return 80;
-                  if (n.includes('flash-lite')) return 70;
-                  if (n.includes('pro')) return 60;
+              const combined = Array.from(new Set([...baseCandidateModels, ...capable]));
+
+              // Sort with preference: pure multimodal flash models first, then pro, flash-latest towards the end
+              combined.sort((a, b) => {
+                const score = (name) => {
+                  const n = name.toLowerCase();
+                  if (n === 'gemini-2.0-flash' || n === 'gemini-2.0-flash-001') return 120;
+                  if (n === 'gemini-2.5-flash') return 115;
+                  if (n === 'gemini-2.5-flash-lite') return 110;
+                  if (n.startsWith('gemini-2') && n.includes('flash')) return 100;
+                  if (n.includes('1.5-pro') || n.includes('2.5-pro') || n === 'gemini-pro') return 90;
+                  if (n.includes('flash-8b')) return 80;
+                  if (n.includes('pro')) return 70;
+                  if (n === 'gemini-flash-latest' || n === 'gemini-1.5-flash') return 30; // lower score due to high demand (503)
+                  if (n.includes('flash')) return 40;
                   return 10;
                 };
-                return score(bName) - score(aName);
+                return score(b) - score(a);
               });
 
-              if (capable.length > 0) {
-                targetModels = capable;
-                console.log("Discovered available vision Gemini models:", targetModels);
+              if (combined.length > 0) {
+                targetModels = combined;
+                console.log("Prioritized vision Gemini models:", targetModels);
               }
             }
           } else {
@@ -811,18 +825,12 @@ Output strictly valid JSON with this schema:
           }
         } catch (e) {
           if (e.message && e.message.includes("Invalid API Key")) throw e;
-          console.warn("Dynamic discovery error, using default list:", e);
+          console.warn("Dynamic discovery error, using base candidate models:", e);
         }
 
         // Fallback list if discovery didn't find models
         if (targetModels.length === 0) {
-          targetModels = [
-            'gemini-2.0-flash',
-            'gemini-2.5-flash',
-            'gemini-2.5-flash-lite',
-            'gemini-1.5-pro',
-            'gemini-1.5-flash-8b'
-          ];
+          targetModels = baseCandidateModels;
         }
 
         let data = null;
@@ -830,6 +838,7 @@ Output strictly valid JSON with this schema:
 
         for (const model of targetModels) {
           try {
+            console.log(`Trying Gemini model: ${model}...`);
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`;
             const resp = await fetch(apiUrl, {
               method: "POST",
@@ -845,19 +854,22 @@ Output strictly valid JSON with this schema:
               const errText = await resp.text();
               console.warn(`Model ${model} failed (${resp.status}):`, errText);
               lastError = new Error(`Gemini model ${model} failed (${resp.status}): ${errText}`);
-              // If status 404 (not found) or 400 (modality/TTS not supported) or 429, try next model!
-              if (resp.status === 404 || resp.status === 400 || resp.status === 429) {
-                continue;
-              } else {
-                throw lastError;
+              
+              // If API Key is explicitly invalid, stop immediately
+              if (resp.status === 401 || (resp.status === 403 && (errText.includes("API_KEY") || errText.includes("PERMISSION_DENIED")))) {
+                throw new Error("API Key එක වැරදියි හෝ අක්‍රීයයි (Invalid API Key). කරුණාකර නිවැරදි Google AI Studio Key එක ඇතුළත් කරන්න.");
               }
+              
+              // For all temporary or model-specific errors (503 High Demand, 429 Quota, 404 Not Found, 400 Modality, 500/502/504 Server Error), try next model!
+              continue;
             }
           } catch (e) {
             lastError = e;
-            if (e.message && (e.message.includes('404') || e.message.includes('400') || e.message.includes('429') || e.message.includes('modality') || e.message.includes('not found') || e.message.includes('NOT_FOUND'))) {
-              continue;
+            if (e.message && e.message.includes("Invalid API Key")) {
+              throw e;
             }
-            throw e;
+            console.warn(`Error with model ${model}, trying next candidate:`, e.message || e);
+            continue;
           }
         }
 
