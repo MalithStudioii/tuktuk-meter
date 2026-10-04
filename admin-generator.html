@@ -1466,12 +1466,25 @@ Output strictly valid JSON with this schema:
       if (btnDisc) btnDisc.style.display = connected ? "inline-block" : "none";
     }
 
-    function initFirebase() {
-      const savedConfigStr = localStorage.getItem("tuktuk_admin_firebase_config");
-      const input = document.getElementById("firebaseConfigInput");
-      if (input && savedConfigStr) input.value = savedConfigStr;
+    const DEFAULT_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyB_xW7qOEkWgnNHvatmuYm1NhIRNBmXhso",
+      authDomain: "tuktuk-meter-admin26.firebaseapp.com",
+      projectId: "tuktuk-meter-admin26",
+      storageBucket: "tuktuk-meter-admin26.firebasestorage.app",
+      messagingSenderId: "135967924402",
+      appId: "1:135967924402:web:a2617264ad435113d229ab"
+    };
 
+    function initFirebase() {
+      let savedConfigStr = localStorage.getItem("tuktuk_admin_firebase_config");
       if (!savedConfigStr) {
+        savedConfigStr = JSON.stringify(DEFAULT_FIREBASE_CONFIG, null, 2);
+        localStorage.setItem("tuktuk_admin_firebase_config", savedConfigStr);
+      }
+      const input = document.getElementById("firebaseConfigInput");
+      if (input && savedConfigStr && savedConfigStr !== "DISCONNECTED") input.value = savedConfigStr;
+
+      if (!savedConfigStr || savedConfigStr === "DISCONNECTED") {
         updateFirebaseStatusUI(false, "Offline Mode (Local Storage Only)");
         return;
       }
@@ -1618,7 +1631,7 @@ Output strictly valid JSON with this schema:
     function disconnectFirebase() {
       if (!confirm("Firebase Cloud සම්බන්ධතාවය විසන්ධි කිරීමට අවශ්‍යද?\n(ඔබගේ දත්ත මැකී නොයන අතර නැවත Connect කළ හැක)")) return;
       if (firestoreUnsubscribe) firestoreUnsubscribe();
-      localStorage.removeItem("tuktuk_admin_firebase_config");
+      localStorage.setItem("tuktuk_admin_firebase_config", "DISCONNECTED");
       isFirebaseActive = false;
       firestoreDb = null;
       updateFirebaseStatusUI(false, "Offline Mode (Local Storage Only)");
