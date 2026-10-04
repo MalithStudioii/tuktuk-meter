@@ -1849,6 +1849,24 @@
     .tools-stat-card .lbl { font-size: 0.7rem; color: #94a3b8; }
     .tools-stat-card .val { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-top: 2px; }
 
+    .chip-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .chip-btn:hover, .chip-btn:active {
+      background: #334155;
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
     @media print {
       body * {
         visibility: hidden;
@@ -1932,13 +1950,17 @@
         <span id="voicePillIcon">🔊</span>
         <span id="voicePillText">Voice: SI</span>
       </button>
+      <button class="feature-pill" onclick="openDriverToolsModal('quote')" id="quotePillBtn" title="ගමනට පෙර මගී ගාස්තු ඇස්තමේන්තුව (Fare Estimator)">
+        <span>🧮</span>
+        <span>Quote</span>
+      </button>
       <button class="feature-pill" id="hudTogglePill" onclick="toggleHudMode()" title="Windscreen එකට පෙනෙන Head-Up Display">
         <span>🪟</span>
-        <span>HUD Mode</span>
+        <span>HUD</span>
       </button>
       <button class="feature-pill" onclick="openDriverToolsModal()" id="toolsPillBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">
         <span>🧰</span>
-        <span>Pro Tools</span>
+        <span>Tools</span>
       </button>
       <button class="feature-pill install-pill" id="pwaInstallBtn" onclick="installPWA()">
         📥 Install
@@ -2380,6 +2402,7 @@
         <div class="pro-feature-item"><span>🎯</span> <span><b>Daily Target Tracker</b> (දෛනික ආදායම් ඉලක්කය)</span></div>
         <div class="pro-feature-item"><span>📄</span> <span><b>Bank / Leasing Income Certificate</b> (ණය සඳහා ආදායම් සහතික වාර්තාව)</span></div>
         <div class="pro-feature-item"><span>💳</span> <span><b>LankaQR & Custom WhatsApp Receipt</b> (ඔන්ලයින් ගෙවීම් බිල්පත)</span></div>
+        <div class="pro-feature-item"><span>🧮</span> <span><b>Pre-Trip Fare Estimator & Quote</b> (ගමනට පෙර මගී ගාස්තු ඇස්තමේන්තුව & WhatsApp Quote)</span></div>
         <div class="pro-feature-item"><span>🚀</span> <span><b>අසීමිත ගමන් වාර්තා</b> (Unlimited Lifetime History)</span></div>
       </div>
 
@@ -2644,6 +2667,15 @@
             <a href="mailto:supportnexiapro@gmail.com?subject=TukTuk%20Pro%20Support%20Inquiry" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: underline; display: inline-block; margin-top: 5px;">✉️ supportnexiapro@gmail.com</a>
           </div>
         </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🧮 14. Pre-Trip Fare Estimator & Quote (ගමනට පෙර ගාස්තු ඇස්තමේන්තුව)</div>
+          <div class="guide-item-body">
+            • මගියෙකු ගමන ආරම්භ කිරීමට පෙර ගාස්තුව ඇසූ විට Quick Bar හි <b>"🧮 Quote"</b> බොත්තම ඔබන්න.<br>
+            • ගමන් දුර (උදා: 7 km) ලබාදුන් සැනින් නිවැරදි මීටර් ගාස්තුව ගණනය කර පෙන්වයි. අවශ්‍ය නම් මගියාගේ WhatsApp එකට නිල Quote පණිවිඩයක් යැවිය හැක.<br>
+            • <b>වැදගත්:</b> මෙම ඇස්තමේන්තුව ධාවන දුර සඳහා පමණක් වන අතර, මගියා අතරමග නැවතීම් කළහොත් Waiting ගාස්තු එකතු වන බව නිල සටහනක් මඟින් මගියාට පැහැදිලිවම දන්වනු ලැබේ.
+          </div>
+        </div>
       </div>
 
       <div class="modal-buttons" style="display: flex; flex-direction: column; gap: 8px;">
@@ -2699,11 +2731,12 @@
         <button class="modal-close-x" onclick="closeDriverToolsModal()">✕</button>
       </div>
 
-      <div class="modal-tabs">
+      <div class="modal-tabs" style="overflow-x: auto; white-space: nowrap; display: flex; gap: 4px; padding-bottom: 4px;">
         <button class="tab-btn active" id="tabToolDocsBtn" onclick="switchToolsTab('docs')">🚨 ලියකියවිලි</button>
         <button class="tab-btn" id="tabToolServiceBtn" onclick="switchToolsTab('service')">🔧 සර්විස්</button>
-        <button class="tab-btn" id="tabToolProfitBtn" onclick="switchToolsTab('profit')">⛽ තෙල් & ලාභය</button>
+        <button class="tab-btn" id="tabToolProfitBtn" onclick="switchToolsTab('profit')">⛽ තෙල්/ලාභය</button>
         <button class="tab-btn" id="tabToolTargetBtn" onclick="switchToolsTab('target')">🎯 ඉලක්කය</button>
+        <button class="tab-btn" id="tabToolQuoteBtn" onclick="switchToolsTab('quote')">🧮 ඇස්තමේන්තුව</button>
       </div>
 
       <!-- Tab 1: Documents (Police Fine Protection) -->
@@ -2829,6 +2862,85 @@
 
         <div class="modal-buttons" style="margin-top: 10px;">
           <button class="save-btn" onclick="saveDailyTarget()" style="width: 100%;">💾 ඉලක්කය සුරකින්න</button>
+        </div>
+      </div>
+
+      <!-- Tab 5: Pre-Trip Fare Estimator & Quote -->
+      <div id="tabToolQuoteContent" style="display: none;">
+        <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+          ගමන ආරම්භ කිරීමට පෙර ගමන් දුර ඇතුළත් කර නියමිත මීටර් ගාස්තුව ක්ෂණිකව ගණනය කර මගියාට පෙන්වන්න හෝ WhatsApp මඟින් යවන්න.
+        </div>
+
+        <div class="input-group">
+          <label>ගමන් මාර්ගය / ස්ථාන (විකල්පයි):</label>
+          <input type="text" id="quoteRouteInput" placeholder="උදා: කොළඹ කොටුව සිට බත්තරමුල්ල" oninput="calculateTripQuote()">
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>ගමන් දුර (Distance in Km):</label>
+            <span style="font-size: 0.72rem; color: #38bdf8;" id="quoteRateNotice">1km = Rs. 100 | ඉතිරි 1km = Rs. 80</span>
+          </div>
+          <input type="number" id="quoteDistanceInput" placeholder="උදා: 5.0" step="0.5" min="0.1" value="5.0" oninput="calculateTripQuote()">
+          
+          <!-- Quick Distance Chips -->
+          <div style="display: flex; gap: 6px; margin-top: 6px; overflow-x: auto; padding-bottom: 2px;">
+            <button type="button" onclick="setQuoteKm(2)" class="chip-btn">+ 2 km</button>
+            <button type="button" onclick="setQuoteKm(5)" class="chip-btn">+ 5 km</button>
+            <button type="button" onclick="setQuoteKm(10)" class="chip-btn">+ 10 km</button>
+            <button type="button" onclick="setQuoteKm(15)" class="chip-btn">+ 15 km</button>
+            <button type="button" onclick="setQuoteKm(20)" class="chip-btn">+ 20 km</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #0c1220; padding: 9px 12px; border-radius: 8px; border: 1px solid #1e293b; margin-top: 8px;">
+          <span style="font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">🌙 රාත්‍රී අමතර ගාස්තු (+15% Night Rate):</span>
+          <input type="checkbox" id="quoteNightCheckbox" onchange="calculateTripQuote()" style="width: 18px; height: 18px; cursor: pointer; accent-color: #a855f7;">
+        </div>
+
+        <!-- Live Estimate Output Card -->
+        <div style="background: linear-gradient(135deg, #090d16, #151d2f); border: 2px solid #10b981; border-radius: 12px; padding: 12px; margin-top: 14px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed #334155; padding-bottom: 8px;">
+            <span style="font-size: 0.82rem; color: #94a3b8; font-weight: 600;">ඇස්තමේන්තුගත ගාස්තුව:</span>
+            <span style="font-size: 1.65rem; font-weight: 900; color: #10b981;" id="quoteTotalFareDisplay">Rs. 420</span>
+          </div>
+
+          <div style="font-size: 0.73rem; color: #cbd5e1; margin-top: 8px; display: flex; justify-content: space-between;">
+            <span>මූලික ගාස්තුව (1km):</span>
+            <span id="quoteBaseFareDisplay">Rs. 100.00</span>
+          </div>
+          <div style="font-size: 0.73rem; color: #cbd5e1; margin-top: 4px; display: flex; justify-content: space-between;">
+            <span>අතිරේක දුර ගාස්තුව:</span>
+            <span id="quoteExtraFareDisplay">Rs. 320.00</span>
+          </div>
+          <div style="font-size: 0.73rem; color: #a855f7; margin-top: 4px; display: none; justify-content: space-between;" id="quoteNightRow">
+            <span>රාත්‍රී අමතර ගාස්තුව (+15%):</span>
+            <span id="quoteNightFareDisplay">Rs. 0.00</span>
+          </div>
+          <div style="font-size: 0.73rem; color: #38bdf8; margin-top: 4px; display: flex; justify-content: space-between;">
+            <span>දළ ගමන් කාලය:</span>
+            <span id="quoteTimeDisplay">~12 min</span>
+          </div>
+
+          <!-- CRITICAL WAITING DISCLAIMER HIGHLIGHTED BY USER -->
+          <div style="background: rgba(239, 68, 68, 0.12); border: 1.5px solid #ef4444; border-radius: 8px; padding: 8px 10px; margin-top: 10px;">
+            <div style="font-weight: 800; color: #ef4444; font-size: 0.76rem; display: flex; align-items: center; gap: 5px;">
+              <span>⚠️</span> <span>අනිවාර්ය දැනුම්දීම (Waiting ගාස්තු ඇතුළත් නොවේ):</span>
+            </div>
+            <div style="font-size: 0.71rem; color: #fca5a5; margin-top: 3px; line-height: 1.35;">
+              මෙම ඇස්තමේන්තුව <b>ධාවන දුර සඳහා පමණි.</b> මගියා අතරමග නැවතීම් සිදුකළහොත්, රැඳී සිටින කාලයට නියමිත Waiting ගාස්තු (<span id="quoteWaitRateDisplay">මිනිත්තුවකට රු. 6.00</span>) බිල්පතට අමතරව එකතු වේ.
+            </div>
+          </div>
+        </div>
+
+        <!-- Share & Action Buttons -->
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button class="save-btn" onclick="sendQuoteWhatsApp()" style="background: #25d366; color: #fff; font-weight: bold; flex: 1.2;">
+            📲 මගියාට WhatsApp යවන්න
+          </button>
+          <button class="cancel-btn" onclick="copyQuoteToClipboard()" style="flex: 0.8; border-color: #38bdf8; color: #38bdf8; font-weight: 600;">
+            📋 Copy Quote
+          </button>
         </div>
       </div>
 
@@ -5063,7 +5175,7 @@
     }
 
     function switchToolsTab(tab) {
-      const tabs = ['docs', 'service', 'profit', 'target'];
+      const tabs = ['docs', 'service', 'profit', 'target', 'quote'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tabTool${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
         const content = document.getElementById(`tabTool${t.charAt(0).toUpperCase() + t.slice(1)}Content`);
@@ -5079,6 +5191,132 @@
         updateFuelProfitUI();
       } else if (tab === 'target') {
         updateDailyTargetUI();
+      } else if (tab === 'quote') {
+        initQuoteUI();
+      }
+    }
+
+    // ==================== PRE-TRIP FARE ESTIMATOR & QUOTE ====================
+    function initQuoteUI() {
+      const isNight = isNightFareTime();
+      const nightCb = document.getElementById("quoteNightCheckbox");
+      if (nightCb) nightCb.checked = isNight;
+      calculateTripQuote();
+    }
+
+    function setQuoteKm(val) {
+      const input = document.getElementById("quoteDistanceInput");
+      if (input) {
+        input.value = val;
+        calculateTripQuote();
+      }
+    }
+
+    function calculateTripQuote() {
+      const distInput = document.getElementById("quoteDistanceInput");
+      const distance = parseFloat(distInput ? distInput.value : 0) || 0;
+      const isNight = document.getElementById("quoteNightCheckbox") ? document.getElementById("quoteNightCheckbox").checked : false;
+
+      let baseFare = 0;
+      if (distance > 0) {
+        if (config.fareMode === 'gradual' && distance <= 1) {
+          baseFare = distance * config.baseRate;
+        } else {
+          baseFare = config.baseRate;
+        }
+      }
+      const extraFare = distance > 1 ? (distance - 1) * config.afterFirstKmRate : 0;
+      const subTotal = baseFare + extraFare;
+      const nightFare = (isNight && subTotal > 0) ? (subTotal * (config.nightSurchargePercent / 100)) : 0;
+      const totalFare = Math.round(subTotal + nightFare);
+      const timeMins = Math.max(2, Math.round(distance * 2.5));
+
+      const totalElem = document.getElementById("quoteTotalFareDisplay");
+      if (totalElem) totalElem.innerText = `Rs. ${totalFare.toLocaleString()}`;
+
+      const baseElem = document.getElementById("quoteBaseFareDisplay");
+      if (baseElem) baseElem.innerText = `Rs. ${baseFare.toFixed(2)}`;
+
+      const extraElem = document.getElementById("quoteExtraFareDisplay");
+      if (extraElem) extraElem.innerText = `Rs. ${extraFare.toFixed(2)}`;
+
+      const nightRow = document.getElementById("quoteNightRow");
+      const nightElem = document.getElementById("quoteNightFareDisplay");
+      if (nightRow && nightElem) {
+        nightRow.style.display = isNight ? "flex" : "none";
+        nightElem.innerText = `Rs. ${nightFare.toFixed(2)}`;
+      }
+
+      const timeElem = document.getElementById("quoteTimeDisplay");
+      if (timeElem) timeElem.innerText = `~${timeMins} min`;
+
+      const noticeElem = document.getElementById("quoteRateNotice");
+      if (noticeElem) noticeElem.innerText = `1km = Rs. ${config.baseRate} | ඉතිරි 1km = Rs. ${config.afterFirstKmRate}`;
+
+      const waitRateElem = document.getElementById("quoteWaitRateDisplay");
+      if (waitRateElem) waitRateElem.innerText = `මිනිත්තුවකට රු. ${config.waitingRatePerMin}.00`;
+    }
+
+    function getQuoteMessageText() {
+      const distInput = document.getElementById("quoteDistanceInput");
+      const distance = parseFloat(distInput ? distInput.value : 0) || 0;
+      const routeInput = document.getElementById("quoteRouteInput");
+      const route = routeInput ? routeInput.value.trim() : "";
+      const isNight = document.getElementById("quoteNightCheckbox") ? document.getElementById("quoteNightCheckbox").checked : false;
+
+      let baseFare = 0;
+      if (distance > 0) {
+        if (config.fareMode === 'gradual' && distance <= 1) {
+          baseFare = distance * config.baseRate;
+        } else {
+          baseFare = config.baseRate;
+        }
+      }
+      const extraFare = distance > 1 ? (distance - 1) * config.afterFirstKmRate : 0;
+      const subTotal = baseFare + extraFare;
+      const nightFare = (isNight && subTotal > 0) ? (subTotal * (config.nightSurchargePercent / 100)) : 0;
+      const totalFare = Math.round(subTotal + nightFare);
+      const timeMins = Math.max(2, Math.round(distance * 2.5));
+
+      const routeLine = route ? `📍 *ගමන් මාර්ගය:* ${route}\n` : '';
+      const nightStr = isNight ? `\n🌙 *Night Rate (+15%):* Rs. ${nightFare.toFixed(2)}` : '';
+
+      return `🛺 *TUK TUK PRO - FARE QUOTE (ගාස්තු ඇස්තමේන්තුව)*
+━━━━━━━━━━━━━━━━━━
+🛡️ *නියමිත මීටර් ගාස්තු ඇස්තමේන්තුව*
+🔢 *රථ අංකය:* ${config.vehicleNo}
+👤 *රියදුරු:* ${config.driverName}
+${routeLine}📏 *ඇස්තමේන්තු දුර:* ${distance.toFixed(1)} km
+⏳ *දළ ධාවන කාලය:* ~${timeMins} min
+━━━━━━━━━━━━━━━━━━
+💰 *මූලික ගාස්තුව (1km):* Rs. ${baseFare.toFixed(2)}
+🚗 *අතිරේක දුර ගාස්තුව:* Rs. ${extraFare.toFixed(2)}${nightStr}
+━━━━━━━━━━━━━━━━━━
+💵 *ඇස්තමේන්තු ගාස්තුව:* *Rs. ${totalFare}*
+━━━━━━━━━━━━━━━━━━
+⚠️ *අනිවාර්ය දැනුම්දීම (Waiting Charges Excluded):*
+මෙම මුදල සාමාන්‍ය ධාවන දුර සඳහා පමණක් වලංගු වේ. ගමන අතරමග නැවතීම් (Waiting කාලය) හෝ අමතර රැඳී සිටීම් සඳහා මිනිත්තුවකට Rs. ${config.waitingRatePerMin}.00 බැගින් අමතර Waiting ගාස්තු බිල්පතට එකතු වේ.
+
+✅ *රජයේ ප්‍රමිතියට අනුව සහතික කළ සාධාරණ මීටර් ගාස්තු පමණි.*
+✨ Powered by *NexiaPro™ Sri Lanka*`;
+    }
+
+    function sendQuoteWhatsApp() {
+      const msg = getQuoteMessageText();
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    function copyQuoteToClipboard() {
+      const msg = getQuoteMessageText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).then(() => {
+          showToast("ගාස්තු ඇස්තමේන්තුව (Quote) Copy කරගන්නා ලදී! 📋");
+        }).catch(() => {
+          showToast("Quote එක Copy විය");
+        });
+      } else {
+        showToast("Quote එක Copy කළ නොහැක");
       }
     }
 
