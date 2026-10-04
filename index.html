@@ -2431,16 +2431,50 @@
         </label>
       </div>
 
-      <!-- Payment / Bank Details -->
-      <div class="bank-info-box">
-        <div class="title">🏦 ගෙවීම් තොරතුරු (LANKAQR & Bank Transfer)</div>
-        <div id="proBankInfoText">Commercial Bank | Acc: 8001234567 | Name: TukTuk Pro</div>
-        <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 4px;">මුදල් තැන්පත් කර Slip පතේ ඡායාරූපය WhatsApp වෙත එවන්න.</div>
+      <!-- Payment / Bank Details & Anti-Fraud Security Box -->
+      <div class="bank-info-box" style="background: #0b1120; border: 1.5px solid #3b82f6; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-weight: bold; color: #60a5fa; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+            <span>🏦 බැංකු තැන්පතු (Direct Bank Transfer)</span>
+          </div>
+          <span style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; font-size: 0.65rem; padding: 2px 7px; border-radius: 6px; font-weight: 600;">Manual Verification</span>
+        </div>
+
+        <!-- Bank Details Card -->
+        <div style="background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; font-size: 0.78rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px;">
+          <div>🏦 <b>බැංකුව:</b> Commercial Bank PLC</div>
+          <div>👤 <b>ගිණුම් නම:</b> TukTuk Pro (NexiaPro)</div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; background: #0f172a; padding: 6px 8px; border-radius: 6px; border: 1px dashed #334155;">
+            <div>🔢 <b>ගිණුම් අංකය:</b> <span id="proBankAccNum" style="font-family: monospace; font-weight: bold; color: #38bdf8; font-size: 0.95rem;">8001234567</span></div>
+            <button onclick="copyBankAccNo()" style="background: #1e293b; border: 1px solid #475569; color: #38bdf8; font-size: 0.7rem; border-radius: 4px; padding: 3px 8px; cursor: pointer;">📋 Copy</button>
+          </div>
+        </div>
+
+        <!-- CRITICAL STEP: Mandatory Device ID Reference -->
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1.5px solid #f59e0b; border-radius: 8px; padding: 10px; margin-bottom: 10px; text-align: left;">
+          <div style="font-weight: bold; color: #f59e0b; font-size: 0.78rem; display: flex; align-items: center; gap: 5px;">
+            <span>⚠️ අනිවාර්ය පියවර (Mandatory Reference):</span>
+          </div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+            බැංකු Transfer එක කරද්දී <b>Remarks / Reference</b> සඳහා ඔබගේ මෙම <b>Device ID</b> එක අනිවාර්යයෙන්ම ඇතුළත් කරන්න:
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+            <div class="device-id-badge" onclick="copyDeviceId()" style="margin: 0; flex: 1; justify-content: center; font-size: 1.05rem; padding: 8px;" title="Copy කිරීමට ක්ලික් කරන්න">
+              <span id="displayDeviceIdRef">TK-0000</span> 📋 Click to Copy
+            </div>
+          </div>
+        </div>
+
+        <!-- Anti-Fraud Notice -->
+        <div style="background: rgba(239, 68, 68, 0.09); border-left: 3px solid #ef4444; border-radius: 4px; padding: 8px 10px; font-size: 0.7rem; color: #cbd5e1; line-height: 1.45;">
+          <div style="color: #f87171; font-weight: bold; margin-bottom: 2px;">🛡️ ආරක්ෂිත නීතිය (Verification Notice):</div>
+          ව්‍යාජ ලදුපත් (Fake Slips) වැළැක්වීම සඳහා, <b>Slip පත් පමණක් සලකා බලා Codes නිකුත් නොකෙරේ.</b> බැංකු ගිණුමට මුදල් ලැබී ඇති බව සහ Device ID Reference එක Online Banking හරහා පරීක්ෂා කිරීමෙන් පසු (මිනිත්තු 5-15 තුළ) සක්‍රීය කිරීමේ Code එක නිකුත් කරනු ලැබේ.
+        </div>
       </div>
 
       <!-- WhatsApp Order Button -->
-      <button class="whatsapp-order-btn" onclick="openWhatsAppOrder()">
-        <span>📲 Slip පත WhatsApp එවා Code එක ගන්න</span>
+      <button class="whatsapp-order-btn" onclick="openWhatsAppOrder()" style="background: linear-gradient(135deg, #16a34a, #15803d); font-size: 0.88rem; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);">
+        <span>📲 WhatsApp වෙත Device ID සහ විස්තර යවන්න</span>
       </button>
 
       <!-- Enter Activation Code -->
@@ -2614,9 +2648,11 @@
         </div>
 
         <div class="guide-item">
-          <div class="guide-item-title">👑 7. PRO සාමාජිකත්වය සක්‍රීය කිරීම</div>
+          <div class="guide-item-title">👑 7. PRO සාමාජිකත්වය සක්‍රීය කිරීම & ගෙවීම් නීති</div>
           <div class="guide-item-body">
-            • දින 30ක හෝ වාර්ෂික PRO බලපත්‍රය සක්‍රීය කිරීමට ඉහළ ඇති <b>"👑 PRO"</b> බොත්තම ඔබා ඔබේ Device ID එක ලබාගෙන Activation Key එක ලබාගන්න.
+            • දින 30ක, 90ක හෝ වාර්ෂික PRO බලපත්‍රය ලබා ගැනීමට ඉහළ ඇති <b>"👑 PRO"</b> බොත්තම ඔබන්න.<br>
+            • බැංකු තැන්පතුව (Bank Transfer) සිදුකරද්දී <b>Remarks / Reference</b> සඳහා ඔබේ <b>Device ID (උදා: TK-4821)</b> එක අනිවාර්යයෙන්ම යොදන්න.<br>
+            • ආරක්ෂිත පියවරක් ලෙස Slip පත් පමණක් සලකා බලා Codes නිකුත් නොකෙරේ. මුදල් බැංකු ගිණුමට ලැබී ඇති බව Online Banking මඟින් තහවුරු වූ පසු මිනිත්තු 5-15 තුළ Activation Key එක WhatsApp මඟින් ලබාගත හැක.
           </div>
         </div>
 
@@ -4317,8 +4353,11 @@
       const statusTitle = document.getElementById("proStatusTitle");
       const statusSub = document.getElementById("proStatusSub");
       const displayId = document.getElementById("displayDeviceId");
+      const displayIdRef = document.getElementById("displayDeviceIdRef");
 
-      if (displayId) displayId.innerText = getDeviceId();
+      const devId = getDeviceId();
+      if (displayId) displayId.innerText = devId;
+      if (displayIdRef) displayIdRef.innerText = devId;
       if (!headerBtn || !statusTitle || !statusSub) return;
 
       if (pro.isPro && !pro.isTrial) {
@@ -4374,20 +4413,38 @@
       });
     }
 
+    function copyBankAccNo() {
+      const acc = document.getElementById("proBankAccNum") ? document.getElementById("proBankAccNum").innerText.trim() : "8001234567";
+      navigator.clipboard.writeText(acc).then(() => {
+        showToast("Commercial Bank ගිණුම් අංකය Copy විය: " + acc);
+      }).catch(() => {
+        showToast("Account: " + acc);
+      });
+    }
+
     function openWhatsAppOrder() {
       const devId = getDeviceId();
       let planText = "මාස 1 (දින 30) - රු. 300";
-      if (selectedProPlan === "90") planText = "මාස 3 (දින 90) - රු. 800";
-      if (selectedProPlan === "365") planText = "වසර 1 (දින 365) - රු. 2,500";
+      let priceText = "Rs. 300";
+      if (selectedProPlan === "90") {
+        planText = "මාස 3 (දින 90) - රු. 800";
+        priceText = "Rs. 800";
+      } else if (selectedProPlan === "365") {
+        planText = "වසර 1 (දින 365) - රු. 2,500";
+        priceText = "Rs. 2,500";
+      }
 
       const msg = 
 `🛺 *TUK TUK METER PRO සක්‍රීය කිරීමේ ඉල්ලීම*
 ━━━━━━━━━━━━━━━━━━
 📱 *මගේ Device ID:* ${devId}
 📦 *තෝරාගත් පැකේජය:* ${planText}
-💵 *ගෙවීම් Slip පත:* (මෙහි අමුණා ඇත)
+💰 *ගාස්තුව:* ${priceText}
+🏦 *බැංකු Reference එක:* ${devId}
 ━━━━━━━━━━━━━━━━━━
-කරුණාකර මගේ Activation Code එක ලබා දෙන්න. ස්තූතියි!`;
+⚠️ *සැලකිය යුතුයි:*
+මම බැංකු Transfer එකේ Remarks / Reference සඳහා මාගේ Device ID එක (*${devId}*) ඇතුළත් කර මුදල් තැන්පත් කළෙමි. Slip පත මෙහි අමුණා ඇත.
+බැංකු ගිණුමට මුදල් බැරවීම සහ Device ID Reference එක තහවුරු කර මාගේ Activation Code එක ලබා දෙන්න. ස්තූතියි!`;
 
       const cleanPhone = (config.adminPhone || "94771234567").replace(/[^0-9]/g, '');
       const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msg)}`;

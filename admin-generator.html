@@ -143,6 +143,33 @@
       margin-top: 3px;
     }
 
+    /* AI Scanner Styles */
+    .ai-scanner-card {
+      background: linear-gradient(135deg, #131d35, #0c1220);
+      border: 2px solid #8b5cf6;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+    }
+    .ai-drop-zone {
+      border: 2px dashed #6366f1;
+      border-radius: 12px;
+      padding: 16px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(99, 102, 241, 0.05);
+      transition: all 0.2s;
+    }
+    .ai-drop-zone:hover, .ai-drop-zone.dragover {
+      background: rgba(139, 92, 246, 0.15) !important;
+      border-color: #a855f7 !important;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* Result Box */
     .result-box {
       display: none;
@@ -308,6 +335,87 @@
         </div>
       </div>
 
+      <!-- ==================== GEMINI AI SLIP SCANNER & FRAUD DETECTOR ==================== -->
+      <div class="ai-scanner-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-weight: bold; color: #c084fc; font-size: 0.88rem; display: flex; align-items: center; gap: 6px;">
+            <span>✨ Gemini AI Slip Scanner & Fraud Guard</span>
+          </div>
+          <button type="button" onclick="toggleGeminiSettings()" style="background: rgba(139, 92, 246, 0.2); border: 1px solid #8b5cf6; color: #e9d5ff; font-size: 0.68rem; padding: 3px 8px; border-radius: 6px; cursor: pointer;">⚙️ API Key</button>
+        </div>
+
+        <!-- API Key Accordion (Auto-expanded if key not set) -->
+        <div id="geminiKeyBox" style="display: none; background: #020617; border: 1px dashed #a855f7; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 0.74rem; text-align: left;">
+          <div style="color: #cbd5e1; margin-bottom: 4px; font-weight: 600;">🔑 Google AI Studio (Gemini) Free API Key:</div>
+          <div style="display: flex; gap: 6px;">
+            <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." style="flex: 1; padding: 7px 10px; background: #0f172a; border: 1px solid #475569; color: #fff; border-radius: 6px; font-size: 0.8rem; outline: none;">
+            <button type="button" onclick="saveGeminiApiKey()" style="background: #8b5cf6; border: none; color: #fff; border-radius: 6px; padding: 7px 12px; font-weight: bold; cursor: pointer;">Save</button>
+          </div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 5px;">
+            Google AI Studio එකෙන් දිනකට 1,500ක් Free! <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #38bdf8; text-decoration: underline;">Free API Key එකක් ලබාගන්න ➔</a>
+          </div>
+        </div>
+
+        <!-- Drop / Paste Zone -->
+        <div id="aiDropZone" class="ai-drop-zone" onclick="triggerSlipUpload()">
+          <input type="file" id="slipFileInput" accept="image/*" style="display: none;" onchange="handleSlipFile(event)">
+          <div id="aiDropPrompt">
+            <div style="font-size: 1.8rem; margin-bottom: 3px;">📸 📋</div>
+            <div style="font-size: 0.82rem; font-weight: bold; color: #e0e7ff;">Slip එක මෙතනට Paste කරන්න (Ctrl+V) හෝ Click කර තෝරන්න</div>
+            <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 3px;">(WhatsApp එකෙන් Copy කරගත් Screenshot එක කෙළින්ම Paste කළ හැක)</div>
+          </div>
+          
+          <!-- Image Preview -->
+          <div id="aiPreviewBox" style="display: none; align-items: center; justify-content: center; gap: 12px;">
+            <img id="aiSlipPreviewImg" src="" alt="Slip Preview" style="max-height: 120px; max-width: 120px; border-radius: 8px; border: 1.5px solid #8b5cf6; object-fit: contain;">
+            <div style="text-align: left;">
+              <div id="aiPreviewFileName" style="font-size: 0.74rem; color: #e2e8f0; font-weight: bold; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">slip_image.png</div>
+              <div style="font-size: 0.68rem; color: #10b981; margin-top: 2px;">✅ ඡායාරූපය සූදානම්</div>
+              <button type="button" onclick="event.stopPropagation(); triggerSlipUpload()" style="margin-top: 6px; background: #334155; border: 1px solid #475569; color: #fff; font-size: 0.68rem; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🔄 වෙනත් එකක්</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Button -->
+        <button type="button" id="btnAiScan" onclick="runAiSlipAnalysis()" style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #8b5cf6, #6d28d9); border: none; padding: 11px; border-radius: 8px; color: #fff; font-weight: bold; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);">
+          <span>🔍 AI පරීක්ෂාව ආරම්භ කරන්න (Scan Slip)</span>
+        </button>
+
+        <!-- Loading Indicator -->
+        <div id="aiLoadingIndicator" style="display: none; text-align: center; padding: 12px 6px;">
+          <div style="display: inline-block; width: 26px; height: 26px; border: 3px solid rgba(192, 132, 252, 0.3); border-top-color: #c084fc; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <div style="font-size: 0.76rem; color: #c084fc; font-weight: 600; margin-top: 6px;">Gemini AI Slip පත කියවමින් සහ වංචා පරීක්ෂා කරමින් පවතී...</div>
+        </div>
+
+        <!-- AI Analysis Result Card -->
+        <div id="aiAnalysisResult" style="display: none; margin-top: 12px; background: #020617; border: 1.5px solid #10b981; border-radius: 10px; padding: 12px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
+            <div style="font-weight: bold; font-size: 0.82rem; color: #10b981;">✅ AI විශ්ලේෂණ ප්‍රතිඵලය:</div>
+            <span id="aiRiskBadge" style="font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">LOW RISK</span>
+          </div>
+
+          <!-- Quick Data Grid -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 7px; font-size: 0.74rem; color: #cbd5e1; margin-bottom: 8px;">
+            <div>💰 <b>මුදල:</b> <span id="aiResAmount" style="color: #10b981; font-weight: bold; font-size: 0.88rem;">--</span></div>
+            <div>📦 <b>පැකේජය:</b> <span id="aiResPlan" style="color: #f59e0b; font-weight: bold;">--</span></div>
+            <div>📱 <b>Device ID:</b> <span id="aiResDeviceId" style="color: #38bdf8; font-weight: bold; font-family: monospace;">--</span></div>
+            <div>⏰ <b>වේලාව:</b> <span id="aiResDateTime" style="color: #fff; font-weight: 600;">--</span></div>
+            <div style="grid-column: span 2;">🏦 <b>බැංකුව & ගිණුම:</b> <span id="aiResBeneficiary">--</span></div>
+            <div style="grid-column: span 2;">📝 <b>Reference / Remarks:</b> <span id="aiResRemarks" style="color: #94a3b8; font-style: italic;">--</span></div>
+          </div>
+
+          <!-- Tampering / Risk Reason Box -->
+          <div id="aiRiskReasonBox" style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; border-radius: 6px; padding: 6px 8px; font-size: 0.7rem; color: #e2e8f0; margin-bottom: 8px; line-height: 1.4;">
+            <span id="aiRiskReasonText">--</span>
+          </div>
+
+          <!-- Bank SMS Action Helper -->
+          <div id="aiSmsChecklist" style="background: #0f172a; border: 1px dashed #38bdf8; border-radius: 6px; padding: 8px; font-size: 0.72rem; color: #38bdf8; line-height: 1.4;">
+            👉 <b>Admin පරීක්ෂාව:</b> ඔබගේ Bank SMS එකේ මෙම වේලාවේ (<span id="aiSmsTime" style="font-weight: bold; color: #fff;">--</span>) රු. <span id="aiSmsAmt" style="font-weight: bold; color: #10b981;">--</span> මුදලක් ලැබී ඇත්දැයි බලන්න.
+          </div>
+        </div>
+      </div>
+
       <!-- Form -->
       <div class="form-group">
         <label>රියදුරුගේ නම (Driver Name):</label>
@@ -344,6 +452,19 @@
             <div class="plan-price">Rs. 5,000</div>
           </div>
         </div>
+      <!-- Anti-Fraud Verification Checklist -->
+      <div style="background: rgba(239, 68, 68, 0.1); border: 1.5px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 14px; text-align: left;">
+        <div style="color: #f87171; font-weight: bold; font-size: 0.82rem; display: flex; align-items: center; gap: 6px;">
+          <span>🔒 ආරක්ෂිත පරීක්ෂාව (Anti-Fraud Check):</span>
+        </div>
+        <div style="font-size: 0.73rem; color: #cbd5e1; margin-top: 5px; line-height: 1.45;">
+          WhatsApp මඟින් ලැබෙන <b>Slip පත් පමණක් බලා කිසිවිටෙකත් Codes නිකුත් නොකරන්න!</b><br>
+          ඔබගේ Online Banking App හෝ Bank SMS පරීක්ෂා කර, ඉහත <b>Device ID Reference</b> එකෙන් මුදල් ලැබී ඇති බව තහවුරු වූ පසු පමණක් Code එක සාදන්න.
+        </div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-top: 9px; font-size: 0.78rem; color: #f59e0b; cursor: pointer; user-select: none;">
+          <input type="checkbox" id="chkBankVerified" style="width: 17px; height: 17px; accent-color: #10b981; cursor: pointer;">
+          <span style="font-weight: 600;">බැංකු ගිණුමට මුදල් ලැබී ඇති බව මම තහවුරු කළෙමි (Bank Verified)</span>
+        </label>
       </div>
 
       <button class="primary-btn" style="width: 100%; padding: 14px; font-size: 1rem;" onclick="generateAndSave()">
@@ -428,6 +549,340 @@
       return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
     }
 
+    // ==================== GEMINI AI SLIP SCANNER LOGIC ====================
+    let currentSlipFile = null;
+    let currentSlipBase64 = null;
+    let currentSlipMimeType = 'image/jpeg';
+    let slipDropEventsBound = false;
+
+    function initGeminiKey() {
+      const savedKey = localStorage.getItem("tuktuk_admin_gemini_key") || "";
+      const input = document.getElementById("geminiApiKeyInput");
+      if (input) input.value = savedKey;
+      const box = document.getElementById("geminiKeyBox");
+      if (!savedKey && box) {
+        box.style.display = "block";
+      }
+    }
+
+    function toggleGeminiSettings() {
+      const box = document.getElementById("geminiKeyBox");
+      if (box) {
+        box.style.display = box.style.display === "none" ? "block" : "none";
+      }
+    }
+
+    function saveGeminiApiKey() {
+      const input = document.getElementById("geminiApiKeyInput");
+      const key = input ? input.value.trim() : "";
+      if (key) {
+        localStorage.setItem("tuktuk_admin_gemini_key", key);
+        alert("✅ Gemini API Key සාර්ථකව සුරැකිණි!");
+        toggleGeminiSettings();
+      } else {
+        localStorage.removeItem("tuktuk_admin_gemini_key");
+        alert("API Key ඉවත් කරන ලදී.");
+      }
+    }
+
+    function triggerSlipUpload() {
+      const input = document.getElementById("slipFileInput");
+      if (input) input.click();
+    }
+
+    function handleSlipFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (file) {
+        loadSlipFile(file);
+      }
+    }
+
+    function loadSlipFile(file) {
+      if (!file || !file.type.startsWith("image/")) {
+        alert("කරුණාකර වලංගු Image / Screenshot එකක් තෝරන්න.");
+        return;
+      }
+
+      currentSlipFile = file;
+      currentSlipMimeType = file.type || 'image/jpeg';
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        currentSlipBase64 = dataUrl.split(",")[1];
+
+        // Update Preview UI
+        const previewImg = document.getElementById("aiSlipPreviewImg");
+        const promptEl = document.getElementById("aiDropPrompt");
+        const previewBox = document.getElementById("aiPreviewBox");
+        const fileNameEl = document.getElementById("aiPreviewFileName");
+
+        if (previewImg) previewImg.src = dataUrl;
+        if (fileNameEl) fileNameEl.innerText = file.name || "slip_image.png";
+        if (promptEl) promptEl.style.display = "none";
+        if (previewBox) previewBox.style.display = "flex";
+
+        const resultCard = document.getElementById("aiAnalysisResult");
+        if (resultCard) resultCard.style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function initSlipDropEvents() {
+      if (slipDropEventsBound) return;
+      slipDropEventsBound = true;
+
+      const dropZone = document.getElementById("aiDropZone");
+      if (!dropZone) return;
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+          loadSlipFile(files[0]);
+        }
+      }, false);
+
+      // Global Clipboard Paste (Ctrl+V anywhere on page)
+      window.addEventListener('paste', (e) => {
+        const items = (e.clipboardData || window.clipboardData).items;
+        if (!items) return;
+        for (let item of items) {
+          if (item.type && item.type.indexOf('image') !== -1) {
+            const file = item.getAsFile();
+            if (file) {
+              loadSlipFile(file);
+              if (dropZone) {
+                dropZone.classList.add('dragover');
+                setTimeout(() => dropZone.classList.remove('dragover'), 350);
+              }
+              break;
+            }
+          }
+        }
+      });
+    }
+
+    async function runAiSlipAnalysis() {
+      if (!currentSlipBase64) {
+        alert("කරුණාකර මුලින්ම පරීක්ෂා කිරීමට Slip එකක් Upload කරන්න හෝ Paste කරන්න (Ctrl+V).");
+        return;
+      }
+
+      const apiKey = localStorage.getItem("tuktuk_admin_gemini_key");
+      if (!apiKey) {
+        toggleGeminiSettings();
+        alert("⚠️ Gemini API Key එකක් ඇතුළත් කර නැත!\nGoogle AI Studio වෙතින් නොමිලේ ලබාගත් API Key එක ඇතුළත් කරන්න.");
+        return;
+      }
+
+      const scanBtn = document.getElementById("btnAiScan");
+      const loadingEl = document.getElementById("aiLoadingIndicator");
+      const resultCard = document.getElementById("aiAnalysisResult");
+
+      if (scanBtn) scanBtn.style.display = "none";
+      if (loadingEl) loadingEl.style.display = "block";
+      if (resultCard) resultCard.style.display = "none";
+
+      try {
+        const promptText = `You are an expert Sri Lankan banking transaction slip and fraud detection AI assistant for TukTuk Pro.
+Analyze this payment slip/receipt screenshot carefully.
+Beneficiary details for TukTuk Pro are: Commercial Bank, Account: 8001234567, Name: TukTuk Pro or NexiaPro.
+Plans are:
+- 30 Days: Rs. 300
+- 90 Days: Rs. 800
+- 365 Days (1 Year): Rs. 2,500
+- Lifetime: Rs. 5,000
+
+Identify:
+1. Is this a bank transaction receipt/slip?
+2. Bank Name (e.g. Commercial Bank, Frimi, Flash, BOC, Peoples, Sampath, etc.)
+3. Sender Name
+4. Beneficiary Account Number and Name
+5. Is the beneficiary account our account (8001234567 / TukTuk Pro)?
+6. Amount in LKR (number)
+7. Matched Plan ('30', '90', '365', 'LIFE', or null)
+8. Transaction Date and Time (format e.g. 04 Oct 2026, 08:35 PM)
+9. Remarks / Reference text
+10. Device ID: Search for any token matching 'TK-XXXX' or 'TKXXXX' (where X is number or alphanumeric).
+11. Fraud / Tampering Assessment:
+    - Look for pixel distortion, font mismatch, misaligned text, uneven background noise around numbers/dates, or fake generator templates.
+    - Rate as 'LOW', 'MEDIUM', or 'HIGH'.
+    - Provide a short explanation in Sinhala and English.
+
+Output strictly valid JSON with this schema:
+{
+  "isReceipt": true,
+  "bankName": "Commercial Bank",
+  "senderName": "...",
+  "beneficiaryAccNo": "8001234567",
+  "beneficiaryName": "TukTuk Pro",
+  "isOurAccount": true,
+  "amount": 300,
+  "matchedPlan": "30",
+  "dateTime": "04 Oct 2026, 08:35 PM",
+  "referenceOrRemarks": "TK-4821",
+  "extractedDeviceId": "TK-4821",
+  "tamperingScore": "LOW",
+  "tamperingReason": "Text and fonts appear consistent with genuine Commercial Bank app receipt.",
+  "adminNoteSinhala": "බැංකු SMS එකේ වේලාව සහ මුදල ගැලපේදැයි පරීක්ෂා කරන්න."
+}`;
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+
+        const reqBody = {
+          contents: [
+            {
+              parts: [
+                {
+                  inline_data: {
+                    mime_type: currentSlipMimeType || 'image/jpeg',
+                    data: currentSlipBase64
+                  }
+                },
+                {
+                  text: promptText
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            responseMimeType: "application/json"
+          }
+        };
+
+        const resp = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(reqBody)
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text();
+          throw new Error(`Gemini API Error (${resp.status}): ${errText}`);
+        }
+
+        const data = await resp.json();
+        const rawJsonText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text;
+        
+        if (!rawJsonText) {
+          throw new Error("Gemini AI වෙතින් ප්‍රතිචාරයක් නොලැබුණි.");
+        }
+
+        const res = JSON.parse(rawJsonText);
+        renderAiAnalysisResult(res);
+
+      } catch (err) {
+        console.error("AI Slip Scan error:", err);
+        alert("❌ AI Scan අසාර්ථක විය:\n" + (err.message || err));
+      } finally {
+        if (scanBtn) scanBtn.style.display = "flex";
+        if (loadingEl) loadingEl.style.display = "none";
+      }
+    }
+
+    function renderAiAnalysisResult(res) {
+      const resultCard = document.getElementById("aiAnalysisResult");
+      if (!resultCard) return;
+
+      // Auto-fill Driver Form
+      if (res.extractedDeviceId) {
+        const devInput = document.getElementById("driverDevId");
+        if (devInput) devInput.value = res.extractedDeviceId.toUpperCase();
+      }
+
+      if (res.senderName && res.senderName !== "...") {
+        const nameInput = document.getElementById("driverName");
+        if (nameInput && (!nameInput.value || nameInput.value === "Driver")) {
+          nameInput.value = res.senderName;
+        }
+      }
+
+      if (res.matchedPlan) {
+        if (res.matchedPlan === "30") choosePlan("30", 30, 300);
+        else if (res.matchedPlan === "90") choosePlan("90", 90, 800);
+        else if (res.matchedPlan === "365") choosePlan("365", 365, 2500);
+        else if (res.matchedPlan === "LIFE") choosePlan("LIFE", 3650, 5000);
+      } else if (res.amount) {
+        if (res.amount <= 350) choosePlan("30", 30, 300);
+        else if (res.amount <= 900) choosePlan("90", 90, 800);
+        else if (res.amount <= 3000) choosePlan("365", 365, 2500);
+        else if (res.amount >= 4000) choosePlan("LIFE", 3650, 5000);
+      }
+
+      // Populate Quick Data Grid
+      const amtEl = document.getElementById("aiResAmount");
+      const planEl = document.getElementById("aiResPlan");
+      const devEl = document.getElementById("aiResDeviceId");
+      const timeEl = document.getElementById("aiResDateTime");
+      const benEl = document.getElementById("aiResBeneficiary");
+      const remEl = document.getElementById("aiResRemarks");
+      const badgeEl = document.getElementById("aiRiskBadge");
+      const reasonEl = document.getElementById("aiRiskReasonText");
+      const smsTime = document.getElementById("aiSmsTime");
+      const smsAmt = document.getElementById("aiSmsAmt");
+
+      if (amtEl) amtEl.innerText = res.amount ? `Rs. ${res.amount}` : "හඳුනාගත නොහැක";
+      if (planEl) planEl.innerText = res.matchedPlan ? `Plan ${res.matchedPlan}` : (currentPlan + " Days");
+      if (devEl) devEl.innerText = res.extractedDeviceId || "හමු නොවීය";
+      if (timeEl) timeEl.innerText = res.dateTime || "දිනයක් නැත";
+
+      // Beneficiary check
+      if (benEl) {
+        if (res.isOurAccount) {
+          benEl.innerHTML = `<span style="color: #10b981; font-weight: bold;">✅ ${res.bankName || "Commercial Bank"} - ${res.beneficiaryAccNo || "8001234567"}</span>`;
+        } else {
+          benEl.innerHTML = `<span style="color: #ef4444; font-weight: bold;">⚠️ වෙනත් ගිණුමක්: ${res.beneficiaryAccNo || "නොදනී"} (${res.beneficiaryName || ""})</span>`;
+        }
+      }
+
+      if (remEl) remEl.innerText = res.referenceOrRemarks || res.extractedDeviceId || "හිස් (Remarks නැත)";
+
+      // Tampering / Risk Badge
+      const score = (res.tamperingScore || "LOW").toUpperCase();
+      if (badgeEl) {
+        if (score === "LOW") {
+          badgeEl.style.background = "#10b981";
+          badgeEl.style.color = "#020617";
+          badgeEl.innerText = "🟢 LOW RISK (GENUINE SLIP)";
+        } else if (score === "MEDIUM") {
+          badgeEl.style.background = "#f59e0b";
+          badgeEl.style.color = "#020617";
+          badgeEl.innerText = "🟡 MEDIUM RISK (CHECK CAREFULLY)";
+        } else {
+          badgeEl.style.background = "#ef4444";
+          badgeEl.style.color = "#fff";
+          badgeEl.innerText = "🔴 HIGH RISK (TAMPERING SUSPECTED)";
+        }
+      }
+
+      if (reasonEl) {
+        reasonEl.innerHTML = `<b>AI නිරීක්ෂණය:</b> ${res.tamperingReason || "සාමාන්‍ය පෙනුමකින් යුක්තයි."}`;
+      }
+
+      if (smsTime) smsTime.innerText = res.dateTime || "ඉහත වේලාවේ";
+      if (smsAmt) smsAmt.innerText = res.amount || currentPrice;
+
+      resultCard.style.display = "block";
+      resultCard.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function unlockAdmin() {
       const pin = document.getElementById("adminPinInput").value.trim();
       const savedPin = localStorage.getItem("tuktuk_admin_pin") || "91101";
@@ -435,6 +890,8 @@
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("adminPanel").style.display = "block";
         renderAdminStats();
+        initGeminiKey();
+        initSlipDropEvents();
       } else {
         alert("වැරදි Password එකක්! කරුණාකර නැවත උත්සාහ කරන්න.");
       }
@@ -457,6 +914,12 @@
       if (!devId) {
         alert("කරුණාකර රියදුරුගේ Device ID එක (උදා: TK-4821) ඇතුළත් කරන්න!");
         return;
+      }
+
+      const isVerified = document.getElementById("chkBankVerified") ? document.getElementById("chkBankVerified").checked : true;
+      if (!isVerified) {
+        const proceed = confirm("⚠️ අවධානයට (Anti-Fraud Warning):\n\nබැංකු ගිණුමට මුදල් ලැබී ඇති බව ඔබ තහවුරු කර නැත!\n\nව්‍යාජ WhatsApp Slip පතක් මඟින් ඔබව නොමඟ යවා තිබිය හැක.\nඔබගේ Online Banking App හෝ Bank SMS පරීක්ෂා නොකර මෙම Code එක සෑදීමට ඔබට විශ්වාසද?");
+        if (!proceed) return;
       }
 
       const expiry = Date.now() + (currentDays * 24 * 60 * 60 * 1000);
