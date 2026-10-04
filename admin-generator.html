@@ -744,8 +744,6 @@ Output strictly valid JSON with this schema:
   "adminNoteSinhala": "බැංකු SMS එකේ වේලාව සහ මුදල ගැලපේදැයි පරීක්ෂා කරන්න."
 }`;
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
-
         const reqBody = {
           contents: [
             {
@@ -767,18 +765,50 @@ Output strictly valid JSON with this schema:
           }
         };
 
-        const resp = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(reqBody)
-        });
+        const candidateModels = [
+          'gemini-2.5-flash',
+          'gemini-2.0-flash',
+          'gemini-2.5-flash-lite',
+          'gemini-1.5-flash-latest'
+        ];
 
-        if (!resp.ok) {
-          const errText = await resp.text();
-          throw new Error(`Gemini API Error (${resp.status}): ${errText}`);
+        let data = null;
+        let lastError = null;
+
+        for (const model of candidateModels) {
+          try {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`;
+            const resp = await fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(reqBody)
+            });
+
+            if (resp.ok) {
+              data = await resp.json();
+              console.log(`Gemini analysis succeeded using model: ${model}`);
+              break;
+            } else if (resp.status === 404) {
+              const errTxt = await resp.text();
+              console.warn(`Model ${model} returned 404, trying next...`);
+              lastError = new Error(`Gemini model ${model} unavailable: ${errTxt}`);
+              continue;
+            } else {
+              const errText = await resp.text();
+              throw new Error(`Gemini API Error (${resp.status}): ${errText}`);
+            }
+          } catch (e) {
+            lastError = e;
+            if (e.message && (e.message.includes('404') || e.message.includes('not found') || e.message.includes('NOT_FOUND'))) {
+              continue;
+            }
+            throw e;
+          }
         }
 
-        const data = await resp.json();
+        if (!data) {
+          throw lastError || new Error("Gemini AI models නොමැත. API Key එක නැවත පරීක්ෂා කරන්න.");
+        }
         const rawJsonText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text;
         
         if (!rawJsonText) {
