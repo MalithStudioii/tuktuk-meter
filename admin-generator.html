@@ -1740,6 +1740,7 @@ ${bank.branch ? `• *ශාඛාව:* ${bank.branch}\n` : ''}━━━━━�
         renderQuickRecent();
       } else if (tabName === 'settings') {
         initBankSettings();
+        initFirebase();
         const keyInput = document.getElementById("settingsGeminiApiKeyInput");
         if (keyInput) keyInput.value = localStorage.getItem("tuktuk_admin_gemini_key") || "";
       }
@@ -1910,6 +1911,7 @@ ${bank.branch ? `• *ශාඛාව:* ${bank.branch}\n` : ''}━━━━━�
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("adminPanel").style.display = "block";
         initBankSettings();
+        initFirebase();
         initGeminiKey();
         initSlipDropEvents();
         renderAdminStats();
@@ -2516,6 +2518,12 @@ ${token}
       setTimeout(() => toast.style.display = "none", 2800);
     }
 
+    // Auto-connect Firebase
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initFirebase());
+    } else {
+      initFirebase();
+    }
     </script>
 </body>
 </html>
