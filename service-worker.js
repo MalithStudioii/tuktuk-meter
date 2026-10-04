@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuktuk-meter-v15';
+const CACHE_NAME = 'tuktuk-meter-v16';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

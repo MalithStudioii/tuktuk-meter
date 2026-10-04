@@ -55,21 +55,116 @@
       overflow: hidden;
     }
     
-    /* Top Bar & Badges */
+    /* Top Bar & Brand Header */
     .header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .brand-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      width: 100%;
     }
-    .header h2 {
-      margin: 0;
-      font-size: 1.25rem;
-      color: #f59e0b;
-      letter-spacing: 1px;
+    .brand-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 9px;
+    }
+    .brand-logo-badge {
+      font-size: 1.45rem;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.12));
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      line-height: 1;
+    }
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .brand-heading {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #f59e0b;
+      letter-spacing: 1.2px;
+      line-height: 1.1;
+      text-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+    }
+    .brand-sub-badge {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      margin-top: 2px;
+    }
+
+    /* 6-Button Touch Navigation Grid */
+    .nav-button-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      width: 100%;
+    }
+    .nav-action-btn {
+      background: #182337;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 2px;
+      min-height: 42px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-action-btn:hover {
+      background: #23334d;
+      border-color: #f59e0b;
+      color: #fff;
+    }
+    .nav-action-btn:active {
+      transform: scale(0.95);
+      background: #0f172a;
+    }
+    .nav-btn-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+    .nav-btn-label {
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .nav-action-btn.active-glow {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: bold;
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    .header-avatar-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #f59e0b;
     }
     .header-actions {
       display: flex;
@@ -90,23 +185,9 @@
       align-items: center;
       gap: 3px;
     }
-    .header-avatar-thumb {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid #f59e0b;
-    }
     .icon-btn:hover {
       background: #2d3e5e;
       border-color: #f59e0b;
-    }
-    .icon-btn.active-glow {
-      background: #f59e0b;
-      color: #0f172a;
-      font-weight: bold;
-      border-color: #f59e0b;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
 
     /* Status Indicators Row */
@@ -383,6 +464,172 @@
     }
     .modal.show {
       display: flex;
+    }
+
+    /* Onboarding Tour Modal & Slides */
+    .onboarding-modal {
+      z-index: 2500;
+      background: rgba(9, 13, 22, 0.97);
+      backdrop-filter: blur(10px);
+      padding: 16px;
+      justify-content: center;
+      align-items: center;
+    }
+    .onboarding-card {
+      background: linear-gradient(160deg, #151d2f 0%, #0d1527 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 20px;
+      padding: 22px 18px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.25);
+      position: relative;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      animation: tourCardPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes tourCardPop {
+      0% { opacity: 0; transform: scale(0.92) translateY(15px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .onboarding-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .tour-step-badge {
+      font-size: 0.72rem;
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .tour-skip-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .tour-skip-btn:hover {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .tour-icon-box {
+      font-size: 3rem;
+      margin: 6px 0 10px 0;
+      display: inline-block;
+      animation: tourIconFloat 2.8s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.4));
+    }
+    @keyframes tourIconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .tour-tag-pill {
+      font-size: 0.7rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .tour-title {
+      margin: 0 0 10px 0;
+      color: #f8fafc;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .tour-desc {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      min-height: 52px;
+    }
+    .tour-perk-box {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px dashed rgba(245, 158, 11, 0.5);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.76rem;
+      color: #fde68a;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .tour-dots-row {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+    .tour-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #334155;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .tour-dot.active {
+      width: 24px;
+      border-radius: 10px;
+      background: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+    }
+    .tour-actions-row {
+      display: flex;
+      gap: 8px;
+    }
+    .tour-btn-prev {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #cbd5e1;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex: 1;
+      transition: all 0.2s;
+    }
+    .tour-btn-prev:hover {
+      background: #334155;
+      color: #fff;
+    }
+    .tour-btn-next {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none;
+      color: #0f172a;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      flex: 2;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s;
+    }
+    .tour-btn-next:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .tour-btn-next.finish-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.5);
     }
     .modal-header {
       display: flex;
@@ -1625,21 +1872,42 @@
 
     <!-- Header -->
     <div class="header">
-      <div>
-        <h2 style="margin: 0; line-height: 1.1;">🛺 TUK TUK PRO</h2>
-        <div class="brand-sub">BY NEXIAPRO™</div>
-      </div>
-      <div class="header-actions">
+      <div class="brand-bar">
+        <div class="brand-left">
+          <div class="brand-logo-badge">🛺</div>
+          <div class="brand-text-col">
+            <h1 class="brand-heading">TUK TUK PRO</h1>
+            <div class="brand-sub-badge">BY NEXIAPRO™</div>
+          </div>
+        </div>
         <button class="icon-btn pro-badge-btn" id="headerProBtn" onclick="openProModal()" title="TukTuk Pro සාමාජිකත්වය">👑 PRO</button>
-        <button class="icon-btn" onclick="openDriverToolsModal()" id="headerToolsBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">🧰 Tools</button>
-        <button class="icon-btn" onclick="openGuideModal()" id="headerGuideBtn" title="භාවිතා කරන ආකාරය (User Guide)">📖 Guide</button>
-        <button class="icon-btn" onclick="openProfileModal()" id="headerProfileBtn" title="රියදුරු පැතිකඩ (Driver Profile)">
-          <span id="headerProfileIcon">👤</span>
-          <span id="headerProfileText">Profile</span>
+      </div>
+
+      <div class="nav-button-bar">
+        <button class="nav-action-btn" onclick="openProfileModal()" id="headerProfileBtn" title="රියදුරු පැතිකඩ (Driver Profile)">
+          <span id="headerProfileIcon" class="nav-btn-icon">👤</span>
+          <span id="headerProfileText" class="nav-btn-label">Profile</span>
         </button>
-        <button class="icon-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">🗺️ Map</button>
-        <button class="icon-btn" onclick="openHistoryModal()" title="ගමන් වාර්තා">📋 History</button>
-        <button class="icon-btn" onclick="toggleSettingsModal(true)" title="සැකසුම්">⚙️ Rates</button>
+        <button class="nav-action-btn" onclick="openDriverToolsModal()" id="headerToolsBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">
+          <span class="nav-btn-icon">🧰</span>
+          <span class="nav-btn-label">Tools</span>
+        </button>
+        <button class="nav-action-btn" onclick="toggleMap()" id="mapToggleBtn" title="සිතියම">
+          <span class="nav-btn-icon">🗺️</span>
+          <span class="nav-btn-label">Map</span>
+        </button>
+        <button class="nav-action-btn" onclick="openHistoryModal()" title="ගමන් වාර්තා">
+          <span class="nav-btn-icon">📋</span>
+          <span class="nav-btn-label">History</span>
+        </button>
+        <button class="nav-action-btn" onclick="toggleSettingsModal(true)" title="සැකසුම්">
+          <span class="nav-btn-icon">⚙️</span>
+          <span class="nav-btn-label">Rates</span>
+        </button>
+        <button class="nav-action-btn" onclick="openGuideModal()" id="headerGuideBtn" title="භාවිතා කරන ආකාරය (User Guide)">
+          <span class="nav-btn-icon">📖</span>
+          <span class="nav-btn-label">Guide</span>
+        </button>
       </div>
     </div>
 
@@ -2102,7 +2370,7 @@
         <div class="pro-feature-item"><span>🪟</span> <span><b>Windscreen HUD Mode</b> (වීදුරුවට පෙනෙන Head-Up Display)</span></div>
         <div class="pro-feature-item"><span>🚨</span> <span><b>Police Fine Vault</b> (ලියකියවිලි කල් ඉකුත්වීමේ මතක් කිරීම්)</span></div>
         <div class="pro-feature-item"><span>🔧</span> <span><b>Engine Oil & Service Tracker</b> (එන්ජින් ලෙඩ නැති සර්විස් මීටරය)</span></div>
-        <div class="pro-feature-item"><span>🔊</span> <span><b>English Tourist Voice Guide</b> (සුද්දන් සඳහා විදේශීය හඬ සහායක)</span></div>
+        <div class="pro-feature-item"><span>🔊</span> <span><b>English Tourist Voice Guide</b> (විදේශිකයන් සඳහා විදේශීය හඬ සහායක)</span></div>
         <div class="pro-feature-item"><span>⛽</span> <span><b>Fuel & Net Profit Tracker</b> (තෙල් වියදම සහ ශුද්ධ ලාභය)</span></div>
         <div class="pro-feature-item"><span>🎯</span> <span><b>Daily Target Tracker</b> (දෛනික ආදායම් ඉලක්කය)</span></div>
         <div class="pro-feature-item"><span>📄</span> <span><b>Bank / Leasing Income Certificate</b> (ණය සඳහා ආදායම් සහතික වාර්තාව)</span></div>
@@ -2234,6 +2502,12 @@
         
         <h4>6. සහය සහ විමසීම් (Contact & Support)</h4>
         <p>ඕනෑම තාක්ෂණික ගැටලුවක් හෝ විමසීමක් සඳහා NexiaPro නිල WhatsApp සහය සේවාව අමතන්න.</p>
+
+        <h4>7. ලියකියවිලි සහ වාහන දත්ත පෞද්ගලිකත්වය (Vehicle Documents & Service Privacy)</h4>
+        <p>ආදායම් බලපත්‍රය, රක්ෂණ සහතිකය, දුම් සහතිකය හෝ එන්ජින් ඔයිල් සර්විස් දින සටහන් කිසිදු බාහිර සර්වරයකට හෝ තෙවන පාර්ශවයකට යැවීමක් සිදු නොවේ. සියල්ල ඔබගේ දුරකථනයේ පමණක් ආරක්ෂිතව ගබඩා වන අතර පොලිස් දඩ වලින් ඔබව දැනුවත් කිරීමට පමණක් යොදා ගැනේ.</p>
+
+        <h4>8. මූල්‍ය සහ ආදායම් ඉලක්ක රහස්‍යභාවය (Financial & Target Privacy)</h4>
+        <p>ඔබගේ දෛනික ආදායම් ඉලක්ක (Daily Targets), තෙල් වියදම් ගණනය කිරීම් සහ ශුද්ධ ලාභ වාර්තා රියදුරුගේ පෞද්ගලික රහස්‍ය දත්ත වන අතර ඒවා බාහිර කිසිදු ආයතනයක් සමඟ බෙදා නොගනී.</p>
       </div>
 
       <div class="modal-buttons" style="margin-top: 12px;">
@@ -2311,14 +2585,94 @@
             • දින 30ක හෝ වාර්ෂික PRO බලපත්‍රය සක්‍රීය කිරීමට ඉහළ ඇති <b>"👑 PRO"</b> බොත්තම ඔබා ඔබේ Device ID එක ලබාගෙන Activation Key එක ලබාගන්න.
           </div>
         </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🪟 8. Windscreen HUD Mode (වීදුරුවට පෙනෙන Head-Up Display)</div>
+          <div class="guide-item-body">
+            • රාත්‍රී ධාවනයේදී Quick Bar එකේ ඇති <b>"🪟 HUD Mode"</b> බොත්තම ඔබා දුරකථනය Dashboard එක මත තබන්න.<br>
+            • මීටරයේ වේගය සහ ගාස්තුව ඉදිරිපස වීදුරුවේ පරාවර්තනය වී පෙනෙන නිසා පාරෙන් දෑස් ඉවතට නොගෙන ආරක්ෂිතව ධාවනය කළ හැක.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🚨 9. Police Fine Vault (පොලිස් දඩ වලින් බේරෙන ලියකියවිලි)</div>
+          <div class="guide-item-body">
+            • <b>"🧰 Tools" ➔ "🚨 ලියකියවිලි"</b> වෙත ගොස් ඔබේ ආදායම් බලපත්‍රය, රක්ෂණය, දුම් සහතිකය කල් ඉකුත්වන දිනයන් ඇතුළත් කර තබන්න.<br>
+            • දින 14කට පෙර Warning Alert මඟින් මතක් කරන බැවින් පොලිස් දඩ වලින් 100% බේරී සිටිය හැක.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🔧 10. Engine Oil & Service Tracker (එන්ජින් ලෙඩ නැති සර්විස් මීටරය)</div>
+          <div class="guide-item-body">
+            • <b>"🧰 Tools" ➔ "🔧 සර්විස්"</b> මඟින් සෑම කි.මී. 1,500 කට වරක් එන්ජින් ඔයිල් මාරු කිරීමට ඉතිරි දුර ස්වයංක්‍රීයව සටහන් වේ.<br>
+            • ඔයිල් මාරු කළ පසු "Reset" බොත්තම ඔබා නැවත කි.මී. 1500 කවුන්ටරය ආරම්භ කරන්න.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">⛽ 11. Fuel Expense & Daily Target (තෙල් වියදම, ලාභය සහ ඉලක්කය)</div>
+          <div class="guide-item-body">
+            • <b>"⛽ තෙල් & ලාභය"</b> ටැබ් එකෙන් ධාවනය කළ දුරට වැය වූ තෙල් වියදම අඩු කර දවසේ අතට ලැබෙන ශුද්ධ ලාභය (Take-home Profit) ක්ෂණිකව බලාගන්න.<br>
+            • <b>"🎯 ඉලක්කය"</b> මඟින් ඔබේ දෛනික ආදායම් ඉලක්කය (උදා: Rs. 5,000) සකසා, එය සම්පූර්ණ වූ විට ජයග්‍රාහී හඬ සහ බැනරය ලබාගන්න.
+          </div>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title">🔊 12. English Tourist Voice Guide (විදේශිකයන් සඳහා විදේශීය හඬ සහායක)</div>
+          <div class="guide-item-body">
+            • විදේශීය සංචාරකයින් රථයට නැගි විට Quick Bar හි <b>"🔊 Voice"</b> බොත්තම ඔබා <b>Voice: EN (English)</b> තෝරන්න.<br>
+            • ගමන ආරම්භයේදී, අවසානයේදී සහ අවසන් ගාස්තුව ස්වයංක්‍රීයව විදේශිකයින්ට ඉංග්‍රීසි බසින් පවසන නිසා වැඩිපුර Tips සහ විශ්වාසය දිනාගත හැක.
+          </div>
+        </div>
       </div>
 
-      <div class="modal-buttons">
+      <div class="modal-buttons" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="save-btn" onclick="startOnboardingTour(true)" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; font-weight: bold; width: 100%;">
+          🚀 App Interactive Tour එක නරඹන්න (Replay Tour)
+        </button>
         <button class="save-btn" onclick="closeGuideModal()" style="background: #f59e0b; color: #0f172a; font-weight: bold; width: 100%;">
           තේරුම් ගතිමි (Close Guide)
         </button>
       </div>
     </div>
+
+    <!-- ==================== ONBOARDING WELCOME TOUR MODAL ==================== -->
+    <div class="modal onboarding-modal" id="onboardingTourModal">
+      <div class="onboarding-card">
+        <div class="onboarding-top-bar">
+          <span class="tour-step-badge" id="tourStepBadge">1 / 5 පියවර</span>
+          <button class="tour-skip-btn" onclick="skipOnboardingTour()">ඉවතලන්න (Skip) ✕</button>
+        </div>
+
+        <div id="tourSlideBox">
+          <div class="tour-icon-box" id="tourIconDisplay">🛺✨</div>
+          <br>
+          <span class="tour-tag-pill" id="tourTagDisplay">ශ්‍රී ලංකාවේ #1 GPS මීටරය</span>
+          <h3 class="tour-title" id="tourTitleDisplay">TukTuk Pro™ වෙත සාදරයෙන් පිළිගනිමු!</h3>
+          <div class="tour-desc" id="tourDescDisplay">
+            ලංකාවේ ත්‍රිරෝද රථ සහ කුලී රථ රියදුරු මහත්වරුන් සඳහාම නිර්මාණය කරන ලද නවීනතම ඩිජිටල් GPS මීටර් පද්ධතියයි.
+          </div>
+          <div class="tour-perk-box" id="tourPerkDisplay">
+            🎁 ඔබ වෙනුවෙන්ම <b>දින 7ක නොමිලේ Pro Trial</b> එකක් ස්වයංක්‍රීයව සක්‍රීය කර ඇත!
+          </div>
+        </div>
+
+        <div class="tour-dots-row" id="tourDotsContainer">
+          <span class="tour-dot active" onclick="jumpTourStep(0)"></span>
+          <span class="tour-dot" onclick="jumpTourStep(1)"></span>
+          <span class="tour-dot" onclick="jumpTourStep(2)"></span>
+          <span class="tour-dot" onclick="jumpTourStep(3)"></span>
+          <span class="tour-dot" onclick="jumpTourStep(4)"></span>
+        </div>
+
+        <div class="tour-actions-row">
+          <button class="tour-btn-prev" id="tourPrevBtn" onclick="prevTourStep()" style="display: none;">⬅ පෙරට</button>
+          <button class="tour-btn-next" id="tourNextBtn" onclick="nextTourStep()">ඉදිරියට ➔</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== DRIVER TOOLS MODAL ==================== -->
     <div class="modal" id="driverToolsModal">
       <div class="modal-header">
@@ -5045,6 +5399,142 @@
       }, 500);
     }
 
+    // ==================== ONBOARDING WELCOME TOUR LOGIC ====================
+    const TOUR_SLIDES = [
+      {
+        icon: "🛺✨",
+        tag: "ශ්‍රී ලංකාවේ #1 GPS මීටරය",
+        title: "TukTuk Pro™ වෙත සාදරයෙන් පිළිගනිමු!",
+        desc: "ලංකාවේ ත්‍රිරෝද රථ සහ කුලී රථ රියදුරු මහත්වරුන් සඳහාම විශේෂයෙන් නිර්මාණය කරන ලද නවීනතම ඩිජිටල් GPS මීටර් පද්ධතියයි.",
+        perk: "🎁 ඔබ වෙනුවෙන්ම <b>දින 7ක නොමිලේ Pro Trial</b> එකක් ස්වයංක්‍රීයව සක්‍රීය කර ඇත!"
+      },
+      {
+        icon: "🟢⏱️",
+        tag: "පහසු සහ නිවැරදි ගාස්තු",
+        title: "1-Tap මඟින් ගමන ආරම්භය සහ නිමාව",
+        desc: "මගියා නැගි පසු පහළ ඇති කොළ පැහැති <b>START TRIP</b> ඔබන්න. දුර, වේලාව, සහ Waiting කාලය මීටරය විසින්ම නිවැරදිව ගණනය කරයි.",
+        perk: "🌙 රාත්‍රී 10:00 න් පසු ඉහළින් <b>Night Rate (+15%)</b> සක්‍රීය කරගත හැක."
+      },
+      {
+        icon: "🧰🛡️",
+        tag: "රියදුරු ආරක්ෂණ පද්ධතිය",
+        title: "පොලිස් දඩ වලින් බේරෙන Pro Tools",
+        desc: "ඉහළ ඇති <b>🧰 Tools</b> මඟින් ආදායම් බලපත්‍ර සහ රක්ෂණ කල් ඉකුත්වීමේ <b>Police Fine Alerts</b> ලබාගන්න. එන්ජිම ලෙඩ නොවී තබාගන්න <b>Oil Service Tracker</b> ද මෙහි ඇත.",
+        perk: "⛽ දෛනික තෙල් වියදම අඩුකර ශුද්ධ ලාභය සහ Daily Target එක එකවර මැනගත හැක."
+      },
+      {
+        icon: "🪟🔊",
+        tag: "නවීනතම තාක්ෂණය",
+        title: "Windscreen HUD & විදේශීය හඬ සහායක",
+        desc: "රාත්‍රියේදී දුරකථනය Dashboard එක මත තබා ඉදිරිපස වීදුරුවට මීටරය පරාවර්තනය වන <b>Windscreen HUD Mode</b> එක ක්‍රියාත්මක කළ හැක.",
+        perk: "🔊 විදේශීය මගීන් සඳහා <b>English Tourist Voice Guide</b> ද මෙහි ඇත."
+      },
+      {
+        icon: "💳🪪",
+        tag: "මුදල් නැති මගීන්ට පහසුකම්",
+        title: "ඩිජිටල් හැඳුනුම්පත සහ LankaQR",
+        desc: "ඔබගේ නිල <b>Digital ID Card</b> එක සහ WhatsApp QR එක මගීන්ට පෙන්වන්න. ගමන අවසානයේ <b>LankaQR</b> මඟින් ඕනෑම බැංකු ඇප් එකකින් මුදල් ලබාගත හැක.",
+        perk: "🚀 සියලුම පහසුකම් සූදානම්. දැන් ඔබට පළමු හයර් එක ආරම්භ කළ හැක!"
+      }
+    ];
+
+    let currentTourStep = 0;
+
+    function renderTourStep() {
+      const slide = TOUR_SLIDES[currentTourStep];
+      if (!slide) return;
+
+      const badge = document.getElementById("tourStepBadge");
+      const icon = document.getElementById("tourIconDisplay");
+      const tag = document.getElementById("tourTagDisplay");
+      const title = document.getElementById("tourTitleDisplay");
+      const desc = document.getElementById("tourDescDisplay");
+      const perk = document.getElementById("tourPerkDisplay");
+      const prevBtn = document.getElementById("tourPrevBtn");
+      const nextBtn = document.getElementById("tourNextBtn");
+
+      if (badge) badge.innerText = `${currentTourStep + 1} / ${TOUR_SLIDES.length} පියවර`;
+      if (icon) icon.innerText = slide.icon;
+      if (tag) tag.innerText = slide.tag;
+      if (title) title.innerText = slide.title;
+      if (desc) desc.innerHTML = slide.desc;
+      if (perk) perk.innerHTML = slide.perk;
+
+      // Update Dots
+      const dotsContainer = document.getElementById("tourDotsContainer");
+      if (dotsContainer) {
+        const dots = dotsContainer.querySelectorAll(".tour-dot");
+        dots.forEach((d, idx) => {
+          d.classList.toggle("active", idx === currentTourStep);
+        });
+      }
+
+      // Prev & Next Buttons
+      if (prevBtn) {
+        prevBtn.style.display = currentTourStep === 0 ? "none" : "block";
+      }
+
+      if (nextBtn) {
+        if (currentTourStep === TOUR_SLIDES.length - 1) {
+          nextBtn.innerHTML = "🚀 ආරම්භ කරන්න (Start) 🎉";
+          nextBtn.classList.add("finish-btn");
+        } else {
+          nextBtn.innerHTML = "ඉදිරියට (Next) ➔";
+          nextBtn.classList.remove("finish-btn");
+        }
+      }
+    }
+
+    function nextTourStep() {
+      if (currentTourStep < TOUR_SLIDES.length - 1) {
+        currentTourStep++;
+        renderTourStep();
+      } else {
+        finishOnboardingTour();
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourStep > 0) {
+        currentTourStep--;
+        renderTourStep();
+      }
+    }
+
+    function jumpTourStep(step) {
+      if (step >= 0 && step < TOUR_SLIDES.length) {
+        currentTourStep = step;
+        renderTourStep();
+      }
+    }
+
+    function startOnboardingTour(force = false) {
+      currentTourStep = 0;
+      renderTourStep();
+      const modal = document.getElementById("onboardingTourModal");
+      if (modal) modal.classList.add("show");
+      if (force) {
+        closeGuideModal();
+      }
+    }
+
+    function skipOnboardingTour() {
+      localStorage.setItem("tuktuk_onboarding_completed", "true");
+      const modal = document.getElementById("onboardingTourModal");
+      if (modal) modal.classList.remove("show");
+      playBeep('start');
+      showToast("TukTuk Pro වෙත සාදරයෙන් පිළිගනිමු! 🛺");
+    }
+
+    function finishOnboardingTour() {
+      localStorage.setItem("tuktuk_onboarding_completed", "true");
+      const modal = document.getElementById("onboardingTourModal");
+      if (modal) modal.classList.remove("show");
+      playBeep('start');
+      setTimeout(() => playBeep('start'), 250);
+      showToast("🎉 සුබ පැතුම්! Pro Trial සක්‍රීයයි! සුභ ගමනක් වේවා!");
+    }
+
     // Initialize on Page Load
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedSettings();
@@ -5053,6 +5543,13 @@
       getDeviceId();
       updateProUI();
       setTimeout(initGoogleSignIn, 600);
+
+      // Check first-time driver onboarding tour
+      setTimeout(() => {
+        if (!localStorage.getItem('tuktuk_onboarding_completed')) {
+          startOnboardingTour();
+        }
+      }, 700);
     });
   </script>
 </body>
