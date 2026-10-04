@@ -765,17 +765,57 @@ Output strictly valid JSON with this schema:
           }
         };
 
-        const candidateModels = [
-          'gemini-2.5-flash',
-          'gemini-2.0-flash',
-          'gemini-2.5-flash-lite',
-          'gemini-1.5-flash-latest'
-        ];
+        // Dynamic Model Discovery: Ask Google which models support generateContent for this key
+        let targetModels = [];
+        try {
+          const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey.trim()}`;
+          const listResp = await fetch(listUrl);
+          if (listResp.ok) {
+            const listData = await listResp.json();
+            if (listData.models && Array.isArray(listData.models)) {
+              const capable = listData.models.filter(m => 
+                m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
+              ).map(m => m.name.replace(/^models\//, ''));
+
+              // Sort with preference: flash models first, then others
+              capable.sort((a, b) => {
+                const aFlash = a.includes('flash') ? 1 : 0;
+                const bFlash = b.includes('flash') ? 1 : 0;
+                return bFlash - aFlash;
+              });
+
+              if (capable.length > 0) {
+                targetModels = capable;
+                console.log("Discovered available Gemini models:", targetModels);
+              }
+            }
+          } else {
+            const errTxt = await listResp.text();
+            console.warn("ListModels endpoint returned status:", listResp.status, errTxt);
+            if (listResp.status === 400 || listResp.status === 403) {
+              throw new Error("API Key එක වැරදියි හෝ අක්‍රීයයි (Invalid API Key). කරුණාකර නිවැරදි Google AI Studio Key එක ඇතුළත් කරන්න.");
+            }
+          }
+        } catch (e) {
+          if (e.message && e.message.includes("Invalid API Key")) throw e;
+          console.warn("Dynamic discovery error, using default list:", e);
+        }
+
+        // Fallback list if discovery didn't find models
+        if (targetModels.length === 0) {
+          targetModels = [
+            'gemini-2.5-flash',
+            'gemini-2.0-flash',
+            'gemini-2.5-flash-lite',
+            'gemini-1.5-flash-8b',
+            'gemini-1.5-pro'
+          ];
+        }
 
         let data = null;
         let lastError = null;
 
-        for (const model of candidateModels) {
+        for (const model of targetModels) {
           try {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`;
             const resp = await fetch(apiUrl, {
@@ -789,9 +829,7 @@ Output strictly valid JSON with this schema:
               console.log(`Gemini analysis succeeded using model: ${model}`);
               break;
             } else if (resp.status === 404) {
-              const errTxt = await resp.text();
               console.warn(`Model ${model} returned 404, trying next...`);
-              lastError = new Error(`Gemini model ${model} unavailable: ${errTxt}`);
               continue;
             } else {
               const errText = await resp.text();
@@ -807,12 +845,18 @@ Output strictly valid JSON with this schema:
         }
 
         if (!data) {
-          throw lastError || new Error("Gemini AI models නොමැත. API Key එක නැවත පරීක්ෂා කරන්න.");
+          throw lastError || new Error("Gemini AI models වෙත සම්බන්ධ විය නොහැක. API Key එක පරීක්ෂා කරන්න.");
         }
-        const rawJsonText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text;
+
+        let rawJsonText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text;
         
         if (!rawJsonText) {
           throw new Error("Gemini AI වෙතින් ප්‍රතිචාරයක් නොලැබුණි.");
+        }
+
+        rawJsonText = rawJsonText.trim();
+        if (rawJsonText.startsWith("```")) {
+          rawJsonText = rawJsonText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
         }
 
         const res = JSON.parse(rawJsonText);
