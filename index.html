@@ -2001,7 +2001,10 @@
     <div class="map-container" id="mapContainer">
       <div class="map-header">
         <span>📍 සජීවී ගමන් මාර්ගය (Live Path)</span>
-        <span id="mapPointCount">ලක්ෂ්‍ය: 0</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span id="mapPointCount">ලක්ෂ්‍ය: 0</span>
+          <button onclick="recenterMapToUser()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; cursor: pointer; font-weight: 600;" title="මගේ ස්ථානයට සිතියම ගෙන එන්න">🎯 My Location</button>
+        </div>
       </div>
       <div id="map"></div>
     </div>
@@ -2030,7 +2033,7 @@
           <div class="receipt-divider"></div>
           <div class="receipt-row"><span>Receipt ID:</span><span id="rcptId">#TK-1001</span></div>
           <div class="receipt-row"><span>දිනය (Date):</span><span id="rcptDate">2026-10-02</span></div>
-          <div class="receipt-row"><span>කාලය (Time):</span><span id="rcptTime">07:30 PM - 07:45 PM</span></div>
+          <div class="receipt-row"><span>කාලය (Time):</span><span id="rcptTime">Start 02:45 PM &nbsp; End 02:45 PM</span></div>
           <div class="receipt-divider"></div>
           <div class="receipt-row"><span>මුළු දුර (Distance):</span><span id="rcptDist">4.20 km</span></div>
           <div class="receipt-row"><span>Waiting කාලය:</span><span id="rcptWait">03:15 min</span></div>
@@ -2044,8 +2047,8 @@
           <div class="receipt-divider"></div>
           <div class="receipt-row bold"><span>මුළු ගාස්තුව (TOTAL):</span><span id="rcptTotal">Rs. 426.00</span></div>
           <div class="receipt-divider"></div>
-          <div style="text-align: center; font-size: 0.72rem; color: #64748b; margin-top: 4px;">
-            ස්තූතියි! සුභ ගමනක් වේවා! 🙏
+          <div style="text-align: center; font-size: 0.74rem; font-weight: 600; color: #64748b; margin-top: 4px;">
+            ස්තූතියි! නැවත එන්න! 🙏
           </div>
         </div>
 
@@ -2501,7 +2504,13 @@
         <p><b>NexiaPro™</b> සහ <b>TukTuk Pro™</b> යනු NexiaPro Technologies සතු නිල වෙළඳ ලකුණු වේ. මෙම යෙදුමේ කේත, අතුරුමුහුණත් සහ බුද්ධිමය දේපළ අවසරයකින් තොරව පිටපත් කිරීම, වෙනස් කිරීම හෝ ප්‍රතිවිකිණීම නීතියෙන් තහනම් වේ.</p>
         
         <h4>6. සහය සහ විමසීම් (Contact & Support)</h4>
-        <p>ඕනෑම තාක්ෂණික ගැටලුවක් හෝ විමසීමක් සඳහා NexiaPro නිල WhatsApp සහය සේවාව අමතන්න.</p>
+        <p>ඕනෑම තාක්ෂණික ගැටලුවක්, අදහසක් හෝ විමසීමක් සඳහා NexiaPro නිල සහය සේවාව අමතන්න:</p>
+        <p style="margin: 6px 0;">
+          📧 <b>Email:</b> <a href="mailto:supportnexiapro@gmail.com?subject=TukTuk%20Pro%20Support%20Inquiry" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: underline;">supportnexiapro@gmail.com</a>
+        </p>
+        <p style="margin: 6px 0;">
+          📲 <b>WhatsApp:</b> <a href="https://api.whatsapp.com/send?phone=94771234567&text=TukTuk%20Pro%20Support" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: underline;">NexiaPro WhatsApp Desk</a>
+        </p>
 
         <h4>7. ලියකියවිලි සහ වාහන දත්ත පෞද්ගලිකත්වය (Vehicle Documents & Service Privacy)</h4>
         <p>ආදායම් බලපත්‍රය, රක්ෂණ සහතිකය, දුම් සහතිකය හෝ එන්ජින් ඔයිල් සර්විස් දින සටහන් කිසිදු බාහිර සර්වරයකට හෝ තෙවන පාර්ශවයකට යැවීමක් සිදු නොවේ. සියල්ල ඔබගේ දුරකථනයේ පමණක් ආරක්ෂිතව ගබඩා වන අතර පොලිස් දඩ වලින් ඔබව දැනුවත් කිරීමට පමණක් යොදා ගැනේ.</p>
@@ -2623,6 +2632,14 @@
           <div class="guide-item-body">
             • විදේශීය සංචාරකයින් රථයට නැගි විට Quick Bar හි <b>"🔊 Voice"</b> බොත්තම ඔබා <b>Voice: EN (English)</b> තෝරන්න.<br>
             • ගමන ආරම්භයේදී, අවසානයේදී සහ අවසන් ගාස්තුව ස්වයංක්‍රීයව විදේශිකයින්ට ඉංග්‍රීසි බසින් පවසන නිසා වැඩිපුර Tips සහ විශ්වාසය දිනාගත හැක.
+          </div>
+        </div>
+
+        <div class="guide-item" style="border-left: 3px solid #38bdf8;">
+          <div class="guide-item-title">📩 13. සහය සහ විමසීම් (Official Help & Support)</div>
+          <div class="guide-item-body">
+            • ඕනෑම තාක්ෂණික ගැටලුවක්, ගෙවීම් ගැටලුවක් හෝ අදහසක් සඳහා අපගේ නිල විද්‍යුත් තැපෑල අමතන්න:<br>
+            <a href="mailto:supportnexiapro@gmail.com?subject=TukTuk%20Pro%20Support%20Inquiry" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: underline; display: inline-block; margin-top: 5px;">✉️ supportnexiapro@gmail.com</a>
           </div>
         </div>
       </div>
@@ -2863,6 +2880,8 @@
     </div>
     <div class="footer-links">
       <a href="javascript:void(0)" onclick="openPrivacyModal()">Privacy Policy & Terms</a>
+      <span style="color: #475569; margin: 0 4px;">•</span>
+      <a href="mailto:supportnexiapro@gmail.com?subject=TukTuk%20Pro%20Support" target="_blank" style="color: #38bdf8; text-decoration: underline;">📩 supportnexiapro@gmail.com</a>
     </div>
     <div class="footer-copy">
       © 2026 NexiaPro™. All Rights Reserved.
@@ -3133,7 +3152,7 @@
         const fare = Math.round(payload.fare || 0);
         if (lang === 'en') phrase = `Trip completed. Your total fare is ${fare} Rupees. Thank you for riding with us, have a wonderful stay in Sri Lanka!`;
         else if (lang === 'ta') phrase = `பயணம் முடிந்தது. மொத்த கட்டணம் ${fare} ரூபாய்.`;
-        else phrase = `Trip එක අවසන් විය. මුළු ගාස්තුව රුපියල් ${fare}යි. ස්තූතියි!`;
+        else phrase = `Trip එක අවසන් විය. මුළු ගාස්තුව රුපියල් ${fare}යි. ස්තූතියි, නැවත එන්න!`;
       } else if (type === 'overspeed') {
         if (lang === 'en') phrase = "Speed limit exceeded. Please slow down for safety.";
         else if (lang === 'ta') phrase = "வேக எல்லை தாண்டப்பட்டது. தயவுசெய்து வேகத்தை குறைக்கவும்.";
@@ -3290,6 +3309,68 @@
     let currentMarker = null;
     let routeCoordinates = [];
 
+    function fetchInitialLocation() {
+      if (!navigator.geolocation) return;
+
+      const applyLocation = (pos) => {
+        if (!pos || !pos.coords) return;
+        const { latitude, longitude, accuracy } = pos.coords;
+        const currentLatLng = [latitude, longitude];
+
+        if (map) {
+          map.setView(currentLatLng, 16);
+          map.invalidateSize();
+
+          // If trip is NOT currently active, show/update the driver's current position marker
+          if (!watchId) {
+            if (!currentMarker) {
+              currentMarker = L.circleMarker(currentLatLng, {
+                radius: 9,
+                fillColor: '#0284c7',
+                color: '#ffffff',
+                weight: 3,
+                fillOpacity: 1
+              }).addTo(map);
+            } else {
+              currentMarker.setLatLng(currentLatLng);
+            }
+            currentMarker.bindPopup(`📍 <b>ඔබගේ වත්මන් ස්ථානය</b><br><span style="font-size:0.75rem; color:#64748b;">(GPS නිරවද්‍යතාව: ±${Math.round(accuracy || 15)}m)</span>`);
+          }
+        }
+        updateGpsUI(accuracy);
+      };
+
+      // Tier 1: Fast response from cache or cell/Wi-Fi (immediate response on mobile)
+      navigator.geolocation.getCurrentPosition(
+        (pos) => applyLocation(pos),
+        (err) => console.warn("Quick GPS position notice:", err),
+        { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
+      );
+
+      // Tier 2: High precision GPS satellite fix
+      navigator.geolocation.getCurrentPosition(
+        (pos) => applyLocation(pos),
+        (err) => {
+          console.warn("High accuracy GPS attempt timed out or failed:", err);
+          // Tier 3: Fallback standard request with longer timeout if indoors
+          navigator.geolocation.getCurrentPosition(
+            (pos) => applyLocation(pos),
+            (err2) => console.warn("Standard fallback GPS error:", err2),
+            { enableHighAccuracy: false, timeout: 12000 }
+          );
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    function recenterMapToUser() {
+      if (currentMarker && map) {
+        map.setView(currentMarker.getLatLng(), 16);
+        currentMarker.openPopup();
+      }
+      fetchInitialLocation();
+    }
+
     function initMap() {
       try {
         if (typeof L === 'undefined') {
@@ -3328,22 +3409,8 @@
           if (map) map.invalidateSize();
         }, 400);
 
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              const { latitude, longitude, accuracy } = pos.coords;
-              if (map) {
-                map.setView([latitude, longitude], 15);
-                map.invalidateSize();
-              }
-              updateGpsUI(accuracy);
-            },
-            (err) => {
-              console.warn("Initial GPS position error:", err);
-            },
-            { enableHighAccuracy: true, timeout: 6000 }
-          );
-        }
+        // Fetch user location immediately upon app load
+        fetchInitialLocation();
       } catch (err) {
         console.error("Map initialization error:", err);
       }
@@ -3512,8 +3579,14 @@
         updateFare();
 
         if (routePolyline) routePolyline.setLatLngs([]);
-        if (startMarker) map.removeLayer(startMarker);
-        if (currentMarker) map.removeLayer(currentMarker);
+        if (startMarker) {
+          map.removeLayer(startMarker);
+          startMarker = null;
+        }
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+          currentMarker = null;
+        }
 
         startTripTimers();
 
@@ -3775,7 +3848,11 @@
       document.getElementById("rcptVehicleLine").innerText = `Vehicle: ${trip.vehicleNo} | Driver: ${trip.driverName}`;
       document.getElementById("rcptId").innerText = `#${trip.id}`;
       document.getElementById("rcptDate").innerText = trip.date;
-      document.getElementById("rcptTime").innerText = `${trip.startTime} - ${trip.endTime}`;
+
+      const sTime = trip.startTime || '--:--';
+      const eTime = trip.endTime || '--:--';
+      document.getElementById("rcptTime").innerHTML = `Start ${sTime} &nbsp; End ${eTime}`;
+
       document.getElementById("rcptDist").innerText = `${trip.distance} km`;
       document.getElementById("rcptWait").innerText = `${trip.waitingTimeStr} min`;
       document.getElementById("rcptBase").innerText = `Rs. ${trip.baseFare}`;
@@ -3805,6 +3882,7 @@
 
     function closeReceiptModal() {
       document.getElementById("receiptModal").classList.remove("show");
+      fetchInitialLocation();
     }
 
     function switchReceiptTab(tab) {
@@ -3886,6 +3964,9 @@
 
       const fairGuarantee = pro.isPro ? '\n✅ *රජයේ ප්‍රමිතියට අනුව සහතික කළ සාධාරණ මීටර් ගාස්තු පමණි.*' : '';
 
+      const sTime = trip.startTime || '--:--';
+      const eTime = trip.endTime || '--:--';
+
       const msg = 
 `🛺 *TUK TUK METER PRO RECEIPT*
 ━━━━━━━━━━━━━━━━━━
@@ -3894,7 +3975,7 @@
 👤 *රියදුරු:* ${trip.driverName}${proBadge}
 🆔 *Receipt No:* #${trip.id}
 📅 *දිනය:* ${trip.date}
-⏰ *වේලාව:* ${trip.startTime} - ${trip.endTime}
+⏰ *වේලාව:* Start ${sTime}  End ${eTime}
 ━━━━━━━━━━━━━━━━━━
 📍 *මුළු දුර:* ${trip.distance} km
 ⏳ *Waiting කාලය:* ${trip.waitingTimeStr} min
@@ -3906,7 +3987,7 @@
 💵 *මුළු ගාස්තුව:* *Rs. ${trip.totalFare}*${bankBlock}
 ━━━━━━━━━━━━━━━━━━${fairGuarantee}
 ✨ Powered by *NexiaPro™ Sri Lanka*
-ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
+ස්තූතියි! නැවත එන්න! 🙏`;
 
       const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, '_blank');
@@ -4829,6 +4910,7 @@
         localStorage.setItem('tuktuk_driver_profile', JSON.stringify(driverProfile));
 
         updateDriverProfileUI();
+        fetchInitialLocation();
         showToast(`Google Login සාර්ථකයි! සාදරයෙන් පිළිගනිමු, ${data.name}! 🎉`);
       }
     }
