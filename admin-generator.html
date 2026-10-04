@@ -580,6 +580,9 @@
       z-index: 1000;
     }
   </style>
+  <!-- Firebase Cloud Firestore SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -917,6 +920,50 @@
             <button type="button" onclick="copyBankDetailsForWhatsApp()" style="background: #1e293b; border: 1px solid #475569; color: #38bdf8; border-radius: 10px; padding: 10px 14px; font-weight: bold; cursor: pointer; font-size: 0.78rem;">
               📋 WhatsApp Text Copy
             </button>
+          </div>
+        </div>
+
+        <!-- Google Firebase Cloud Firestore Card -->
+        <div class="settings-card" style="border: 1.5px solid #0284c7;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="color: #38bdf8; margin: 0;">☁️ Google Firebase Cloud Database (Real-time Sync)</h3>
+            <span id="fbSettingsBadge" style="font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; background: #334155; color: #94a3b8;">DISCONNECTED</span>
+          </div>
+          
+          <div style="font-size: 0.72rem; color: #cbd5e1; margin-bottom: 12px; line-height: 1.45;">
+            Google Firebase Cloud Firestore නොමිලේ සම්බන්ධ කරගැනීමෙන්, ඔබගේ සියලුම සාමාජික වාර්තා සහ ආදායම් දත්ත <b>Cloud එකේ Real-time Sync වේ</b>. Phone එකෙන් හෝ Laptop එකෙන් ඕනෑම තැනක සිට විවෘත කළ විට සියලුම දත්ත එකවර Update වේ.
+          </div>
+
+          <div class="form-group">
+            <label>Firebase Web App Config (JSON හෝ Code Snippet):</label>
+            <textarea id="firebaseConfigInput" rows="5" placeholder='const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "tuktuk-meter-admin.firebaseapp.com",
+  projectId: "tuktuk-meter-admin",
+  storageBucket: "tuktuk-meter-admin.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};' style="width: 100%; background: #020617; border: 1px solid #334155; color: #38bdf8; font-family: monospace; font-size: 0.72rem; border-radius: 8px; padding: 8px; outline: none; resize: vertical;"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button type="button" class="primary-btn" onclick="saveAndConnectFirebase()" style="flex: 1; min-width: 160px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 0.78rem;">
+              🔌 සම්බන්ධ කරන්න (Connect Firebase)
+            </button>
+            <button type="button" id="btnUploadLocalToCloud" onclick="uploadAllLocalToFirestore()" style="background: #1e293b; border: 1px solid #0284c7; color: #38bdf8; border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: none;">
+              ⬆️ Local Data Cloud එකට දමන්න
+            </button>
+            <button type="button" id="btnDisconnectFb" onclick="disconnectFirebase()" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: none;">
+              ❌ Disconnect
+            </button>
+          </div>
+
+          <div style="font-size: 0.68rem; color: #94a3b8; line-height: 1.4;">
+            👉 <b>Firebase නොමිලේ සාදාගන්නා පියවර:</b><br>
+            1. <a href="https://console.firebase.google.com" target="_blank" style="color: #38bdf8; text-decoration: underline;">Firebase Console වෙත යන්න ➔</a><br>
+            2. <b>Add Project</b> ක්ලික් කර නමක් දෙන්න (උදා: <code>tuktuk-meter-admin</code>).<br>
+            3. වම්පස Menu එකෙන් <b>Build ➔ Firestore Database</b> තෝරා <b>Create Database</b> ඔබන්න (Test Mode තෝරන්න).<br>
+            4. Project Settings (⚙️) ➔ General ➔ <b>Your Apps</b> වෙතින් Web (<code>&lt;/&gt;</code>) icon එක ක්ලික් කර App එකක් Register කර <b>firebaseConfig</b> එක මෙතනට Paste කරන්න.
           </div>
         </div>
 
@@ -1363,6 +1410,223 @@ Output strictly valid JSON with this schema:
       }
     }
 
+    // ==================== FIREBASE CLOUD FIRESTORE REAL-TIME SYNC ====================
+    let firebaseApp = null;
+    let firestoreDb = null;
+    let firestoreUnsubscribe = null;
+    let isFirebaseActive = false;
+
+    function parseFirebaseConfig(raw) {
+      if (!raw) return null;
+      raw = raw.trim();
+      if (raw.startsWith('{') && raw.endsWith('}')) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      const objMatch = raw.match(/\{[\s\S]*\}/);
+      if (objMatch) {
+        try {
+          const jsonLike = objMatch[0]
+            .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":')
+            .replace(/'/g, '"')
+            .replace(/,\s*\}/g, '}');
+          return JSON.parse(jsonLike);
+        } catch (e) {
+          const apiKey = (raw.match(/apiKey\s*:\s*["']([^"']+)["']/) || [])[1];
+          const projectId = (raw.match(/projectId\s*:\s*["']([^"']+)["']/) || [])[1];
+          const authDomain = (raw.match(/authDomain\s*:\s*["']([^"']+)["']/) || [])[1];
+          const appId = (raw.match(/appId\s*:\s*["']([^"']+)["']/) || [])[1];
+          const storageBucket = (raw.match(/storageBucket\s*:\s*["']([^"']+)["']/) || [])[1];
+          const messagingSenderId = (raw.match(/messagingSenderId\s*:\s*["']([^"']+)["']/) || [])[1];
+          if (apiKey && projectId) {
+            return { apiKey, projectId, authDomain, appId, storageBucket, messagingSenderId };
+          }
+        }
+      }
+      return null;
+    }
+
+    function updateFirebaseStatusUI(connected, text) {
+      const dot = document.getElementById("firebaseStatusDot");
+      const txt = document.getElementById("firebaseStatusText");
+      const badge = document.getElementById("fbSettingsBadge");
+      const btnUpload = document.getElementById("btnUploadLocalToCloud");
+      const btnDisc = document.getElementById("btnDisconnectFb");
+
+      if (dot) dot.style.background = connected ? "#10b981" : "#94a3b8";
+      if (txt) {
+        txt.style.color = connected ? "#34d399" : "#94a3b8";
+        txt.innerText = connected ? "☁️ " + text : "💾 " + text;
+      }
+      if (badge) {
+        badge.style.background = connected ? "rgba(16, 185, 129, 0.2)" : "#334155";
+        badge.style.color = connected ? "#34d399" : "#94a3b8";
+        badge.innerText = connected ? "CONNECTED" : "DISCONNECTED";
+      }
+      if (btnUpload) btnUpload.style.display = connected ? "inline-block" : "none";
+      if (btnDisc) btnDisc.style.display = connected ? "inline-block" : "none";
+    }
+
+    function initFirebase() {
+      const savedConfigStr = localStorage.getItem("tuktuk_admin_firebase_config");
+      const input = document.getElementById("firebaseConfigInput");
+      if (input && savedConfigStr) input.value = savedConfigStr;
+
+      if (!savedConfigStr) {
+        updateFirebaseStatusUI(false, "Offline Mode (Local Storage Only)");
+        return;
+      }
+
+      try {
+        const config = JSON.parse(savedConfigStr);
+        if (!config || !config.projectId || !config.apiKey) {
+          updateFirebaseStatusUI(false, "Invalid Firebase Configuration");
+          return;
+        }
+
+        if (!window.firebase) {
+          console.warn("Firebase SDK not loaded yet");
+          updateFirebaseStatusUI(false, "Firebase SDK Loading...");
+          return;
+        }
+
+        if (!firebase.apps.length) {
+          firebaseApp = firebase.initializeApp(config);
+        } else {
+          firebaseApp = firebase.app();
+        }
+
+        firestoreDb = firebase.firestore();
+        isFirebaseActive = true;
+        updateFirebaseStatusUI(true, `Cloud Connected (${config.projectId})`);
+
+        setupFirestoreRealtimeListener();
+
+      } catch (err) {
+        console.error("Firebase init error:", err);
+        updateFirebaseStatusUI(false, "Firebase Error: " + err.message);
+      }
+    }
+
+    function setupFirestoreRealtimeListener() {
+      if (!firestoreDb) return;
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+
+      firestoreUnsubscribe = firestoreDb.collection("tuktuk_members")
+        .onSnapshot((snapshot) => {
+          if (snapshot.empty && getAdminHistory().length === 0) {
+            return;
+          }
+
+          const cloudMembers = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            cloudMembers.push(data);
+          });
+
+          if (cloudMembers.length > 0) {
+            cloudMembers.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            localStorage.setItem("tuktuk_admin_licenses", JSON.stringify(cloudMembers));
+            renderAdminStats();
+            renderQuickRecent();
+            renderMembersList();
+          }
+        }, (error) => {
+          console.warn("Firestore onSnapshot error:", error);
+          updateFirebaseStatusUI(false, "Cloud Rules/Permission Error");
+        });
+
+      firestoreDb.collection("tuktuk_settings").doc("bank")
+        .onSnapshot((doc) => {
+          if (doc.exists) {
+            const bankData = doc.data();
+            if (bankData && bankData.accNo) {
+              localStorage.setItem("tuktuk_admin_bank_details", JSON.stringify(bankData));
+              initBankSettings();
+            }
+          }
+        }, () => {});
+    }
+
+    function saveAndConnectFirebase() {
+      const input = document.getElementById("firebaseConfigInput");
+      const raw = input ? input.value.trim() : "";
+      if (!raw) {
+        alert("කරුණාකර Firebase Config එක Paste කරන්න.");
+        return;
+      }
+
+      const config = parseFirebaseConfig(raw);
+      if (!config || !config.apiKey || !config.projectId) {
+        alert("❌ වලංගු Firebase Config එකක් හඳුනාගත නොහැකි විය.\nකරුණාකර Firebase Console එකෙන් ලැබෙන සම්පූර්ණ Snippet එක හෝ JSON එක Paste කරන්න.");
+        return;
+      }
+
+      localStorage.setItem("tuktuk_admin_firebase_config", JSON.stringify(config, null, 2));
+      initFirebase();
+
+      if (isFirebaseActive && firestoreDb) {
+        // Test connectivity by pinging
+        firestoreDb.collection("tuktuk_settings").doc("ping").set({ lastPing: Date.now() })
+          .then(() => {
+            showToast("✅ Firebase Cloud සාර්ථකව සම්බන්ධ විය!");
+            const history = getAdminHistory();
+            if (history.length > 0) {
+              if (confirm(`සම්බන්ධතාව සාර්ථකයි! දැනට ඇති Local සාමාජික වාර්තා ${history.length} Cloud එකට Upload කරන්නද?`)) {
+                uploadAllLocalToFirestore();
+              }
+            }
+          })
+          .catch((err) => {
+            alert("⚠️ Firebase සම්බන්ධ වූ නමුත් Cloud Firestore වෙත ලිවීමට අවසර නැත (Security Rules):\n" + err.message + "\n\nකරුණාකර Firebase Console හි Firestore Database -> Rules වෙත ගොස් Test Mode (allow read, write: if true;) ලබාදෙන්න.");
+          });
+      }
+    }
+
+    async function uploadAllLocalToFirestore() {
+      if (!isFirebaseActive || !firestoreDb) {
+        alert("කරුණාකර මුලින්ම Firebase සම්බන්ධ කරන්න.");
+        return;
+      }
+      const history = getAdminHistory();
+      if (history.length === 0) {
+        alert("Upload කිරීමට කිසිදු Local වාර්තාවක් නොමැත.");
+        return;
+      }
+
+      showToast("Cloud එකට Upload කරමින් පවතී...");
+      let count = 0;
+      try {
+        const batch = firestoreDb.batch();
+        history.forEach(rec => {
+          const docRef = firestoreDb.collection("tuktuk_members").doc(rec.id || `REC-${rec.timestamp || Date.now()}-${rec.devId}`);
+          batch.set(docRef, rec, { merge: true });
+          count++;
+        });
+
+        const bank = getAdminBankDetails();
+        const bankRef = firestoreDb.collection("tuktuk_settings").doc("bank");
+        batch.set(bankRef, bank, { merge: true });
+
+        await batch.commit();
+        showToast(`✅ සාර්ථකයි! වාර්තා ${count} ක් Cloud එකට Upload විය.`);
+      } catch (err) {
+        console.error("Upload error:", err);
+        alert("Upload කිරීම අසාර්ථක විය: " + err.message);
+      }
+    }
+
+    function disconnectFirebase() {
+      if (!confirm("Firebase Cloud සම්බන්ධතාවය විසන්ධි කිරීමට අවශ්‍යද?\n(ඔබගේ දත්ත මැකී නොයන අතර නැවත Connect කළ හැක)")) return;
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+      localStorage.removeItem("tuktuk_admin_firebase_config");
+      isFirebaseActive = false;
+      firestoreDb = null;
+      updateFirebaseStatusUI(false, "Offline Mode (Local Storage Only)");
+      const input = document.getElementById("firebaseConfigInput");
+      if (input) input.value = "";
+      showToast("Firebase විසන්ධි කරන ලදී.");
+    }
+
     // ==================== BANK SETTINGS MANAGEMENT ====================
     function getAdminBankDetails() {
       const saved = localStorage.getItem("tuktuk_admin_bank_details");
@@ -1716,6 +1980,9 @@ ${bank.branch ? `• *ශාඛාව:* ${bank.branch}\n` : ''}━━━━━�
       document.getElementById("resultBox").style.display = "block";
 
       saveLicenseRecord(lastGeneratedData);
+      if (isFirebaseActive && firestoreDb) {
+        firestoreDb.collection("tuktuk_members").doc(lastGeneratedData.id).set(lastGeneratedData).catch(e => console.warn("Firestore write error:", e));
+      }
       renderAdminStats();
       renderQuickRecent();
       renderMembersList();
@@ -2098,6 +2365,9 @@ ${token}
       let history = getAdminHistory();
       history = history.filter(r => (r.id !== idOrToken && r.token !== idOrToken));
       localStorage.setItem("tuktuk_admin_licenses", JSON.stringify(history));
+      if (isFirebaseActive && firestoreDb) {
+        firestoreDb.collection("tuktuk_members").doc(idOrToken).delete().catch(e => console.warn("Firestore delete error:", e));
+      }
       renderAdminStats();
       renderMembersList();
       renderQuickRecent();
