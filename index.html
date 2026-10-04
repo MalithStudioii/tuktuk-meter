@@ -13,6 +13,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TukTuk Meter">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <!-- Leaflet Map CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -124,6 +127,20 @@
       gap: 5px;
       font-weight: 500;
       color: #94a3b8;
+    }
+    .badge.clickable-badge {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+    .badge.clickable-badge:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+    }
+    .badge.clickable-badge:active {
+      transform: scale(0.95);
     }
     .badge-dot {
       width: 7px;
@@ -1371,6 +1388,218 @@
       font-weight: 700;
     }
 
+    /* Document Expiry Alert Banner */
+    .doc-expiry-banner {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(245, 158, 11, 0.25));
+      border: 1px solid #f59e0b;
+      color: #fef08a;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      font-size: 0.74rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+      animation: pulseAlert 2.5s infinite;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.88; transform: scale(0.995); }
+    }
+    .doc-expiry-banner .banner-arrow {
+      color: #f59e0b;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    /* Daily Target Card */
+    .daily-target-card {
+      background: #0c1220;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .daily-target-card:hover {
+      border-color: #3b82f6;
+      background: #0f172a;
+    }
+    .target-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      margin-bottom: 6px;
+    }
+    .target-title {
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .target-val {
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .target-bar-bg {
+      background: #1e293b;
+      border-radius: 6px;
+      height: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+    .target-bar-fill {
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.5s ease-in-out;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+
+    /* HUD Mode Fullscreen Overlay */
+    .hud-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000000;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    .hud-overlay.mirrored-y #hudContentArea {
+      transform: scaleY(-1);
+    }
+    .hud-overlay.mirrored-x #hudContentArea {
+      transform: scaleX(-1);
+    }
+    .hud-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+    }
+    .hud-brand {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #00ffcc;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+    .hud-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .hud-btn {
+      background: #0f172a;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-family: monospace;
+      font-weight: bold;
+      cursor: pointer;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+    .hud-btn.hud-close {
+      border-color: #ef4444;
+      color: #ef4444;
+      text-shadow: 0 0 6px #ef4444;
+    }
+    .hud-content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      font-family: monospace;
+      transition: transform 0.2s ease;
+    }
+    .hud-speed-box {
+      text-align: center;
+    }
+    .hud-label {
+      font-size: 0.85rem;
+      color: #64748b;
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+    }
+    .hud-speed-val {
+      font-size: 6.5rem;
+      font-weight: 900;
+      color: #00ffcc;
+      line-height: 1;
+      text-shadow: 0 0 35px #00ffcc;
+    }
+    .hud-metrics-row {
+      display: flex;
+      width: 100%;
+      max-width: 600px;
+      justify-content: space-around;
+      gap: 15px;
+    }
+    .hud-card {
+      text-align: center;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 255, 204, 0.25);
+      flex: 1;
+    }
+    .hud-metric-val {
+      font-size: 1.9rem;
+      font-weight: bold;
+      color: #f59e0b;
+      text-shadow: 0 0 15px #f59e0b;
+      margin-top: 4px;
+    }
+    .hud-bottom-bar {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: monospace;
+      cursor: pointer;
+    }
+
+    /* Driver Tools Modal Specific Styles */
+    .tools-status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    .tools-status-ok { background: #064e3b; color: #34d399; }
+    .tools-status-warn { background: #78350f; color: #fbbf24; }
+    .tools-status-alert { background: #7f1d1d; color: #f87171; }
+    .tools-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tools-stat-card {
+      background: #0c1220;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: left;
+    }
+    .tools-stat-card .lbl { font-size: 0.7rem; color: #94a3b8; }
+    .tools-stat-card .val { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-top: 2px; }
+
     @media print {
       body * {
         visibility: hidden;
@@ -1402,6 +1631,7 @@
       </div>
       <div class="header-actions">
         <button class="icon-btn pro-badge-btn" id="headerProBtn" onclick="openProModal()" title="TukTuk Pro සාමාජිකත්වය">👑 PRO</button>
+        <button class="icon-btn" onclick="openDriverToolsModal()" id="headerToolsBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">🧰 Tools</button>
         <button class="icon-btn" onclick="openGuideModal()" id="headerGuideBtn" title="භාවිතා කරන ආකාරය (User Guide)">📖 Guide</button>
         <button class="icon-btn" onclick="openProfileModal()" id="headerProfileBtn" title="රියදුරු පැතිකඩ (Driver Profile)">
           <span id="headerProfileIcon">👤</span>
@@ -1413,24 +1643,41 @@
       </div>
     </div>
 
-    <!-- Quick Features Bar: Night Mode, Voice Alerts, Install PWA -->
+    <!-- Document Expiry Alert Banner -->
+    <div id="docExpiryAlertBanner" class="doc-expiry-banner" style="display: none;" onclick="openDriverToolsModal('docs')" title="ලියකියවිලි බැලීමට ක්ලික් කරන්න">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 1rem;">⚠️</span>
+        <span id="docExpiryAlertText">පොලිස් දඩ අවදානමක්! ලියකියවිලි කල් ඉකුත් වෙමින් පවතී.</span>
+      </div>
+      <span class="banner-arrow">විස්තර ➔</span>
+    </div>
+
+    <!-- Quick Features Bar: Night Mode, Voice Alerts, HUD, Pro Tools, Install -->
     <div class="quick-feature-bar">
       <button class="feature-pill" id="nightFarePill" onclick="toggleNightFareManual()">
         <span id="nightPillIcon">🌙</span>
-        <span id="nightPillText">Night Rate (+15%)</span>
+        <span id="nightPillText">Night (+15%)</span>
       </button>
-      <button class="feature-pill active" id="voiceTogglePill" onclick="toggleVoiceAlerts()">
+      <button class="feature-pill active" id="voiceTogglePill" onclick="cycleVoiceLanguage()" title="හඬ සහායක භාෂාව මාරු කිරීමට ක්ලික් කරන්න">
         <span id="voicePillIcon">🔊</span>
-        <span id="voicePillText">Voice Alerts</span>
+        <span id="voicePillText">Voice: SI</span>
+      </button>
+      <button class="feature-pill" id="hudTogglePill" onclick="toggleHudMode()" title="Windscreen එකට පෙනෙන Head-Up Display">
+        <span>🪟</span>
+        <span>HUD Mode</span>
+      </button>
+      <button class="feature-pill" onclick="openDriverToolsModal()" id="toolsPillBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">
+        <span>🧰</span>
+        <span>Pro Tools</span>
       </button>
       <button class="feature-pill install-pill" id="pwaInstallBtn" onclick="installPWA()">
-        📥 Install App
+        📥 Install
       </button>
     </div>
 
     <!-- Status Indicators (Wake Lock & GPS Accuracy) -->
     <div class="indicators-row">
-      <div class="badge" id="wakeLockBadge">
+      <div class="badge clickable-badge" id="wakeLockBadge" onclick="toggleManualWakeLock()" title="Screen Standby toggle කිරීමට click කරන්න">
         <span class="badge-dot" id="wakeLockDot"></span>
         <span id="wakeLockText">Screen Standby</span>
       </div>
@@ -1468,6 +1715,17 @@
           <div class="title">Waiting Charge</div>
           <div class="val">Rs. <span id="waitingChargeDisplay">0</span></div>
         </div>
+      </div>
+    </div>
+
+    <!-- Daily Target Widget -->
+    <div class="daily-target-card" id="dailyTargetCard" onclick="openDriverToolsModal('target')" title="දෛනික ඉලක්කය සැකසීමට ක්ලික් කරන්න">
+      <div class="target-card-header">
+        <span class="target-title">🎯 අද ආදායම් ඉලක්කය (Daily Target)</span>
+        <span class="target-val" id="targetCardStats">Rs. 0 / 5,000 (0%)</span>
+      </div>
+      <div class="target-bar-bg">
+        <div class="target-bar-fill" id="targetBarFill" style="width: 0%;"></div>
       </div>
     </div>
 
@@ -1650,11 +1908,7 @@
           <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 10px;">Google ගිණුමෙන් Login වී ඔබේ Photo එක සහ නම එක ක්ලික් එකෙන් ලබාගන්න</div>
           
           <div id="googleLoggedOutBox">
-            <button class="google-btn-custom" onclick="triggerGoogleSignIn()">
-              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-              <span>Sign in with Google</span>
-            </button>
-            <div id="googleGsiContainer" style="margin-top: 8px; display: flex; justify-content: center;"></div>
+            <div id="googleGsiContainer" style="display: flex; justify-content: center; min-height: 44px; align-items: center;"></div>
           </div>
 
           <div id="googleLoggedInBox" class="google-account-badge" style="display: none;">
@@ -1707,6 +1961,22 @@
         <div class="input-group">
           <label>හදිසි ඇමතුම් අංකය (Emergency Contact):</label>
           <input type="tel" id="profEmergInput" placeholder="උදා: 0712345678 හෝ 119">
+        </div>
+
+        <div style="font-size: 0.78rem; font-weight: bold; color: #10b981; margin: 12px 0 6px 0; border-top: 1px solid #1e293b; padding-top: 10px;">
+          💳 Online Transfer / LankaQR තොරතුරු (WhatsApp බිල්පත සඳහා):
+        </div>
+        <div class="input-group">
+          <label>බැංකුව සහ ශාඛාව (Bank & Branch):</label>
+          <input type="text" id="profBankNameInput" placeholder="උදා: Commercial Bank - Kollupitiya">
+        </div>
+        <div class="input-group">
+          <label>ගිණුම් අංකය (Account Number):</label>
+          <input type="text" id="profBankAccInput" placeholder="උදා: 8001234567">
+        </div>
+        <div class="input-group">
+          <label>ගිණුම් හිමියාගේ නම (Account Name):</label>
+          <input type="text" id="profBankAccNameInput" placeholder="උදා: K.A. Kamal Perera">
         </div>
 
         <div class="modal-buttons" style="margin-top: 14px;">
@@ -1828,11 +2098,16 @@
 
       <!-- Pro Features List -->
       <div class="pro-features-list">
-        <div style="font-weight: bold; font-size: 0.82rem; color: #f59e0b; margin-bottom: 6px;">PRO හි විශේෂ ප්‍රතිලාභ:</div>
-        <div class="pro-feature-item"><span>🚀</span> <span><b>අසීමිත ගමන් වාර්තා</b> (Unlimited History & Search)</span></div>
-        <div class="pro-feature-item"><span>📄</span> <span><b>මාසික ආදායම් වාර්තාව</b> (PDF/Print Financial Report)</span></div>
-        <div class="pro-feature-item"><span>🧾</span> <span><b>Custom WhatsApp Branding</b> (ඔබගේම නම සහිත බිල්පත)</span></div>
-        <div class="pro-feature-item"><span>⭐</span> <span><b>Verified Driver Badge & Priority Support</b></span></div>
+        <div style="font-weight: bold; font-size: 0.82rem; color: #f59e0b; margin-bottom: 6px;">PRO හි විශේෂ ප්‍රතිලාභ (All Pro Perks):</div>
+        <div class="pro-feature-item"><span>🪟</span> <span><b>Windscreen HUD Mode</b> (වීදුරුවට පෙනෙන Head-Up Display)</span></div>
+        <div class="pro-feature-item"><span>🚨</span> <span><b>Police Fine Vault</b> (ලියකියවිලි කල් ඉකුත්වීමේ මතක් කිරීම්)</span></div>
+        <div class="pro-feature-item"><span>🔧</span> <span><b>Engine Oil & Service Tracker</b> (එන්ජින් ලෙඩ නැති සර්විස් මීටරය)</span></div>
+        <div class="pro-feature-item"><span>🔊</span> <span><b>English Tourist Voice Guide</b> (සුද්දන් සඳහා විදේශීය හඬ සහායක)</span></div>
+        <div class="pro-feature-item"><span>⛽</span> <span><b>Fuel & Net Profit Tracker</b> (තෙල් වියදම සහ ශුද්ධ ලාභය)</span></div>
+        <div class="pro-feature-item"><span>🎯</span> <span><b>Daily Target Tracker</b> (දෛනික ආදායම් ඉලක්කය)</span></div>
+        <div class="pro-feature-item"><span>📄</span> <span><b>Bank / Leasing Income Certificate</b> (ණය සඳහා ආදායම් සහතික වාර්තාව)</span></div>
+        <div class="pro-feature-item"><span>💳</span> <span><b>LankaQR & Custom WhatsApp Receipt</b> (ඔන්ලයින් ගෙවීම් බිල්පත)</span></div>
+        <div class="pro-feature-item"><span>🚀</span> <span><b>අසීමිත ගමන් වාර්තා</b> (Unlimited Lifetime History)</span></div>
       </div>
 
       <!-- Pricing Plans -->
@@ -1881,8 +2156,9 @@
         </div>
       </div>
 
-      <div class="modal-buttons" style="margin-top: 14px;">
-        <button class="cancel-btn" onclick="closeProModal()">Close</button>
+      <div class="modal-buttons" style="margin-top: 14px; display: flex; gap: 8px;">
+        <button class="cancel-btn" onclick="closeProModal()" style="flex: 1;">Close</button>
+        <button onclick="forceAppUpdate()" class="cancel-btn" style="flex: 1.2; border-color: #3b82f6; color: #38bdf8;" title="අලුත් Features නොපෙනේ නම් ක්ලික් කරන්න">🔄 Update App Cache</button>
       </div>
     </div>
 
@@ -2043,6 +2319,187 @@
         </button>
       </div>
     </div>
+    <!-- ==================== DRIVER TOOLS MODAL ==================== -->
+    <div class="modal" id="driverToolsModal">
+      <div class="modal-header">
+        <h3 style="color: #38bdf8;">🧰 PRO DRIVER TOOLKIT</h3>
+        <button class="modal-close-x" onclick="closeDriverToolsModal()">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabToolDocsBtn" onclick="switchToolsTab('docs')">🚨 ලියකියවිලි</button>
+        <button class="tab-btn" id="tabToolServiceBtn" onclick="switchToolsTab('service')">🔧 සර්විස්</button>
+        <button class="tab-btn" id="tabToolProfitBtn" onclick="switchToolsTab('profit')">⛽ තෙල් & ලාභය</button>
+        <button class="tab-btn" id="tabToolTargetBtn" onclick="switchToolsTab('target')">🎯 ඉලක්කය</button>
+      </div>
+
+      <!-- Tab 1: Documents (Police Fine Protection) -->
+      <div id="tabToolDocsContent">
+        <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+          ලියකියවිලි වල Expiry දිනයන් ඇතුළත් කර තබන්න. කල් ඉකුත් වීමට පෙර Warning Alerts මඟින් පොලිස් දඩ වලින් බේරෙන්න.
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>1. ආදායම් බලපත්‍රය (Revenue License):</label>
+            <span class="tools-status-badge" id="badgeRevenue">දිනයක් නැත</span>
+          </div>
+          <input type="date" id="docRevenueInput" onchange="updateDocBadges()">
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>2. රක්ෂණ සහතිකය (Insurance):</label>
+            <span class="tools-status-badge" id="badgeInsurance">දිනයක් නැත</span>
+          </div>
+          <input type="date" id="docInsuranceInput" onchange="updateDocBadges()">
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>3. දුම් සහතිකය (Emission / Eco Test):</label>
+            <span class="tools-status-badge" id="badgeEmission">දිනයක් නැත</span>
+          </div>
+          <input type="date" id="docEmissionInput" onchange="updateDocBadges()">
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label>4. රියදුරු බලපත්‍රය (Driving License):</label>
+            <span class="tools-status-badge" id="badgeLicense">දිනයක් නැත</span>
+          </div>
+          <input type="date" id="docLicenseInput" onchange="updateDocBadges()">
+        </div>
+
+        <div class="modal-buttons" style="margin-top: 14px;">
+          <button class="save-btn" onclick="saveDriverDocs()" style="width: 100%;">💾 ලියකියවිලි සුරකින්න</button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Service & Engine Oil Tracker -->
+      <div id="tabToolServiceContent" style="display: none;">
+        <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+          සෑම කි.මී. 1,500 කට වරක් Engine Oil මාරු කර එන්ජිමේ ආයු කාලය වැඩි කරගන්න. මීටරයෙන් ඉතිරි දුර ස්වයංක්‍රීයව ගණනය වේ.
+        </div>
+
+        <div class="tools-stat-card" style="text-align: center; margin-bottom: 14px; padding: 14px; background: #0c1220; border: 1px solid #10b981;">
+          <div style="font-size: 0.8rem; color: #94a3b8;">ඊළඟ ENGINE OIL මාරුවට තව:</div>
+          <div style="font-size: 2.2rem; font-weight: 900; color: #10b981; margin: 4px 0;" id="oilKmRemainingDisplay">1,500 km</div>
+          <div style="font-size: 0.72rem; color: #64748b;" id="oilLastServiceDateDisplay">අවසාන සර්විස් දිනය: --/--/----</div>
+        </div>
+
+        <div class="input-group">
+          <label>Engine Oil මාරු කිරීමේ කාල පරතරය (Km Interval):</label>
+          <input type="number" id="oilIntervalInput" value="1500" step="100">
+        </div>
+
+        <button class="save-btn" onclick="resetServiceTracker()" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; width: 100%; margin-top: 8px;">
+          ✅ අද දින Oil මාරු කළා (Reset to 1500km)
+        </button>
+      </div>
+
+      <!-- Tab 3: Fuel Cost & Net Take-Home Profit -->
+      <div id="tabToolProfitContent" style="display: none;">
+        <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+          අද දවසේ ධාවනය කළ කිලෝමීටර් ගණන අනුව තෙල් වියදම අඩු කර ඔබගේ අතට ඉතිරි වන ශුද්ධ ලාභය ගණනය කරයි.
+        </div>
+
+        <div class="tools-summary-grid">
+          <div class="tools-stat-card">
+            <div class="lbl">අද මුළු ආදායම</div>
+            <div class="val" id="profitGrossRevenue">Rs. 0</div>
+          </div>
+          <div class="tools-stat-card">
+            <div class="lbl">අද ධාවන දුර</div>
+            <div class="val" id="profitTodayKm">0 km</div>
+          </div>
+          <div class="tools-stat-card">
+            <div class="lbl">ඇස්තමේන්තු තෙල් වියදම</div>
+            <div class="val" style="color: #f59e0b;" id="profitFuelCost">Rs. 0</div>
+          </div>
+          <div class="tools-stat-card">
+            <div class="lbl">ශුද්ධ ලාභය (Take-Home)</div>
+            <div class="val" style="color: #10b981;" id="profitNetTakeHome">Rs. 0</div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>1L පෙට්‍රල් වලින් දුවන සාමාන්‍ය දුර (Km/L):</label>
+          <input type="number" id="fuelEfficiencyInput" value="30" step="1">
+        </div>
+        <div class="input-group">
+          <label>පෙට්‍රල් 1L ක මිල (Rs.):</label>
+          <input type="number" id="petrolPriceInput" value="320" step="5">
+        </div>
+
+        <div class="modal-buttons" style="margin-top: 10px;">
+          <button class="save-btn" onclick="saveFuelSettings()" style="width: 100%;">💾 ගණනය කිරීම් යාවත්කාලීන කරන්න</button>
+        </div>
+      </div>
+
+      <!-- Tab 4: Daily Target -->
+      <div id="tabToolTargetContent" style="display: none;">
+        <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 12px; text-align: left;">
+          ඔබගේ දෛනික ආදායම් ඉලක්කය සකසන්න. ඉලක්කය සම්පූර්ණ වූ විට ජයග්‍රාහී ශබ්දය වාදනය වේ.
+        </div>
+
+        <div class="tools-stat-card" style="text-align: center; margin-bottom: 14px; padding: 14px; background: #0c1220; border: 1px solid #38bdf8;">
+          <div style="font-size: 0.8rem; color: #94a3b8;">අද දවසේ ප්‍රගතිය:</div>
+          <div style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; margin: 4px 0;" id="targetModalPercent">0%</div>
+          <div style="font-size: 0.78rem; color: #cbd5e1;" id="targetModalAmount">Rs. 0 / 5,000</div>
+        </div>
+
+        <div class="input-group">
+          <label>දෛනික ඉලක්කය (Daily Target Rs.):</label>
+          <input type="number" id="dailyTargetInput" value="5000" step="500">
+        </div>
+
+        <div class="modal-buttons" style="margin-top: 10px;">
+          <button class="save-btn" onclick="saveDailyTarget()" style="width: 100%;">💾 ඉලක්කය සුරකින්න</button>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 14px;">
+        <button class="cancel-btn" onclick="closeDriverToolsModal()" style="width: 100%;">Close</button>
+      </div>
+    </div>
+
+    <!-- ==================== HUD MODE OVERLAY ==================== -->
+    <div id="hudOverlay" class="hud-overlay mirrored-y" style="display: none;">
+      <div class="hud-top-bar">
+        <div class="hud-brand">🛺 TUK TUK PRO HUD</div>
+        <div class="hud-actions">
+          <button class="hud-btn" onclick="toggleHudFlip()" id="hudFlipBtn" title="වීදුරුවට ගැලපෙන සේ හරවන්න">🔄 Flip (Y)</button>
+          <button class="hud-btn hud-close" onclick="closeHudMode()">✕ Exit</button>
+        </div>
+      </div>
+      
+      <div class="hud-content-area" id="hudContentArea">
+        <div class="hud-speed-box">
+          <div class="hud-label">SPEED (KM/H)</div>
+          <div class="hud-speed-val" id="hudSpeedDisplay">0</div>
+        </div>
+
+        <div class="hud-metrics-row">
+          <div class="hud-card">
+            <div class="hud-label">FARE (LKR)</div>
+            <div class="hud-metric-val" id="hudFareDisplay">Rs. 0</div>
+          </div>
+          <div class="hud-card">
+            <div class="hud-label">DISTANCE (KM)</div>
+            <div class="hud-metric-val" id="hudDistDisplay">0.00</div>
+          </div>
+          <div class="hud-card">
+            <div class="hud-label">WAIT TIME</div>
+            <div class="hud-metric-val" id="hudWaitDisplay">00:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-bottom-bar" onclick="closeHudMode()">
+        <span>📲 Dashboard එක මත තබා Windscreen එකෙන් බලන්න • Tap to Exit</span>
+      </div>
+    </div>
   </div>
 
   <!-- App Footer & Trademark Branding -->
@@ -2167,6 +2624,11 @@
       driverName: "Driver",
       driverQrInfo: "0771234567",
       voiceEnabled: true,
+      voiceLanguage: "si", // "si", "en", "ta"
+      dailyTarget: 5000,
+      fuelEfficiency: 30,
+      petrolPrice: 320,
+      oilServiceInterval: 1500,
       nightFareActive: false,
       adminPhone: "94771234567",
       adminBankDetails: "Commercial Bank - 8001234567 (TukTuk Pro)"
@@ -2203,6 +2665,9 @@
       // Check Auto Night Time (10 PM to 5 AM)
       checkAutoNightTime();
       updateVoiceUI();
+      checkDocumentExpiries();
+      updateDailyTargetUI();
+      loadServiceTracker();
     }
 
     function saveSettings() {
@@ -2232,50 +2697,116 @@
 
     function showToast(msg) {
       const toast = document.getElementById("toast");
+      if (!toast) return;
       toast.innerText = msg;
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
     // ==================== VOICE ALERTS (TEXT TO SPEECH) ====================
-    function toggleVoiceAlerts() {
-      config.voiceEnabled = !config.voiceEnabled;
-      updateVoiceUI();
-      if (config.voiceEnabled) {
-        speakAlert("Voice alerts enabled");
-        showToast("Voice Alerts On විය");
+    function cycleVoiceLanguage() {
+      const pro = getProStatus();
+      if (!config.voiceEnabled) {
+        config.voiceEnabled = true;
+        config.voiceLanguage = "si";
+      } else if (config.voiceLanguage === "si") {
+        if (!pro.isPro) {
+          showToast("English Tourist Voice Pro සාමාජිකයින්ට පමණි! 👑");
+          openProModal();
+          return;
+        }
+        config.voiceLanguage = "en";
+      } else if (config.voiceLanguage === "en") {
+        config.voiceLanguage = "ta";
       } else {
-        showToast("Voice Alerts Off විය");
+        config.voiceEnabled = false;
+        config.voiceLanguage = "si";
       }
+      updateVoiceUI();
       localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+      
+      if (config.voiceEnabled) {
+        if (config.voiceLanguage === "en") {
+          speakEvent('custom', { text: "English Tourist Voice activated. Welcome!" });
+          showToast("🇬🇧 English Tourist Voice Activated!");
+        } else if (config.voiceLanguage === "ta") {
+          speakEvent('custom', { text: "குரல் எச்சரிக்கைகள் இயக்கப்பட்டது" });
+          showToast("🇱🇰 தமிழ் Voice Activated!");
+        } else {
+          speakEvent('custom', { text: "සිංහල හඬ සහායක සක්‍රීයයි" });
+          showToast("🇱🇰 සිංහල Voice Activated!");
+        }
+      } else {
+        showToast("Voice Muted (හඬ අක්‍රීය විය)");
+      }
     }
 
     function updateVoiceUI() {
       const pill = document.getElementById("voiceTogglePill");
       const icon = document.getElementById("voicePillIcon");
       const text = document.getElementById("voicePillText");
-      if (config.voiceEnabled) {
-        pill.classList.add("active");
-        icon.innerText = "🔊";
-        text.innerText = "Voice Alerts ON";
-      } else {
+      if (!pill || !icon || !text) return;
+
+      if (!config.voiceEnabled) {
         pill.classList.remove("active");
         icon.innerText = "🔇";
         text.innerText = "Voice Muted";
+      } else if (config.voiceLanguage === "en") {
+        pill.classList.add("active");
+        icon.innerText = "🇬🇧";
+        text.innerText = "Voice: Tourist EN";
+      } else if (config.voiceLanguage === "ta") {
+        pill.classList.add("active");
+        icon.innerText = "🇱🇰";
+        text.innerText = "Voice: தமிழ்";
+      } else {
+        pill.classList.add("active");
+        icon.innerText = "🔊";
+        text.innerText = "Voice: සිංහල";
+      }
+    }
+
+    function speakEvent(type, payload = {}) {
+      if (!config.voiceEnabled || !('speechSynthesis' in window)) return;
+      const lang = config.voiceLanguage || 'si';
+      let phrase = '';
+
+      if (type === 'trip_start') {
+        if (lang === 'en') phrase = "Trip started. Welcome to Sri Lanka, have a safe and pleasant ride!";
+        else if (lang === 'ta') phrase = "பயணம் ஆரம்பமானது. நல்வரவு!";
+        else phrase = "Trip එක ආරම්භ විය. සුබ ගමනක්!";
+      } else if (type === 'trip_end') {
+        const fare = Math.round(payload.fare || 0);
+        if (lang === 'en') phrase = `Trip completed. Your total fare is ${fare} Rupees. Thank you for riding with us, have a wonderful stay in Sri Lanka!`;
+        else if (lang === 'ta') phrase = `பயணம் முடிந்தது. மொத்த கட்டணம் ${fare} ரூபாய்.`;
+        else phrase = `Trip එක අවසන් විය. මුළු ගාස්තුව රුපියල් ${fare}යි. ස්තූතියි!`;
+      } else if (type === 'overspeed') {
+        if (lang === 'en') phrase = "Speed limit exceeded. Please slow down for safety.";
+        else if (lang === 'ta') phrase = "வேக எல்லை தாண்டப்பட்டது. தயவுசெய்து வேகத்தை குறைக்கவும்.";
+        else phrase = "වේග සීමාව ඉක්මවා ඇත! කරුණාකර වේගය අඩු කරන්න.";
+      } else if (type === 'target_reached') {
+        if (lang === 'en') phrase = "Congratulations! Your daily income target is completed!";
+        else phrase = "සුබ පැතුම්! ඔබගේ අද දවසේ ආදායම් ඉලක්කය සම්පූර්ණයි!";
+      } else if (type === 'custom') {
+        phrase = payload.text || '';
+      }
+
+      if (phrase) {
+        try {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(phrase);
+          utterance.lang = lang === 'en' ? 'en-US' : (lang === 'ta' ? 'ta-IN' : 'si-LK');
+          utterance.rate = 0.95;
+          utterance.pitch = 1.0;
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("Speech error:", e);
+        }
       }
     }
 
     function speakAlert(text) {
-      if (!config.voiceEnabled || !('speechSynthesis' in window)) return;
-      try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        console.warn("Speech error:", e);
-      }
+      speakEvent('custom', { text });
     }
 
     // ==================== NIGHT FARE LOGIC ====================
@@ -2310,20 +2841,28 @@
 
     // Screen Wake Lock API
     let wakeLock = null;
+    let manualWakeLockRequested = false;
+
     async function requestWakeLock() {
       if ('wakeLock' in navigator) {
         try {
+          if (wakeLock !== null && !wakeLock.released) {
+            updateWakeLockUI(true);
+            return;
+          }
           wakeLock = await navigator.wakeLock.request('screen');
           updateWakeLockUI(true);
           wakeLock.addEventListener('release', () => {
+            wakeLock = null;
             updateWakeLockUI(false);
           });
         } catch (err) {
           console.warn(`Wake Lock Error: ${err.message}`);
+          wakeLock = null;
           updateWakeLockUI(false);
         }
       } else {
-        updateWakeLockUI(false, "Not Supported");
+        updateWakeLockUI(false, "No WakeLock API");
       }
     }
 
@@ -2332,31 +2871,52 @@
         wakeLock.release().then(() => {
           wakeLock = null;
           updateWakeLockUI(false);
-        }).catch(() => {});
+        }).catch(() => {
+          wakeLock = null;
+          updateWakeLockUI(false);
+        });
+      } else {
+        updateWakeLockUI(false);
+      }
+    }
+
+    async function toggleManualWakeLock() {
+      if (wakeLock !== null) {
+        manualWakeLockRequested = false;
+        releaseWakeLock();
+      } else {
+        manualWakeLockRequested = true;
+        await requestWakeLock();
       }
     }
 
     function updateWakeLockUI(isActive, customText = null) {
       const dot = document.getElementById("wakeLockDot");
       const text = document.getElementById("wakeLockText");
+      if (!dot || !text) return;
       if (isActive) {
         dot.className = "badge-dot active";
         text.innerText = "Screen On (Locked)";
       } else {
         dot.className = "badge-dot";
-        text.innerText = customText || "Screen Normal";
+        text.innerText = customText || "Screen Normal (Tap to Lock)";
       }
     }
 
     document.addEventListener('visibilitychange', async () => {
-      if (tripActive && wakeLock !== null && document.visibilityState === 'visible') {
-        await requestWakeLock();
+      if (document.visibilityState === 'visible') {
+        if (tripActive || manualWakeLockRequested) {
+          await requestWakeLock();
+        }
       }
     });
 
     // Tracking Variables
     let totalDistance = 0;
     let lastCoords = null;
+    let lastCoordTimestamp = null;
+    let lastPolylineLatLng = null;
+    let lastTimerTick = null;
     let tripActive = false;
     let watchId = null;
     let waitingSeconds = 0;
@@ -2445,8 +3005,16 @@
       } else {
         if (btn) btn.innerText = "🗺️ Map (Hide)";
         setTimeout(() => {
-          if (map) map.invalidateSize();
-        }, 350);
+          if (map) {
+            map.invalidateSize();
+            if (routePolyline && routeCoordinates.length > 0) {
+              routePolyline.setLatLngs(routeCoordinates);
+            }
+            if (currentMarker) {
+              map.panTo(currentMarker.getLatLng(), { animate: false });
+            }
+          }
+        }, 300);
       }
     }
 
@@ -2512,22 +3080,41 @@
       document.getElementById("distDisplay").innerText = totalDistance.toFixed(2);
       document.getElementById("fareDisplay").innerText = Math.round(totalFare).toFixed(2);
       document.getElementById("waitingChargeDisplay").innerText = waitingFare;
+
+      if (typeof updateHudDisplay === 'function') {
+        updateHudDisplay();
+      }
     }
 
     function startTripTimers() {
+      lastTimerTick = Date.now();
+      if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
         if (tripActive) {
-          tripSeconds++;
-          if (overspeedAlertCooldown > 0) overspeedAlertCooldown--;
+          const now = Date.now();
+          const elapsedSeconds = Math.max(1, Math.round((now - lastTimerTick) / 1000));
+          lastTimerTick = now;
+
+          tripSeconds += elapsedSeconds;
+          if (overspeedAlertCooldown > 0) {
+            overspeedAlertCooldown = Math.max(0, overspeedAlertCooldown - elapsedSeconds);
+          }
 
           // Waiting Time: currentSpeed < 2.5 km/h
           if (currentSpeed < 2.5) {
-            waitingSeconds++;
+            const prevMinutes = Math.floor(waitingSeconds / 60);
+            waitingSeconds += elapsedSeconds;
+            const newMinutes = Math.floor(waitingSeconds / 60);
+
             const mins = Math.floor(waitingSeconds / 60).toString().padStart(2, '0');
             const secs = (waitingSeconds % 60).toString().padStart(2, '0');
             document.getElementById("waitingTimeDisplay").innerText = `${mins}:${secs}`;
             
-            if (waitingSeconds % 60 === 0) {
+            if (typeof updateHudDisplay === 'function') {
+              updateHudDisplay();
+            }
+
+            if (newMinutes !== prevMinutes) {
               updateFare();
             }
           }
@@ -2547,7 +3134,7 @@
 
         playBeep('start');
         requestWakeLock();
-        speakAlert("Trip started. Safe journey!");
+        speakEvent('trip_start');
 
         // Reset variables
         totalDistance = 0;
@@ -2555,6 +3142,8 @@
         tripSeconds = 0;
         currentSpeed = 0;
         lastCoords = null;
+        lastCoordTimestamp = null;
+        lastPolylineLatLng = null;
         tripActive = true;
         routeCoordinates = [];
         tripStartTime = new Date();
@@ -2577,10 +3166,37 @@
         watchId = navigator.geolocation.watchPosition(
           (position) => {
             const { latitude, longitude, speed, accuracy } = position.coords;
+            const currentTimestamp = position.timestamp || Date.now();
             updateGpsUI(accuracy);
 
-            currentSpeed = speed ? (speed * 3.6) : 0;
+            // Time delta & distance from previous accurate fix
+            let timeDeltaSeconds = 1.0;
+            let stepDist = 0;
+            let impliedSpeed = 0;
+
+            if (lastCoords && lastCoordTimestamp) {
+              timeDeltaSeconds = Math.max(0.4, (currentTimestamp - lastCoordTimestamp) / 1000);
+              stepDist = calculateDistance(
+                lastCoords.latitude,
+                lastCoords.longitude,
+                latitude,
+                longitude
+              );
+              impliedSpeed = (stepDist / timeDeltaSeconds) * 3600; // km/h
+            }
+
+            // Speed calculation with fallback for devices where coords.speed is null
+            if (speed !== null && speed !== undefined && !isNaN(speed) && speed >= 0) {
+              currentSpeed = speed * 3.6;
+            } else if (lastCoords && lastCoordTimestamp) {
+              currentSpeed = impliedSpeed;
+            } else {
+              currentSpeed = 0;
+            }
             document.getElementById("speedDisplay").innerText = Math.round(currentSpeed);
+            if (typeof updateHudDisplay === 'function') {
+              updateHudDisplay();
+            }
 
             // ==================== OVERSPEED CHECK ====================
             const speedBox = document.getElementById("speedStatItem");
@@ -2591,22 +3207,59 @@
               
               if (overspeedAlertCooldown === 0) {
                 playBeep('alarm');
-                speakAlert("Speed limit exceeded! Please slow down.");
-                overspeedAlertCooldown = 10; // Beep every 10 seconds if overspeeding persists
+                speakEvent('overspeed');
+                overspeedAlertCooldown = 10;
               }
             } else {
               speedBox.classList.remove("overspeed");
-              if (status.classList.contains("warning")) {
+              if (status.classList.contains("warning") && !status.innerText.includes("අස්ථායී")) {
                 status.classList.remove("warning");
                 status.innerText = "GPS Tracking Active... ගමන් කරමින් පවතී";
               }
             }
 
-            if (accuracy > 30) {
+            // Reject very inaccurate fixes
+            if (accuracy > 35) {
               status.innerText = `GPS දුර්වලයි (±${Math.round(accuracy)}m). නිවැරදි සංඥා බලාපොරොත්තුවෙන්...`;
               return;
             }
 
+            // ==================== SIGNAL DROPS & JITTER FILTER ====================
+            let isTunnelRecovery = false;
+
+            if (lastCoords) {
+              // 1. Teleportation / GPS Jump Spike Filter:
+              // Tuk-Tuk cannot exceed 75 km/h. If implied speed is higher, it's a GPS glitch.
+              if (impliedSpeed > 75) {
+                console.warn(`GPS Spike Filtered: jump of ${(stepDist * 1000).toFixed(0)}m in ${timeDeltaSeconds.toFixed(1)}s (${impliedSpeed.toFixed(0)} km/h)`);
+                status.innerText = "⚠️ GPS අස්ථායී පැනීමක් මඟහරින ලදී (Spike Filtered)";
+                lastCoords = { latitude, longitude };
+                lastCoordTimestamp = currentTimestamp;
+                return;
+              }
+
+              // 2. Legitimate Movement Filter:
+              // Step distance >= 6m prevents stationary jitter creep. Speed must be >= 2.0 km/h.
+              if (stepDist >= 0.006 && currentSpeed >= 2.0 && impliedSpeed <= 70) {
+                // If signal was lost for >= 4 seconds (Tunnel/Underpass) and reconnected with plausible speed
+                if (timeDeltaSeconds >= 4.0 && stepDist > 0.04) {
+                  isTunnelRecovery = true;
+                }
+                totalDistance += stepDist;
+                updateFare();
+
+                if (isTunnelRecovery) {
+                  status.innerText = `🟢 Tunnel/Underpass සංඥා නැවත ලැබුණි (+${Math.round(stepDist * 1000)}m)`;
+                  setTimeout(() => {
+                    if (tripActive && !status.classList.contains("warning")) {
+                      status.innerText = "GPS Tracking Active... ගමන් කරමින් පවතී";
+                    }
+                  }, 4000);
+                }
+              }
+            }
+
+            // ==================== MAP & BATTERY/HEAT OPTIMIZATION ====================
             const currentLatLng = [latitude, longitude];
 
             if (!startMarker) {
@@ -2617,7 +3270,6 @@
                 weight: 2,
                 fillOpacity: 1
               }).addTo(map).bindPopup("ගමන ආරම්භ කළ ස්ථානය").openPopup();
-              
               map.setView(currentLatLng, 16);
             }
 
@@ -2633,46 +3285,72 @@
               currentMarker.setLatLng(currentLatLng);
             }
 
-            routeCoordinates.push(currentLatLng);
-            routePolyline.setLatLngs(routeCoordinates);
-            document.getElementById("mapPointCount").innerText = `ලක්ෂ්‍ය: ${routeCoordinates.length}`;
+            const mapContainer = document.getElementById("mapContainer");
+            const isMapVisible = mapContainer && !mapContainer.classList.contains("collapsed");
 
-            map.panTo(currentLatLng, { animate: true });
-
-            if (lastCoords) {
-              const stepDist = calculateDistance(
-                lastCoords.latitude,
-                lastCoords.longitude,
+            // Polyline Downsampling: Only add points if moved >= 8 meters to save DOM memory & battery
+            let shouldAddPoint = false;
+            if (!lastPolylineLatLng) {
+              shouldAddPoint = true;
+            } else {
+              const distFromLastPoly = calculateDistance(
+                lastPolylineLatLng[0],
+                lastPolylineLatLng[1],
                 latitude,
                 longitude
               );
-
-              if (currentSpeed >= 2.5 && stepDist >= 0.005 && stepDist < 0.08) {
-                totalDistance += stepDist;
-                updateFare();
+              if (distFromLastPoly >= 0.008) {
+                shouldAddPoint = true;
               }
             }
 
+            if (shouldAddPoint) {
+              routeCoordinates.push(currentLatLng);
+              lastPolylineLatLng = currentLatLng;
+              document.getElementById("mapPointCount").innerText = `ලක්ෂ්‍ය: ${routeCoordinates.length}`;
+
+              // Only redraw SVG if map is currently visible
+              if (isMapVisible && routePolyline) {
+                routePolyline.setLatLngs(routeCoordinates);
+              }
+            }
+
+            // Pan without continuous 60fps animation to keep phone cool
+            if (isMapVisible && map) {
+              map.panTo(currentLatLng, { animate: false });
+            }
+
             lastCoords = { latitude, longitude };
+            lastCoordTimestamp = currentTimestamp;
           },
           (err) => {
-            status.innerText = "GPS Error: " + err.message;
+            console.warn("GPS notice:", err.message);
             const dot = document.getElementById("gpsAccuracyDot");
-            dot.className = "badge-dot poor";
+            if (dot) dot.className = "badge-dot poor";
+            if (tripActive) {
+              status.innerText = "GPS සංඥා ඇණහිට ඇත (Tunnel/Underpass). නැවත සම්බන්ධ වෙමින්...";
+            }
           },
           {
             enableHighAccuracy: true,
             maximumAge: 1000,
-            timeout: 6000,
+            timeout: 10000,
           }
         );
       } else {
         // END TRIP ACTION
         playBeep('stop');
+        manualWakeLockRequested = false;
         releaseWakeLock();
         tripActive = false;
         clearInterval(timerInterval);
-        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+        lastCoords = null;
+        lastCoordTimestamp = null;
+        lastPolylineLatLng = null;
         
         btn.innerText = "START NEW TRIP";
         btn.classList.remove("active");
@@ -2681,7 +3359,7 @@
         document.getElementById("speedStatItem").classList.remove("overspeed");
         
         const finalFare = document.getElementById("fareDisplay").innerText;
-        speakAlert(`Trip completed. Total fare is Rupees ${Math.round(finalFare)}`);
+        speakEvent('trip_end', { fare: finalFare });
 
         if (currentMarker) {
           currentMarker.bindPopup(`ගමන අවසන්: Rs. ${finalFare}`).openPopup();
@@ -2730,6 +3408,11 @@
       };
 
       saveTripToHistory(currentTripRecord);
+
+      if (typeof updateDailyTargetUI === 'function') updateDailyTargetUI();
+      if (typeof updateFuelProfitUI === 'function') updateFuelProfitUI();
+      if (typeof updateServiceTrackerUI === 'function') updateServiceTrackerUI();
+
       openReceiptModal(currentTripRecord);
     }
 
@@ -2836,6 +3519,19 @@
       const pro = getProStatus();
       const proBadge = pro.isPro ? '\n👑 *Verified NexiaPro™ Pro Driver*' : '';
       const nightStr = trip.isNightFare ? `\n🌙 *Night Surcharge:* Rs. ${trip.nightFare}` : '';
+
+      let bankBlock = '';
+      if (pro.isPro && (driverProfile.bankName || driverProfile.bankAccountNo)) {
+        bankBlock = 
+`\n━━━━━━━━━━━━━━━━━━
+💳 *Online / Bank Transfer Details:*
+🏛️ *බැංකුව:* ${driverProfile.bankName || 'N/A'}
+🔢 *ගිණුම් අංකය:* ${driverProfile.bankAccountNo || 'N/A'}
+👤 *ගිණුමේ නම:* ${driverProfile.bankAccountName || driverProfile.name}`;
+      }
+
+      const fairGuarantee = pro.isPro ? '\n✅ *රජයේ ප්‍රමිතියට අනුව සහතික කළ සාධාරණ මීටර් ගාස්තු පමණි.*' : '';
+
       const msg = 
 `🛺 *TUK TUK METER PRO RECEIPT*
 ━━━━━━━━━━━━━━━━━━
@@ -2853,8 +3549,8 @@
 🚗 *අතිරේක දුර ගාස්තුව:* Rs. ${trip.extraDistFare}
 ⏱️ *Waiting ගාස්තුව:* Rs. ${trip.waitingFare}${nightStr}
 ━━━━━━━━━━━━━━━━━━
-💵 *මුළු ගාස්තුව:* *Rs. ${trip.totalFare}*
-━━━━━━━━━━━━━━━━━━
+💵 *මුළු ගාස්තුව:* *Rs. ${trip.totalFare}*${bankBlock}
+━━━━━━━━━━━━━━━━━━${fairGuarantee}
 ✨ Powered by *NexiaPro™ Sri Lanka*
 ස්තූතියි! සුභ ගමනක් වේවා! 🙏`;
 
@@ -3260,7 +3956,10 @@
       memberId: "NXP-1001",
       googleEmail: "",
       googleName: "",
-      isGoogleUser: false
+      isGoogleUser: false,
+      bankName: "",
+      bankAccountNo: "",
+      bankAccountName: ""
     };
 
     let profileQrInstance = null;
@@ -3295,6 +3994,9 @@
       setVal("profPhoneInput", driverProfile.phone);
       setVal("profStandInput", driverProfile.stand);
       setVal("profEmergInput", driverProfile.emergencyPhone);
+      setVal("profBankNameInput", driverProfile.bankName);
+      setVal("profBankAccInput", driverProfile.bankAccountNo);
+      setVal("profBankAccNameInput", driverProfile.bankAccountName);
 
       const avatarSrc = driverProfile.photoUrl || "icon.svg";
       const cardAvatar = document.getElementById("idCardAvatarImg");
@@ -3676,6 +4378,9 @@
       driverProfile.phone = getVal("profPhoneInput", driverProfile.phone || "0771234567");
       driverProfile.stand = getVal("profStandInput", driverProfile.stand || "Colombo Stand");
       driverProfile.emergencyPhone = getVal("profEmergInput", driverProfile.emergencyPhone || "119 / Police");
+      driverProfile.bankName = getVal("profBankNameInput", driverProfile.bankName || "");
+      driverProfile.bankAccountNo = getVal("profBankAccInput", driverProfile.bankAccountNo || "");
+      driverProfile.bankAccountName = getVal("profBankAccNameInput", driverProfile.bankAccountName || "");
 
       // Sync with Meter global config & receipt settings
       config.driverName = driverProfile.name;
@@ -3836,6 +4541,435 @@
       document.getElementById("guideModal").classList.remove("show");
     }
 
+    // ==================== HUD MODE (WINDSCREEN DISPLAY) LOGIC ====================
+    let hudFlipMode = 'y'; // 'y' (mirrored-y), 'x' (mirrored-x), 'none'
+
+    function toggleHudMode() {
+      const pro = getProStatus();
+      if (!pro.isPro) {
+        showToast("Windscreen HUD Mode Pro සාමාජිකයින්ට පමණි! 👑");
+        openProModal();
+        return;
+      }
+
+      const hudOverlay = document.getElementById("hudOverlay");
+      if (!hudOverlay) return;
+
+      if (hudOverlay.style.display === "flex") {
+        closeHudMode();
+      } else {
+        requestWakeLock();
+        hudOverlay.style.display = "flex";
+        updateHudDisplay();
+        showToast("🪟 HUD Mode සක්‍රීය විය! Dashboard එක මත තබා බලන්න");
+      }
+    }
+
+    function closeHudMode() {
+      const hudOverlay = document.getElementById("hudOverlay");
+      if (hudOverlay) hudOverlay.style.display = "none";
+    }
+
+    function toggleHudFlip() {
+      const hudOverlay = document.getElementById("hudOverlay");
+      const flipBtn = document.getElementById("hudFlipBtn");
+      if (!hudOverlay) return;
+
+      if (hudFlipMode === 'y') {
+        hudFlipMode = 'x';
+        hudOverlay.className = "hud-overlay mirrored-x";
+        if (flipBtn) flipBtn.innerText = "🔄 Flip (X)";
+      } else if (hudFlipMode === 'x') {
+        hudFlipMode = 'none';
+        hudOverlay.className = "hud-overlay";
+        if (flipBtn) flipBtn.innerText = "🔄 Normal";
+      } else {
+        hudFlipMode = 'y';
+        hudOverlay.className = "hud-overlay mirrored-y";
+        if (flipBtn) flipBtn.innerText = "🔄 Flip (Y)";
+      }
+    }
+
+    function updateHudDisplay() {
+      const hudOverlay = document.getElementById("hudOverlay");
+      if (!hudOverlay || hudOverlay.style.display === "none") return;
+
+      const hudSpeed = document.getElementById("hudSpeedDisplay");
+      const hudFare = document.getElementById("hudFareDisplay");
+      const hudDist = document.getElementById("hudDistDisplay");
+      const hudWait = document.getElementById("hudWaitDisplay");
+
+      if (hudSpeed) hudSpeed.innerText = Math.round(currentSpeed || 0);
+      if (hudDist) hudDist.innerText = totalDistance.toFixed(2);
+      
+      const fareEl = document.getElementById("fareDisplay");
+      if (hudFare && fareEl) hudFare.innerText = `Rs. ${fareEl.innerText}`;
+
+      const waitEl = document.getElementById("waitingTimeDisplay");
+      if (hudWait && waitEl) hudWait.innerText = waitEl.innerText;
+    }
+
+    // ==================== DRIVER TOOLS MODAL LOGIC ====================
+    function openDriverToolsModal(tab = 'docs') {
+      const pro = getProStatus();
+      if (!pro.isPro) {
+        showToast("Pro Driver Toolkit Pro සාමාජිකයින්ට පමණි! 👑");
+        openProModal();
+        return;
+      }
+
+      switchToolsTab(tab);
+      document.getElementById("driverToolsModal").classList.add("show");
+    }
+
+    function closeDriverToolsModal() {
+      document.getElementById("driverToolsModal").classList.remove("show");
+    }
+
+    function switchToolsTab(tab) {
+      const tabs = ['docs', 'service', 'profit', 'target'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabTool${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
+        const content = document.getElementById(`tabTool${t.charAt(0).toUpperCase() + t.slice(1)}Content`);
+        if (btn) btn.classList.toggle('active', t === tab);
+        if (content) content.style.display = (t === tab) ? 'block' : 'none';
+      });
+
+      if (tab === 'docs') {
+        loadDriverDocs();
+      } else if (tab === 'service') {
+        loadServiceTracker();
+      } else if (tab === 'profit') {
+        updateFuelProfitUI();
+      } else if (tab === 'target') {
+        updateDailyTargetUI();
+      }
+    }
+
+    // ==================== POLICE FINE PROTECTION & DOCUMENT VAULT ====================
+    let driverDocs = {
+      revenue: '',
+      insurance: '',
+      emission: '',
+      license: ''
+    };
+
+    function loadDriverDocs() {
+      const saved = localStorage.getItem('tuktuk_driver_docs');
+      if (saved) {
+        try {
+          driverDocs = { ...driverDocs, ...JSON.parse(saved) };
+        } catch (e) {
+          console.error("Error loading driver docs", e);
+        }
+      }
+
+      const setInput = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val || '';
+      };
+
+      setInput("docRevenueInput", driverDocs.revenue);
+      setInput("docInsuranceInput", driverDocs.insurance);
+      setInput("docEmissionInput", driverDocs.emission);
+      setInput("docLicenseInput", driverDocs.license);
+
+      updateDocBadges();
+      checkDocumentExpiries();
+    }
+
+    function saveDriverDocs() {
+      const getInput = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : '';
+      };
+
+      driverDocs.revenue = getInput("docRevenueInput");
+      driverDocs.insurance = getInput("docInsuranceInput");
+      driverDocs.emission = getInput("docEmissionInput");
+      driverDocs.license = getInput("docLicenseInput");
+
+      localStorage.setItem('tuktuk_driver_docs', JSON.stringify(driverDocs));
+      updateDocBadges();
+      checkDocumentExpiries();
+      showToast("ලියකියවිලි දිනයන් සාර්ථකව සුරැකිණි! 📁");
+    }
+
+    function getDaysUntil(dateStr) {
+      if (!dateStr) return null;
+      const target = new Date(dateStr + "T00:00:00");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const diffTime = target.getTime() - today.getTime();
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function updateDocBadges() {
+      const docFields = [
+        { id: 'docRevenueInput', badgeId: 'badgeRevenue' },
+        { id: 'docInsuranceInput', badgeId: 'badgeInsurance' },
+        { id: 'docEmissionInput', badgeId: 'badgeEmission' },
+        { id: 'docLicenseInput', badgeId: 'badgeLicense' }
+      ];
+
+      docFields.forEach(f => {
+        const input = document.getElementById(f.id);
+        const badge = document.getElementById(f.badgeId);
+        if (!badge) return;
+
+        const val = input ? input.value : '';
+        const days = getDaysUntil(val);
+
+        if (days === null) {
+          badge.innerText = "දිනයක් නැත";
+          badge.style.background = "#334155";
+          badge.style.color = "#94a3b8";
+        } else if (days < 0) {
+          badge.innerText = `🚨 කල් ඉකුත් වී ඇත (දින ${Math.abs(days)} පෙර)`;
+          badge.style.background = "#ef4444";
+          badge.style.color = "#ffffff";
+        } else if (days === 0) {
+          badge.innerText = "⚠️ අද කල් ඉකුත් වේ!";
+          badge.style.background = "#f59e0b";
+          badge.style.color = "#0f172a";
+        } else if (days <= 14) {
+          badge.innerText = `⚠️ තව දින ${days} යි`;
+          badge.style.background = "#f59e0b";
+          badge.style.color = "#0f172a";
+        } else {
+          badge.innerText = `✅ වලංගුයි (දින ${days})`;
+          badge.style.background = "#10b981";
+          badge.style.color = "#0f172a";
+        }
+      });
+    }
+
+    function checkDocumentExpiries() {
+      const saved = localStorage.getItem('tuktuk_driver_docs');
+      if (saved) {
+        try {
+          driverDocs = { ...driverDocs, ...JSON.parse(saved) };
+        } catch (e) {}
+      }
+
+      const docNames = {
+        revenue: "ආදායම් බලපත්‍රය (Revenue License)",
+        insurance: "රක්ෂණ සහතිකය (Insurance)",
+        emission: "දුම් සහතිකය (Eco Test)",
+        license: "රියදුරු බලපත්‍රය (Driving License)"
+      };
+
+      const banner = document.getElementById("docExpiryAlertBanner");
+      const bannerText = document.getElementById("docExpiryAlertText");
+      if (!banner || !bannerText) return;
+
+      let expiredList = [];
+      let warningList = [];
+
+      Object.keys(docNames).forEach(k => {
+        const days = getDaysUntil(driverDocs[k]);
+        if (days !== null) {
+          if (days < 0) {
+            expiredList.push(`${docNames[k]}`);
+          } else if (days <= 14) {
+            warningList.push(`${docNames[k]} (තව දින ${days})`);
+          }
+        }
+      });
+
+      if (expiredList.length > 0) {
+        banner.style.display = "flex";
+        banner.style.background = "linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(185, 28, 28, 0.35))";
+        banner.style.borderColor = "#ef4444";
+        bannerText.innerHTML = `🚨 <strong>පොලිස් දඩ අවදානමක්!</strong> ${expiredList[0]} කල් ඉකුත් වී ඇත!`;
+      } else if (warningList.length > 0) {
+        banner.style.display = "flex";
+        banner.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.25))";
+        banner.style.borderColor = "#f59e0b";
+        bannerText.innerHTML = `⚠️ <strong>අවධානයට:</strong> ${warningList[0]} කල් ඉකුත් වෙමින් පවතී.`;
+      } else {
+        banner.style.display = "none";
+      }
+    }
+
+    // ==================== ENGINE OIL & SERVICE TRACKER ====================
+    let serviceTracker = {
+      lastServiceOdo: 0,
+      lastServiceDate: '--/--/----',
+      interval: 1500
+    };
+
+    function getTotalLifetimeKm() {
+      const history = getStoredHistory();
+      return history.reduce((sum, trip) => sum + (parseFloat(trip.distance) || 0), 0);
+    }
+
+    function loadServiceTracker() {
+      const saved = localStorage.getItem('tuktuk_service_tracker');
+      if (saved) {
+        try {
+          serviceTracker = { ...serviceTracker, ...JSON.parse(saved) };
+        } catch (e) {
+          console.error("Error loading service tracker", e);
+        }
+      }
+
+      const intervalInput = document.getElementById("oilIntervalInput");
+      if (intervalInput) {
+        intervalInput.value = serviceTracker.interval || config.oilServiceInterval || 1500;
+      }
+
+      updateServiceTrackerUI();
+    }
+
+    function updateServiceTrackerUI() {
+      const totalKm = getTotalLifetimeKm();
+      const interval = serviceTracker.interval || config.oilServiceInterval || 1500;
+      const kmSinceLastService = Math.max(0, totalKm - (serviceTracker.lastServiceOdo || 0));
+      const remainingKm = Math.round(interval - kmSinceLastService);
+
+      const remDisplay = document.getElementById("oilKmRemainingDisplay");
+      const dateDisplay = document.getElementById("oilLastServiceDateDisplay");
+
+      if (remDisplay) {
+        if (remainingKm < 0) {
+          remDisplay.innerText = `⚠️ Overdue ${Math.abs(remainingKm)} km`;
+          remDisplay.style.color = "#ef4444";
+        } else {
+          remDisplay.innerText = `${remainingKm.toLocaleString()} km`;
+          remDisplay.style.color = remainingKm <= 100 ? "#f59e0b" : "#10b981";
+        }
+      }
+
+      if (dateDisplay) {
+        dateDisplay.innerText = `අවසාන සර්විස් දිනය: ${serviceTracker.lastServiceDate || '--/--/----'}`;
+      }
+    }
+
+    function resetServiceTracker() {
+      const totalKm = getTotalLifetimeKm();
+      const intervalInput = document.getElementById("oilIntervalInput");
+      const newInterval = intervalInput ? (parseFloat(intervalInput.value) || 1500) : 1500;
+
+      serviceTracker.lastServiceOdo = totalKm;
+      serviceTracker.lastServiceDate = new Date().toLocaleDateString();
+      serviceTracker.interval = newInterval;
+      config.oilServiceInterval = newInterval;
+
+      localStorage.setItem('tuktuk_service_tracker', JSON.stringify(serviceTracker));
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+
+      updateServiceTrackerUI();
+      playBeep('start');
+      showToast(`Engine Oil Tracker Reset විය! (${newInterval} km) 🛢️`);
+    }
+
+    // ==================== FUEL & NET TAKE-HOME PROFIT CALCULATOR ====================
+    function getTodayTrips() {
+      const history = getStoredHistory();
+      const todayStr = new Date().toLocaleDateString();
+      return history.filter(t => t.date === todayStr);
+    }
+
+    function updateFuelProfitUI() {
+      const todayTrips = getTodayTrips();
+      let grossRev = 0;
+      let totalKm = 0;
+
+      todayTrips.forEach(t => {
+        grossRev += parseFloat(t.totalFare) || 0;
+        totalKm += parseFloat(t.distance) || 0;
+      });
+
+      const efficiency = config.fuelEfficiency || 30; // km/L
+      const price = config.petrolPrice || 320; // Rs/L
+      const fuelUsedLiters = efficiency > 0 ? (totalKm / efficiency) : 0;
+      const fuelCost = fuelUsedLiters * price;
+      const netTakeHome = grossRev - fuelCost;
+
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = txt;
+      };
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      };
+
+      setTxt("profitGrossRevenue", `Rs. ${Math.round(grossRev).toLocaleString()}`);
+      setTxt("profitTodayKm", `${totalKm.toFixed(1)} km`);
+      setTxt("profitFuelCost", `Rs. ${Math.round(fuelCost).toLocaleString()}`);
+      setTxt("profitNetTakeHome", `Rs. ${Math.round(netTakeHome).toLocaleString()}`);
+
+      setVal("fuelEfficiencyInput", efficiency);
+      setVal("petrolPriceInput", price);
+    }
+
+    function saveFuelSettings() {
+      const effInput = document.getElementById("fuelEfficiencyInput");
+      const priceInput = document.getElementById("petrolPriceInput");
+
+      if (effInput) config.fuelEfficiency = parseFloat(effInput.value) || 30;
+      if (priceInput) config.petrolPrice = parseFloat(priceInput.value) || 320;
+
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+      updateFuelProfitUI();
+      showToast("තෙල් සහ ලාභ සැකසුම් සුරැකිණි! ⛽");
+    }
+
+    // ==================== DAILY TARGET TRACKER ====================
+    let targetCelebrationDoneDate = localStorage.getItem('tuktuk_target_celebrated_date') || '';
+
+    function updateDailyTargetUI() {
+      const todayTrips = getTodayTrips();
+      let todayRev = 0;
+      todayTrips.forEach(t => {
+        todayRev += parseFloat(t.totalFare) || 0;
+      });
+
+      const target = config.dailyTarget || 5000;
+      const percent = target > 0 ? Math.round((todayRev / target) * 100) : 0;
+
+      const cardStats = document.getElementById("targetCardStats");
+      const barFill = document.getElementById("targetBarFill");
+      const modalPercent = document.getElementById("targetModalPercent");
+      const modalAmount = document.getElementById("targetModalAmount");
+      const targetInput = document.getElementById("dailyTargetInput");
+
+      if (cardStats) cardStats.innerText = `Rs. ${Math.round(todayRev).toLocaleString()} / ${target.toLocaleString()} (${percent}%)`;
+      if (barFill) barFill.style.width = `${Math.min(100, percent)}%`;
+      if (modalPercent) modalPercent.innerText = `${percent}%`;
+      if (modalAmount) modalAmount.innerText = `Rs. ${Math.round(todayRev).toLocaleString()} / ${target.toLocaleString()}`;
+      if (targetInput) targetInput.value = target;
+
+      checkTargetReached(todayRev, target);
+    }
+
+    function checkTargetReached(todayRev, target) {
+      const todayStr = new Date().toLocaleDateString();
+      if (todayRev >= target && target > 0 && targetCelebrationDoneDate !== todayStr) {
+        targetCelebrationDoneDate = todayStr;
+        localStorage.setItem('tuktuk_target_celebrated_date', todayStr);
+
+        playBeep('start');
+        setTimeout(() => playBeep('start'), 250);
+        setTimeout(() => playBeep('stop'), 500);
+
+        speakEvent('target_reached');
+        showToast("🎉 සුබ පැතුම්! ඔබගේ අද දවසේ ආදායම් ඉලක්කය සම්පූර්ණයි!");
+      }
+    }
+
+    function saveDailyTarget() {
+      const input = document.getElementById("dailyTargetInput");
+      if (input) {
+        config.dailyTarget = parseFloat(input.value) || 5000;
+        localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+      }
+      updateDailyTargetUI();
+      showToast("දෛනික ඉලක්කය සුරැකිණි! 🎯");
+    }
+
     // ==================== PRIVACY MODAL LOGIC ====================
     function openPrivacyModal() {
       document.getElementById("privacyModal").classList.add("show");
@@ -3866,13 +5000,49 @@
       }
     }
 
-    // Register Service Worker
+    // Register Service Worker & Auto-update
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js').catch((err) => {
+        navigator.serviceWorker.register('./service-worker.js').then((reg) => {
+          reg.update();
+          reg.addEventListener('updatefound', () => {
+            const installingWorker = reg.installing;
+            if (installingWorker) {
+              installingWorker.addEventListener('statechange', () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('[SW] New version available! Reloading...');
+                  window.location.reload();
+                }
+              });
+            }
+          });
+        }).catch((err) => {
           console.log('ServiceWorker registration error: ', err);
         });
       });
+    }
+
+    async function forceAppUpdate() {
+      showToast("App එක Update වෙමින් පවතී... 🔄");
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (let r of regs) {
+            await r.unregister();
+          }
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          for (let k of keys) {
+            await caches.delete(k);
+          }
+        }
+      } catch (e) {
+        console.warn("Force update error", e);
+      }
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 500);
     }
 
     // Initialize on Page Load
