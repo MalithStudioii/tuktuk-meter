@@ -3,3 +3,15 @@ admin-pwa/
 admin-generator.html
 *.pem
 *.key
+
+# Standalone App Repositories & Build Artifacts
+nexiapro-portal/
+tuktuk-android/
+MothersApp/
+Screenshots/
+*.apk
+*.zip
+.gradle/
+build/
+local.properties
+nexiapro-*
