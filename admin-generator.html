@@ -913,6 +913,12 @@
             <input type="text" id="settingBankBranch" placeholder="උදා: Galle / Head Office">
           </div>
 
+          <div class="form-group" style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #334155;">
+            <label style="color: #22c55e;">📲 WhatsApp ඇණවුම් ලැබෙන අංකය (Admin WhatsApp Number):</label>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 4px;">Drivers ලා App එකේ WhatsApp බොත්තම එබූ විට Slip පත සහ විස්තර එවන්නේ මෙම අංකයටයි:</div>
+            <input type="tel" id="settingAdminPhone" placeholder="උදා: 0771234567 හෝ 94771234567" style="color: #22c55e; font-weight: bold; font-family: monospace; font-size: 0.95rem;">
+          </div>
+
           <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
             <button type="button" class="primary-btn" onclick="saveAdminBankSettings()" style="flex: 1; min-width: 180px; background: linear-gradient(135deg, #10b981, #059669);">
               💾 බැංකු විස්තර සුරකින්න (Save Bank)
@@ -1650,7 +1656,8 @@ Output strictly valid JSON with this schema:
         bankName: "People's Bank",
         accNo: "169200150035183",
         accName: "MD Haputhanthri",
-        branch: "Galle / Head Office"
+        branch: "Galle / Head Office",
+        adminPhone: "94771234567"
       };
     }
 
@@ -1660,15 +1667,17 @@ Output strictly valid JSON with this schema:
       const accInput = document.getElementById("settingBankAccNo");
       const holderInput = document.getElementById("settingBankAccName");
       const branchInput = document.getElementById("settingBankBranch");
+      const phoneInput = document.getElementById("settingAdminPhone");
       const bannerInfo = document.getElementById("bannerBankInfo");
 
       if (nameInput) nameInput.value = bank.bankName || "";
       if (accInput) accInput.value = bank.accNo || "";
       if (holderInput) holderInput.value = bank.accName || "";
       if (branchInput) branchInput.value = bank.branch || "";
+      if (phoneInput) phoneInput.value = bank.adminPhone || "";
 
       if (bannerInfo) {
-        bannerInfo.innerText = `${bank.bankName || "Bank"} - ${bank.accNo || ""} (${bank.accName || ""})`;
+        bannerInfo.innerText = `${bank.bankName || "Bank"} - ${bank.accNo || ""} (${bank.accName || ""})${bank.adminPhone ? ` | WA: ${bank.adminPhone}` : ''}`;
       }
     }
 
@@ -1677,13 +1686,25 @@ Output strictly valid JSON with this schema:
       const accNo = document.getElementById("settingBankAccNo") ? document.getElementById("settingBankAccNo").value.trim() : "";
       const accName = document.getElementById("settingBankAccName") ? document.getElementById("settingBankAccName").value.trim() : "";
       const branch = document.getElementById("settingBankBranch") ? document.getElementById("settingBankBranch").value.trim() : "";
+      const phoneRaw = document.getElementById("settingAdminPhone") ? document.getElementById("settingAdminPhone").value.trim() : "";
 
       if (!accNo) {
         alert("කරුණාකර ඔබගේ බැංකු ගිණුම් අංකය ඇතුළත් කරන්න!");
         return;
       }
 
-      const bank = { bankName: bankName || "People's Bank", accNo, accName: accName || "MD Haputhanthri", branch: branch || "Galle / Head Office", updatedAt: Date.now() };
+      let adminPhone = phoneRaw.replace(/[^0-9]/g, '');
+      if (adminPhone.startsWith('0')) adminPhone = '94' + adminPhone.substring(1);
+      if (!adminPhone && phoneRaw) adminPhone = phoneRaw;
+
+      const bank = { 
+        bankName: bankName || "People's Bank", 
+        accNo, 
+        accName: accName || "MD Haputhanthri", 
+        branch: branch || "Galle / Head Office", 
+        adminPhone: adminPhone || "94771234567",
+        updatedAt: Date.now() 
+      };
       localStorage.setItem("tuktuk_admin_bank_details", JSON.stringify(bank));
       initBankSettings();
 
@@ -1706,6 +1727,7 @@ Output strictly valid JSON with this schema:
               accNo: { stringValue: bank.accNo },
               accName: { stringValue: bank.accName },
               branch: { stringValue: bank.branch || "" },
+              adminPhone: { stringValue: bank.adminPhone || "94771234567" },
               updatedAt: { integerValue: String(bank.updatedAt) }
             }
           };
@@ -1721,9 +1743,9 @@ Output strictly valid JSON with this schema:
       }
 
       if (cloudSynced) {
-        showToast("✅ බැංකු ගිණුම් විස්තර Cloud එකට Save විය! (සියලුම Tuk Tuk App යාවත්කාලීන වේ)");
+        showToast("✅ බැංකු & WhatsApp විස්තර Cloud එකට Save විය! (සියලුම Tuk Tuk App යාවත්කාලීන වේ)");
       } else {
-        showToast("✅ බැංකු විස්තර Local එකේ සුරැකිණි.");
+        showToast("✅ විස්තර Local එකේ සුරැකිණි.");
       }
     }
 
@@ -1741,9 +1763,10 @@ Output strictly valid JSON with this schema:
 • *බැංකුව:* ${bank.bankName}
 • *ගිණුම් අංකය:* ${bank.accNo}
 • *ගිණුම් හිමියාගේ නම:* ${bank.accName}
-${bank.branch ? `• *ශාඛාව:* ${bank.branch}\n` : ''}━━━━━━━━━━━━━━━━━━
+${bank.branch ? `• *ශාඛාව:* ${bank.branch}\n` : ''}• *WhatsApp ඇණවුම් අංකය:* ${bank.adminPhone || "94771234567"}
+━━━━━━━━━━━━━━━━━━
 ⚠️ *ඉතා වැදගත්:* 
-මුදල් Transfer කිරීමේදී Remark / Reference ලෙස ඔබගේ *Device ID (උදා: TK-XXXX)* අනිවාර්යයෙන් ඇතුළත් කර, මුදල් ගෙවූ Slip පත එවන්න.`;
+මුදල් Transfer කිරීමේදී Remark / Reference ලෙස ඔබගේ *Device ID (උදා: TK-XXXX)* අනිවාර්යයෙන් ඇතුළත් කර, මුදල් ගෙවූ Slip පත අපගේ ඉහත WhatsApp අංකයට එවන්න.`;
 
       navigator.clipboard.writeText(txt).then(() => {
         showToast("WhatsApp Text Copy කරන ලදී!");

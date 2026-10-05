@@ -2569,7 +2569,7 @@
           📧 <b>Email:</b> <a href="mailto:supportnexiapro@gmail.com?subject=TukTuk%20Pro%20Support%20Inquiry" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: underline;">supportnexiapro@gmail.com</a>
         </p>
         <p style="margin: 6px 0;">
-          📲 <b>WhatsApp:</b> <a href="https://api.whatsapp.com/send?phone=94771234567&text=TukTuk%20Pro%20Support" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: underline;">NexiaPro WhatsApp Desk</a>
+          📲 <b>WhatsApp:</b> <a id="supportWaLink" href="https://api.whatsapp.com/send?phone=94771234567&text=TukTuk%20Pro%20Support" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: underline;">NexiaPro WhatsApp Desk</a>
         </p>
 
         <h4>7. ලියකියවිලි සහ වාහන දත්ත පෞද්ගලිකත්වය (Vehicle Documents & Service Privacy)</h4>
@@ -4391,7 +4391,8 @@
       bankName: "People's Bank",
       accNo: "169200150035183",
       accName: "MD Haputhanthri",
-      branch: "Galle / Head Office"
+      branch: "Galle / Head Office",
+      adminPhone: "94771234567"
     };
 
     function getAdminBankInfo() {
@@ -4418,6 +4419,12 @@
       if (elAcc) elAcc.innerText = bank.accNo || "169200150035183";
       if (elBranch) elBranch.innerText = bank.branch || "";
       if (elBranchRow) elBranchRow.style.display = bank.branch ? "block" : "none";
+
+      const supLink = document.getElementById("supportWaLink");
+      let rawPhone = bank.adminPhone || config.adminPhone || "94771234567";
+      let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) cleanPhone = '94' + cleanPhone.substring(1);
+      if (supLink) supLink.href = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=TukTuk%20Pro%20Support`;
     }
 
     async function fetchCloudBankDetails() {
@@ -4432,9 +4439,11 @@
             accNo: data.fields.accNo?.stringValue || "169200150035183",
             accName: data.fields.accName?.stringValue || "MD Haputhanthri",
             branch: data.fields.branch?.stringValue || "",
+            adminPhone: data.fields.adminPhone?.stringValue || "94771234567",
             updatedAt: data.fields.updatedAt?.integerValue ? parseInt(data.fields.updatedAt.integerValue) : Date.now()
           };
           localStorage.setItem("tuktuk_cloud_bank_details", JSON.stringify(bank));
+          config.adminPhone = bank.adminPhone;
           renderAdminBankDetails();
         }
       } catch (err) {
@@ -4509,7 +4518,9 @@
 මම බැංකු Transfer එකේ Remarks / Reference සඳහා මාගේ Device ID එක (*${devId}*) ඇතුළත් කර මුදල් තැන්පත් කළෙමි. Slip පත මෙහි අමුණා ඇත.
 බැංකු ගිණුමට මුදල් බැරවීම සහ Device ID Reference එක තහවුරු කර මාගේ Activation Code එක ලබා දෙන්න. ස්තූතියි!`;
 
-      const cleanPhone = (config.adminPhone || "94771234567").replace(/[^0-9]/g, '');
+      let rawPhone = bank.adminPhone || config.adminPhone || "94771234567";
+      let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) cleanPhone = '94' + cleanPhone.substring(1);
       const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msg)}`;
       window.open(waUrl, '_blank');
     }
