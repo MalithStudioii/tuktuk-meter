@@ -2442,10 +2442,11 @@
 
         <!-- Bank Details Card -->
         <div style="background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; font-size: 0.78rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px;">
-          <div>🏦 <b>බැංකුව:</b> Commercial Bank PLC</div>
-          <div>👤 <b>ගිණුම් නම:</b> TukTuk Pro (NexiaPro)</div>
+          <div>🏦 <b>බැංකුව:</b> <span id="proBankName">People's Bank</span></div>
+          <div>👤 <b>ගිණුම් නම:</b> <span id="proBankAccHolder">MD Haputhanthri</span></div>
+          <div id="proBankBranchRow">🏢 <b>ශාඛාව:</b> <span id="proBankBranch">Galle / Head Office</span></div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; background: #0f172a; padding: 6px 8px; border-radius: 6px; border: 1px dashed #334155;">
-            <div>🔢 <b>ගිණුම් අංකය:</b> <span id="proBankAccNum" style="font-family: monospace; font-weight: bold; color: #38bdf8; font-size: 0.95rem;">8001234567</span></div>
+            <div>🔢 <b>ගිණුම් අංකය:</b> <span id="proBankAccNum" style="font-family: monospace; font-weight: bold; color: #38bdf8; font-size: 0.95rem;">169200150035183</span></div>
             <button onclick="copyBankAccNo()" style="background: #1e293b; border: 1px solid #475569; color: #38bdf8; font-size: 0.7rem; border-radius: 4px; padding: 3px 8px; cursor: pointer;">📋 Copy</button>
           </div>
         </div>
@@ -3152,7 +3153,7 @@
       oilServiceInterval: 1500,
       nightFareActive: false,
       adminPhone: "94771234567",
-      adminBankDetails: "Commercial Bank - 8001234567 (TukTuk Pro)"
+      adminBankDetails: "People's Bank - 169200150035183 (MD Haputhanthri)"
     };
 
     function loadSavedSettings() {
@@ -4385,8 +4386,66 @@
       }
     }
 
+    // ==================== ADMIN RECEIVING BANK ACCOUNT SYNC ====================
+    const DEFAULT_ADMIN_BANK = {
+      bankName: "People's Bank",
+      accNo: "169200150035183",
+      accName: "MD Haputhanthri",
+      branch: "Galle / Head Office"
+    };
+
+    function getAdminBankInfo() {
+      const saved = localStorage.getItem("tuktuk_cloud_bank_details");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.accNo) return parsed;
+        } catch (e) {}
+      }
+      return DEFAULT_ADMIN_BANK;
+    }
+
+    function renderAdminBankDetails() {
+      const bank = getAdminBankInfo();
+      const elName = document.getElementById("proBankName");
+      const elHolder = document.getElementById("proBankAccHolder");
+      const elAcc = document.getElementById("proBankAccNum");
+      const elBranch = document.getElementById("proBankBranch");
+      const elBranchRow = document.getElementById("proBankBranchRow");
+
+      if (elName) elName.innerText = bank.bankName || "People's Bank";
+      if (elHolder) elHolder.innerText = bank.accName || "MD Haputhanthri";
+      if (elAcc) elAcc.innerText = bank.accNo || "169200150035183";
+      if (elBranch) elBranch.innerText = bank.branch || "";
+      if (elBranchRow) elBranchRow.style.display = bank.branch ? "block" : "none";
+    }
+
+    async function fetchCloudBankDetails() {
+      try {
+        const url = "https://firestore.googleapis.com/v1/projects/tuktuk-meter-admin26/databases/(default)/documents/tuktuk_settings/bank?key=AIzaSyB_xW7qOEkWgnNHvatmuYm1NhIRNBmXhso";
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.fields) {
+          const bank = {
+            bankName: data.fields.bankName?.stringValue || "People's Bank",
+            accNo: data.fields.accNo?.stringValue || "169200150035183",
+            accName: data.fields.accName?.stringValue || "MD Haputhanthri",
+            branch: data.fields.branch?.stringValue || "",
+            updatedAt: data.fields.updatedAt?.integerValue ? parseInt(data.fields.updatedAt.integerValue) : Date.now()
+          };
+          localStorage.setItem("tuktuk_cloud_bank_details", JSON.stringify(bank));
+          renderAdminBankDetails();
+        }
+      } catch (err) {
+        console.warn("Cloud bank sync skipped (offline):", err);
+      }
+    }
+
     function openProModal() {
       updateProUI();
+      renderAdminBankDetails();
+      fetchCloudBankDetails();
       document.getElementById("proModal").classList.add("show");
     }
 
@@ -4414,9 +4473,10 @@
     }
 
     function copyBankAccNo() {
-      const acc = document.getElementById("proBankAccNum") ? document.getElementById("proBankAccNum").innerText.trim() : "8001234567";
+      const bank = getAdminBankInfo();
+      const acc = bank.accNo || (document.getElementById("proBankAccNum") ? document.getElementById("proBankAccNum").innerText.trim() : "169200150035183");
       navigator.clipboard.writeText(acc).then(() => {
-        showToast("Commercial Bank ගිණුම් අංකය Copy විය: " + acc);
+        showToast(`${bank.bankName || "People's Bank"} ගිණුම් අංකය Copy විය: ` + acc);
       }).catch(() => {
         showToast("Account: " + acc);
       });
@@ -4424,6 +4484,7 @@
 
     function openWhatsAppOrder() {
       const devId = getDeviceId();
+      const bank = getAdminBankInfo();
       let planText = "මාස 1 (දින 30) - රු. 300";
       let priceText = "Rs. 300";
       if (selectedProPlan === "90") {
@@ -4440,7 +4501,9 @@
 📱 *මගේ Device ID:* ${devId}
 📦 *තෝරාගත් පැකේජය:* ${planText}
 💰 *ගාස්තුව:* ${priceText}
-🏦 *බැංකු Reference එක:* ${devId}
+🏦 *ගෙවූ බැංකුව:* ${bank.bankName || "People's Bank"} (${bank.accNo || "169200150035183"})
+👤 *ගිණුම් නම:* ${bank.accName || "MD Haputhanthri"}
+🔖 *බැංකු Reference එක:* ${devId}
 ━━━━━━━━━━━━━━━━━━
 ⚠️ *සැලකිය යුතුයි:*
 මම බැංකු Transfer එකේ Remarks / Reference සඳහා මාගේ Device ID එක (*${devId}*) ඇතුළත් කර මුදල් තැන්පත් කළෙමි. Slip පත මෙහි අමුණා ඇත.
@@ -5915,6 +5978,8 @@ ${routeLine}📏 *ඇස්තමේන්තු දුර:* ${distance.toFixed(
     // Initialize on Page Load
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedSettings();
+      renderAdminBankDetails();
+      fetchCloudBankDetails();
       loadDriverProfile();
       initMap();
       getDeviceId();

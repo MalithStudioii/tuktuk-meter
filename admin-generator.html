@@ -610,7 +610,7 @@
         <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
           <span>🏦</span>
           <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            <b>සක්‍රීය බැංකු ගිණුම:</b> <span id="bannerBankInfo" style="color: #38bdf8; font-weight: bold;">People's Bank - 84946865 (S DULANJANA)</span>
+            <b>සක්‍රීය බැංකු ගිණුම:</b> <span id="bannerBankInfo" style="color: #38bdf8; font-weight: bold;">People's Bank - 169200150035183 (MD Haputhanthri)</span>
           </span>
         </div>
         <span style="color: #94a3b8; font-size: 0.68rem; text-decoration: underline; white-space: nowrap; margin-left: 6px;">වෙනස් කරන්න ⚙️</span>
@@ -900,12 +900,12 @@
 
           <div class="form-group">
             <label>ගිණුම් අංකය (Account Number):</label>
-            <input type="text" id="settingBankAccNo" placeholder="උදා: 84946865" style="font-family: monospace; font-weight: bold; color: #38bdf8;">
+            <input type="text" id="settingBankAccNo" placeholder="උදා: 169200150035183" style="font-family: monospace; font-weight: bold; color: #38bdf8;">
           </div>
 
           <div class="form-group">
             <label>ගිණුම් හිමියාගේ නම (Account Holder Name):</label>
-            <input type="text" id="settingBankAccName" placeholder="උදා: S DULANJANA">
+            <input type="text" id="settingBankAccName" placeholder="උදා: MD Haputhanthri">
           </div>
 
           <div class="form-group">
@@ -1204,8 +1204,8 @@
       try {
         const bank = getAdminBankDetails();
         const myBank = bank.bankName || "People's Bank";
-        const myAcc = bank.accNo || "84946865";
-        const myName = bank.accName || "S DULANJANA";
+        const myAcc = bank.accNo || "169200150035183";
+        const myName = bank.accName || "MD Haputhanthri";
 
         const promptText = `You are an expert Sri Lankan banking transaction slip and fraud detection AI assistant for TukTuk Pro.
 Analyze this payment slip/receipt screenshot carefully.
@@ -1648,9 +1648,9 @@ Output strictly valid JSON with this schema:
       }
       return {
         bankName: "People's Bank",
-        accNo: "84946865",
-        accName: "S DULANJANA",
-        branch: "Head Office"
+        accNo: "169200150035183",
+        accName: "MD Haputhanthri",
+        branch: "Galle / Head Office"
       };
     }
 
@@ -1672,7 +1672,7 @@ Output strictly valid JSON with this schema:
       }
     }
 
-    function saveAdminBankSettings() {
+    async function saveAdminBankSettings() {
       const bankName = document.getElementById("settingBankName") ? document.getElementById("settingBankName").value.trim() : "";
       const accNo = document.getElementById("settingBankAccNo") ? document.getElementById("settingBankAccNo").value.trim() : "";
       const accName = document.getElementById("settingBankAccName") ? document.getElementById("settingBankAccName").value.trim() : "";
@@ -1683,10 +1683,48 @@ Output strictly valid JSON with this schema:
         return;
       }
 
-      const bank = { bankName: bankName || "People's Bank", accNo, accName: accName || "TukTuk Pro Admin", branch };
+      const bank = { bankName: bankName || "People's Bank", accNo, accName: accName || "MD Haputhanthri", branch: branch || "Galle / Head Office", updatedAt: Date.now() };
       localStorage.setItem("tuktuk_admin_bank_details", JSON.stringify(bank));
       initBankSettings();
-      showToast("✅ බැංකු ගිණුම් විස්තර සුරැකිණි!");
+
+      let cloudSynced = false;
+      if (isFirebaseActive && firestoreDb) {
+        try {
+          await firestoreDb.collection("tuktuk_settings").doc("bank").set(bank, { merge: true });
+          cloudSynced = true;
+        } catch (err) {
+          console.warn("Firestore SDK bank save failed, attempting REST API fallback:", err);
+        }
+      }
+
+      if (!cloudSynced) {
+        try {
+          const restUrl = "https://firestore.googleapis.com/v1/projects/tuktuk-meter-admin26/databases/(default)/documents/tuktuk_settings/bank?key=AIzaSyB_xW7qOEkWgnNHvatmuYm1NhIRNBmXhso";
+          const body = {
+            fields: {
+              bankName: { stringValue: bank.bankName },
+              accNo: { stringValue: bank.accNo },
+              accName: { stringValue: bank.accName },
+              branch: { stringValue: bank.branch || "" },
+              updatedAt: { integerValue: String(bank.updatedAt) }
+            }
+          };
+          const res = await fetch(restUrl, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          if (res.ok) cloudSynced = true;
+        } catch (err2) {
+          console.warn("REST API bank save failed:", err2);
+        }
+      }
+
+      if (cloudSynced) {
+        showToast("✅ බැංකු ගිණුම් විස්තර Cloud එකට Save විය! (සියලුම Tuk Tuk App යාවත්කාලීන වේ)");
+      } else {
+        showToast("✅ බැංකු විස්තර Local එකේ සුරැකිණි.");
+      }
     }
 
     function setQuickBank(bankName) {
