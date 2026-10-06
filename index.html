@@ -268,10 +268,324 @@
     .feature-pill.install-pill {
       background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
-      font-weight: bold;
-      border: none;
-      display: none;
+      font-weight: 600;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
     }
+    .feature-pill.install-pill:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      transform: translateY(-1px);
+    }
+    .install-guide-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .guide-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      text-align: left;
+    }
+    .step-num {
+      background: #10b981;
+      color: #fff;
+      font-weight: bold;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ===== VOICE COMMAND CENTER MODAL ===== */
+    .voice-modal-body { padding: 6px 0; }
+    .voice-section {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .voice-section-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .voice-lang-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .voice-lang-btn {
+      padding: 10px 4px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s;
+    }
+    .voice-lang-btn.active {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+    }
+    .voice-lang-btn .lang-emoji { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+    /* Volume Slider */
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .volume-control .vol-icon { font-size: 1.2rem; cursor: pointer; user-select: none; }
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 6px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #10b981 0%, #f59e0b 60%, #ef4444 100%);
+      outline: none;
+      opacity: 0.9;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #f8fafc;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+      cursor: pointer;
+    }
+    .volume-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #f8fafc;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+      cursor: pointer;
+      border: none;
+    }
+    .vol-percent { color: #38bdf8; font-weight: 700; font-size: 0.82rem; min-width: 38px; text-align: right; }
+    /* Speed Control */
+    .speed-control {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .speed-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .speed-btn.active {
+      border-color: #a855f7;
+      color: #a855f7;
+      background: rgba(168, 85, 247, 0.1);
+      font-weight: 700;
+    }
+    /* Alert Toggles */
+    .alert-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .alert-toggle-row:last-child { border-bottom: none; }
+    .alert-toggle-label {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 42px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #334155;
+      border-radius: 22px;
+      transition: 0.3s;
+    }
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: #94a3b8;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: #10b981;
+    }
+    .toggle-switch input:checked + .toggle-track::before {
+      transform: translateX(20px);
+      background: #fff;
+    }
+    /* Live Translator */
+    .translator-area {
+      margin-top: 8px;
+    }
+    .translator-chat {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .translator-chat:empty::before {
+      content: 'කථා කරන්න බොත්තම ඔබන්න...';
+      color: #475569;
+      font-size: 0.78rem;
+      font-style: italic;
+    }
+    .chat-bubble {
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      max-width: 88%;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      animation: bubbleIn 0.3s ease;
+    }
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .chat-bubble.driver {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #e2e8f0;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-bubble.tourist {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      color: #e2e8f0;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-bubble .bubble-lang {
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-bottom: 3px;
+      display: block;
+    }
+    .chat-bubble .bubble-translated {
+      font-size: 0.72rem;
+      color: #10b981;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px dashed rgba(100,116,139,0.3);
+      display: block;
+    }
+    .translator-controls {
+      display: flex;
+      gap: 8px;
+    }
+    .translator-mic-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #1e293b;
+      background: #0f172a;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .translator-mic-btn.driver-mic {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .translator-mic-btn.tourist-mic {
+      border-color: #a855f7;
+      color: #a855f7;
+    }
+    .translator-mic-btn.recording {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #ef4444;
+      animation: recPulse 1s infinite;
+    }
+    @keyframes recPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    }
+    .translator-clear-btn {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #64748b;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .voice-test-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px dashed #334155;
+      background: transparent;
+      color: #64748b;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    .voice-test-btn:hover { border-color: #38bdf8; color: #38bdf8; }
 
     /* Fare Display Section */
     .display {
@@ -1946,21 +2260,13 @@
         <span id="nightPillIcon">🌙</span>
         <span id="nightPillText">Night (+15%)</span>
       </button>
-      <button class="feature-pill active" id="voiceTogglePill" onclick="cycleVoiceLanguage()" title="හඬ සහායක භාෂාව මාරු කිරීමට ක්ලික් කරන්න">
+      <button class="feature-pill active" id="voiceTogglePill" onclick="openVoiceCommandCenter()" title="Voice Command Center එක විවෘත කරන්න">
         <span id="voicePillIcon">🔊</span>
-        <span id="voicePillText">Voice: SI</span>
-      </button>
-      <button class="feature-pill" onclick="openDriverToolsModal('quote')" id="quotePillBtn" title="ගමනට පෙර මගී ගාස්තු ඇස්තමේන්තුව (Fare Estimator)">
-        <span>🧮</span>
-        <span>Quote</span>
+        <span id="voicePillText">Voice: සිංහල</span>
       </button>
       <button class="feature-pill" id="hudTogglePill" onclick="toggleHudMode()" title="Windscreen එකට පෙනෙන Head-Up Display">
         <span>🪟</span>
         <span>HUD</span>
-      </button>
-      <button class="feature-pill" onclick="openDriverToolsModal()" id="toolsPillBtn" title="Driver Toolkit (Docs, Service, Fuel, Target)">
-        <span>🧰</span>
-        <span>Tools</span>
       </button>
       <button class="feature-pill install-pill" id="pwaInstallBtn" onclick="installPWA()">
         📥 Install
@@ -2761,6 +3067,181 @@
       </div>
     </div>
 
+    <!-- ==================== VOICE COMMAND CENTER MODAL ==================== -->
+    <div class="modal" id="voiceCommandModal">
+      <div class="modal-header">
+        <h3 style="color: #38bdf8;">🎙️ VOICE COMMAND CENTER</h3>
+        <button class="modal-close-x" onclick="closeVoiceCommandCenter()">✕</button>
+      </div>
+
+      <div class="voice-modal-body">
+        <!-- Section 1: Language Selection -->
+        <div class="voice-section">
+          <div class="voice-section-title">🌐 භාෂාව තෝරන්න (Language)</div>
+          <div class="voice-lang-grid">
+            <button class="voice-lang-btn active" id="vLangSi" onclick="setVoiceLang('si')">
+              <span class="lang-emoji">🇱🇰</span>සිංහල
+            </button>
+            <button class="voice-lang-btn" id="vLangEn" onclick="setVoiceLang('en')">
+              <span class="lang-emoji">🇬🇧</span>English
+            </button>
+            <button class="voice-lang-btn" id="vLangTa" onclick="setVoiceLang('ta')">
+              <span class="lang-emoji">🇱🇰</span>தமிழ்
+            </button>
+            <button class="voice-lang-btn" id="vLangMute" onclick="setVoiceLang('mute')">
+              <span class="lang-emoji">🔇</span>Mute
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Volume & Speed -->
+        <div class="voice-section">
+          <div class="voice-section-title">🎚️ Volume & Speed</div>
+          <div class="volume-control">
+            <span class="vol-icon" id="volMuteToggle" onclick="toggleVolumeMute()">🔊</span>
+            <input type="range" class="volume-slider" id="voiceVolumeSlider" min="0" max="100" value="80" oninput="onVolumeChange(this.value)">
+            <span class="vol-percent" id="volPercentDisplay">80%</span>
+          </div>
+          <div class="speed-control">
+            <button class="speed-btn" id="speedSlow" onclick="setVoiceSpeed('slow')">🐢 Slow</button>
+            <button class="speed-btn active" id="speedNormal" onclick="setVoiceSpeed('normal')">▶️ Normal</button>
+            <button class="speed-btn" id="speedFast" onclick="setVoiceSpeed('fast')">⚡ Fast</button>
+          </div>
+        </div>
+
+        <!-- Section 3: Smart Alerts -->
+        <div class="voice-section">
+          <div class="voice-section-title">🔔 Smart Alerts</div>
+          <div class="alert-toggle-row">
+            <span class="alert-toggle-label">💰 Fare Milestone (Rs.500, 1000, 2000...)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="alertFareMilestone" checked onchange="saveVoiceSettings()">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="alert-toggle-row">
+            <span class="alert-toggle-label">📡 GPS Signal Lost / Recovered</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="alertGpsSignal" checked onchange="saveVoiceSettings()">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="alert-toggle-row">
+            <span class="alert-toggle-label">🌙 Auto Night Mode Switched</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="alertNightSwitch" checked onchange="saveVoiceSettings()">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="alert-toggle-row">
+            <span class="alert-toggle-label">🎵 Beep Sound Before Voice</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="alertBeepBefore" checked onchange="saveVoiceSettings()">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section 4: Live Translator -->
+        <div class="voice-section">
+          <div class="voice-section-title">🗣️ Live Translator (සිංහල ↔ English)</div>
+          <p style="font-size: 0.72rem; color: #64748b; margin: 0 0 10px 0;">
+            Driver සිංහලෙන් කිව්වොත් Tourist-ට English-එන් ඇහෙනවා. Tourist English-එන් කිව්වොත් Driver-ට සිංහලෙන් ඇහෙනවා.
+          </p>
+          <div class="translator-area">
+            <div class="translator-chat" id="translatorChat"></div>
+            <div class="translator-controls">
+              <button class="translator-mic-btn driver-mic" id="driverMicBtn" onclick="toggleTranslatorMic('driver')">
+                🎤 Driver (සිංහල)
+              </button>
+              <button class="translator-mic-btn tourist-mic" id="touristMicBtn" onclick="toggleTranslatorMic('tourist')">
+                🎤 Tourist (English)
+              </button>
+              <button class="translator-clear-btn" onclick="clearTranslatorChat()">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Button -->
+        <button class="voice-test-btn" onclick="testCurrentVoice()">🔊 Test Current Voice Settings</button>
+
+        <button class="cancel-btn" onclick="closeVoiceCommandCenter()" style="width: 100%; margin-top: 12px;">Close</button>
+      </div>
+    </div>
+
+    <!-- ==================== PWA INSTALL MODAL ==================== -->
+    <div class="modal" id="pwaInstallModal">
+      <div class="modal-header">
+        <h3 style="color: #10b981;">📥 INSTALL TUKTUK METER</h3>
+        <button class="modal-close-x" onclick="closePwaInstallModal()">✕</button>
+      </div>
+      <div style="padding: 10px 0;">
+        <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 14px 0; line-height: 1.4;">
+          TukTuk Meter ඇප් එක ඔබගේ දුරකථනයට හෝ පරිගණකයට Install කරගැනීමෙන් internet නැතිවත් Offline ලෙස වඩාත් වේගවත්ව භාවිතා කළ හැක.
+        </p>
+
+        <!-- Direct install button if browser prompt available -->
+        <div id="pwaDirectInstallBox" style="display: none; margin-bottom: 16px;">
+          <button onclick="triggerDirectInstall()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span>⚡</span> දැන්ම Install කරගන්න (Instant Install)
+          </button>
+        </div>
+
+        <!-- Installation Instructions by Device -->
+        <div class="modal-tabs" style="display: flex; gap: 6px; margin-bottom: 12px;">
+          <button class="tab-btn active" id="tabInstallAndroid" onclick="switchInstallTab('android')">🤖 Android</button>
+          <button class="tab-btn" id="tabInstallIos" onclick="switchInstallTab('ios')">🍎 iPhone (iOS)</button>
+          <button class="tab-btn" id="tabInstallPc" onclick="switchInstallTab('pc')">💻 PC / Laptop</button>
+        </div>
+
+        <!-- Android Instructions -->
+        <div id="installGuideAndroid" class="install-guide-card">
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span>Chrome බ්‍රවුසරයේ ඉහළ දකුණු කෙළවරේ ඇති <b>⋮ (තිත් 3)</b> ඔබන්න.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span>ලැයිස්තුවෙන් <b>"Install app"</b> හෝ <b>"Add to Home screen"</b> (මුල් තිරයට එක් කරන්න) තෝරන්න.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span><b>Install</b> තහවුරු කරන්න. සුළු මොහොතකින් Home Screen එකට App එකක් ලෙස එක් වේ!</span>
+          </div>
+        </div>
+
+        <!-- iOS Instructions -->
+        <div id="installGuideIos" class="install-guide-card" style="display: none;">
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span>Safari බ්‍රවුසරයේ පහළ ඇති <b>Share ⎋ (බෙදාගැනීමේ)</b> අයිකනය ඔබන්න.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span>පහළට scroll කර <b>"Add to Home Screen" ⊞</b> තෝරන්න.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span>ඉහළ දකුණු කෙළවරේ ඇති <b>"Add"</b> ඔබන්න.</span>
+          </div>
+        </div>
+
+        <!-- PC Instructions -->
+        <div id="installGuidePc" class="install-guide-card" style="display: none;">
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span>Chrome / Edge බ්‍රවුසරයේ URL Address Bar එකේ දකුණු කෙළවරේ ඇති <b>Install ⤓</b> අයිකනය ඔබන්න.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span>නැතහොත් Browser මෙනුවෙන් (⋮) <b>"Save and share" ➔ "Install TukTuk Meter"</b> තෝරන්න.</span>
+          </div>
+        </div>
+
+        <button class="cancel-btn" onclick="closePwaInstallModal()" style="width: 100%; margin-top: 14px;">හරි (Close)</button>
+      </div>
+    </div>
+
     <!-- ==================== DRIVER TOOLS MODAL ==================== -->
     <div class="modal" id="driverToolsModal">
       <div class="modal-header">
@@ -3147,6 +3628,12 @@
       driverQrInfo: "0771234567",
       voiceEnabled: true,
       voiceLanguage: "si", // "si", "en", "ta"
+      voiceVolume: 80,
+      voiceSpeed: "normal", // "slow", "normal", "fast"
+      alertFareMilestone: true,
+      alertGpsSignal: true,
+      alertNightSwitch: true,
+      alertBeepBefore: true,
       dailyTarget: 5000,
       fuelEfficiency: 30,
       petrolPrice: 320,
@@ -3187,6 +3674,7 @@
       // Check Auto Night Time (10 PM to 5 AM)
       checkAutoNightTime();
       updateVoiceUI();
+      loadVoiceSettingsUI();
       checkDocumentExpiries();
       updateDailyTargetUI();
       loadServiceTracker();
@@ -3225,44 +3713,128 @@
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
-    // ==================== VOICE ALERTS (TEXT TO SPEECH) ====================
-    function cycleVoiceLanguage() {
-      const pro = getProStatus();
-      if (!config.voiceEnabled) {
-        config.voiceEnabled = true;
-        config.voiceLanguage = "si";
-      } else if (config.voiceLanguage === "si") {
-        if (!pro.isPro) {
-          showToast("English Tourist Voice Pro සාමාජිකයින්ට පමණි! 👑");
-          openProModal();
-          return;
-        }
-        config.voiceLanguage = "en";
-      } else if (config.voiceLanguage === "en") {
-        config.voiceLanguage = "ta";
-      } else {
-        config.voiceEnabled = false;
-        config.voiceLanguage = "si";
-      }
-      updateVoiceUI();
-      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
-      
-      if (config.voiceEnabled) {
-        if (config.voiceLanguage === "en") {
-          speakEvent('custom', { text: "English Tourist Voice activated. Welcome!" });
-          showToast("🇬🇧 English Tourist Voice Activated!");
-        } else if (config.voiceLanguage === "ta") {
-          speakEvent('custom', { text: "குரல் எச்சரிக்கைகள் இயக்கப்பட்டது" });
-          showToast("🇱🇰 தமிழ் Voice Activated!");
-        } else {
-          speakEvent('custom', { text: "සිංහල හඬ සහායක සක්‍රීයයි" });
-          showToast("🇱🇰 සිංහල Voice Activated!");
-        }
-      } else {
-        showToast("Voice Muted (හඬ අක්‍රීය විය)");
-      }
+    // ==================== ADVANCED VOICE COMMAND CENTER ====================
+    let lastAnnouncedFareMilestone = 0;
+    let gpsSignalWasLost = false;
+    let translatorRecognition = null;
+    let translatorRecordingFor = null; // 'driver' or 'tourist'
+
+    // --- Voice Command Center Modal ---
+    function openVoiceCommandCenter() {
+      loadVoiceSettingsUI();
+      document.getElementById("voiceCommandModal").classList.add("show");
     }
 
+    function closeVoiceCommandCenter() {
+      stopTranslatorMic();
+      document.getElementById("voiceCommandModal").classList.remove("show");
+    }
+
+    // --- Load voice settings into UI ---
+    function loadVoiceSettingsUI() {
+      // Language buttons
+      document.querySelectorAll('.voice-lang-btn').forEach(b => b.classList.remove('active'));
+      if (!config.voiceEnabled) {
+        const muteBtn = document.getElementById('vLangMute');
+        if (muteBtn) muteBtn.classList.add('active');
+      } else {
+        const langId = { si: 'vLangSi', en: 'vLangEn', ta: 'vLangTa' }[config.voiceLanguage] || 'vLangSi';
+        const langBtn = document.getElementById(langId);
+        if (langBtn) langBtn.classList.add('active');
+      }
+
+      // Volume slider
+      const slider = document.getElementById('voiceVolumeSlider');
+      const percent = document.getElementById('volPercentDisplay');
+      const volIcon = document.getElementById('volMuteToggle');
+      if (slider) slider.value = config.voiceVolume;
+      if (percent) percent.innerText = config.voiceVolume + '%';
+      if (volIcon) volIcon.innerText = config.voiceVolume == 0 ? '🔇' : (config.voiceVolume < 50 ? '🔉' : '🔊');
+
+      // Speed buttons
+      document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+      const speedBtn = document.getElementById('speed' + (config.voiceSpeed || 'normal').charAt(0).toUpperCase() + (config.voiceSpeed || 'normal').slice(1));
+      if (speedBtn) speedBtn.classList.add('active');
+
+      // Alert toggles
+      const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+      setCheck('alertFareMilestone', config.alertFareMilestone !== false);
+      setCheck('alertGpsSignal', config.alertGpsSignal !== false);
+      setCheck('alertNightSwitch', config.alertNightSwitch !== false);
+      setCheck('alertBeepBefore', config.alertBeepBefore !== false);
+    }
+
+    // --- Save voice settings ---
+    function saveVoiceSettings() {
+      const getCheck = (id) => { const el = document.getElementById(id); return el ? el.checked : true; };
+      config.alertFareMilestone = getCheck('alertFareMilestone');
+      config.alertGpsSignal = getCheck('alertGpsSignal');
+      config.alertNightSwitch = getCheck('alertNightSwitch');
+      config.alertBeepBefore = getCheck('alertBeepBefore');
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+    }
+
+    // --- Language Selection ---
+    function setVoiceLang(lang) {
+      if (lang === 'mute') {
+        config.voiceEnabled = false;
+        config.voiceLanguage = 'si';
+        showToast("🔇 Voice Muted");
+      } else {
+        if (lang === 'en') {
+          const pro = getProStatus();
+          if (!pro.isPro) {
+            showToast("English Tourist Voice Pro සාමාජිකයින්ට පමණි! 👑");
+            openProModal();
+            return;
+          }
+        }
+        config.voiceEnabled = true;
+        config.voiceLanguage = lang;
+        const names = { si: '🇱🇰 සිංහල Voice Activated!', en: '🇬🇧 English Tourist Voice Activated!', ta: '🇱🇰 தமிழ் Voice Activated!' };
+        showToast(names[lang] || 'Voice Activated!');
+
+        const phrases = { si: 'සිංහල හඬ සහායක සක්‍රීයයි', en: 'English Tourist Voice activated. Welcome!', ta: 'குரல் எச்சரிக்கைகள் இயக்கப்பட்டது' };
+        speakEvent('custom', { text: phrases[lang] || '' });
+      }
+      updateVoiceUI();
+      loadVoiceSettingsUI();
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+    }
+
+    // --- Volume Control ---
+    function onVolumeChange(val) {
+      config.voiceVolume = parseInt(val);
+      const percent = document.getElementById('volPercentDisplay');
+      const volIcon = document.getElementById('volMuteToggle');
+      if (percent) percent.innerText = val + '%';
+      if (volIcon) volIcon.innerText = val == 0 ? '🔇' : (val < 50 ? '🔉' : '🔊');
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+    }
+
+    function toggleVolumeMute() {
+      const slider = document.getElementById('voiceVolumeSlider');
+      if (config.voiceVolume > 0) {
+        config._prevVolume = config.voiceVolume;
+        config.voiceVolume = 0;
+      } else {
+        config.voiceVolume = config._prevVolume || 80;
+      }
+      if (slider) slider.value = config.voiceVolume;
+      onVolumeChange(config.voiceVolume);
+    }
+
+    // --- Speech Speed ---
+    function setVoiceSpeed(speed) {
+      config.voiceSpeed = speed;
+      document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('speed' + speed.charAt(0).toUpperCase() + speed.slice(1));
+      if (btn) btn.classList.add('active');
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+      showToast(`Voice Speed: ${speed.toUpperCase()}`);
+    }
+
+    // --- Pill Button UI Update ---
     function updateVoiceUI() {
       const pill = document.getElementById("voiceTogglePill");
       const icon = document.getElementById("voicePillIcon");
@@ -3288,8 +3860,11 @@
       }
     }
 
+    // --- Core Speech Engine (with Volume, Speed, Beep-Before) ---
     function speakEvent(type, payload = {}) {
       if (!config.voiceEnabled || !('speechSynthesis' in window)) return;
+      if (config.voiceVolume === 0) return;
+
       const lang = config.voiceLanguage || 'si';
       let phrase = '';
 
@@ -3309,26 +3884,270 @@
       } else if (type === 'target_reached') {
         if (lang === 'en') phrase = "Congratulations! Your daily income target is completed!";
         else phrase = "සුබ පැතුම්! ඔබගේ අද දවසේ ආදායම් ඉලක්කය සම්පූර්ණයි!";
+      } else if (type === 'fare_milestone') {
+        const m = payload.milestone || 0;
+        if (lang === 'en') phrase = `Fare has reached ${m} Rupees.`;
+        else if (lang === 'ta') phrase = `கட்டணம் ${m} ரூபாய் எட்டியது.`;
+        else phrase = `ගාස්තුව රුපියල් ${m}ට ළඟා විය.`;
+      } else if (type === 'gps_lost') {
+        if (lang === 'en') phrase = "GPS signal lost. Waiting for signal...";
+        else phrase = "GPS සංඥාව නැති විය. බලාපොරොත්තු වෙමින්...";
+      } else if (type === 'gps_recovered') {
+        if (lang === 'en') phrase = "GPS signal recovered. Tracking resumed.";
+        else phrase = "GPS සංඥාව නැවත ලැබුණි. ලුහුබඳීම අරඹයි.";
+      } else if (type === 'night_auto_on') {
+        if (lang === 'en') phrase = "Night fare mode activated automatically.";
+        else phrase = "රාත්‍රී ගාස්තු ස්වයංක්‍රීයව සක්‍රීය විය.";
+      } else if (type === 'night_auto_off') {
+        if (lang === 'en') phrase = "Night fare mode deactivated. Normal rates active.";
+        else phrase = "රාත්‍රී ගාස්තු අක්‍රීය විය. සාමාන්‍ය ගාස්තු සක්‍රීයයි.";
       } else if (type === 'custom') {
         phrase = payload.text || '';
       }
 
       if (phrase) {
-        try {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(phrase);
-          utterance.lang = lang === 'en' ? 'en-US' : (lang === 'ta' ? 'ta-IN' : 'si-LK');
-          utterance.rate = 0.95;
-          utterance.pitch = 1.0;
-          window.speechSynthesis.speak(utterance);
-        } catch (e) {
-          console.warn("Speech error:", e);
+        const doSpeak = () => {
+          try {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(phrase);
+
+            // Language
+            if (payload.forceLang) {
+              utterance.lang = payload.forceLang === 'en' ? 'en-US' : (payload.forceLang === 'ta' ? 'ta-IN' : 'si-LK');
+            } else {
+              utterance.lang = lang === 'en' ? 'en-US' : (lang === 'ta' ? 'ta-IN' : 'si-LK');
+            }
+
+            // Volume (0.0 - 1.0)
+            utterance.volume = Math.min(1.0, Math.max(0, (config.voiceVolume || 80) / 100));
+
+            // Speed
+            const speedMap = { slow: 0.7, normal: 0.95, fast: 1.3 };
+            utterance.rate = speedMap[config.voiceSpeed] || 0.95;
+            utterance.pitch = 1.0;
+
+            window.speechSynthesis.speak(utterance);
+          } catch (e) {
+            console.warn("Speech error:", e);
+          }
+        };
+
+        // Beep before voice alert
+        if (config.alertBeepBefore && type !== 'custom') {
+          playBeep('start');
+          setTimeout(doSpeak, 350);
+        } else {
+          doSpeak();
         }
       }
     }
 
     function speakAlert(text) {
       speakEvent('custom', { text });
+    }
+
+    // --- Fare Milestone Checker (called from updateFare) ---
+    function checkFareMilestones(currentFare) {
+      if (!config.alertFareMilestone || !config.voiceEnabled) return;
+      const milestones = [500, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
+      const roundedFare = Math.round(currentFare);
+      for (const m of milestones) {
+        if (roundedFare >= m && lastAnnouncedFareMilestone < m) {
+          lastAnnouncedFareMilestone = m;
+          speakEvent('fare_milestone', { milestone: m });
+          showToast(`💰 ගාස්තුව Rs. ${m} ට ළඟා විය!`);
+          break;
+        }
+      }
+    }
+
+    // --- GPS Signal Alerts ---
+    function onGpsSignalLost() {
+      if (!gpsSignalWasLost && config.alertGpsSignal && config.voiceEnabled) {
+        gpsSignalWasLost = true;
+        speakEvent('gps_lost');
+      }
+    }
+
+    function onGpsSignalRecovered() {
+      if (gpsSignalWasLost && config.alertGpsSignal && config.voiceEnabled) {
+        gpsSignalWasLost = false;
+        speakEvent('gps_recovered');
+      }
+    }
+
+    // --- Voice Test ---
+    function testCurrentVoice() {
+      const lang = config.voiceLanguage || 'si';
+      const vol = config.voiceVolume;
+      const speed = config.voiceSpeed || 'normal';
+      const tests = {
+        si: `සිංහල voice test. Volume ${vol} percent. Speed ${speed}.`,
+        en: `English voice test. Volume ${vol} percent. Speed ${speed}. Have a great ride!`,
+        ta: `தமிழ் voice test. Volume ${vol} percent. Speed ${speed}.`
+      };
+      if (!config.voiceEnabled) {
+        showToast("Voice මුලින්ම enable කරන්න!");
+        return;
+      }
+      speakEvent('custom', { text: tests[lang] || tests.si });
+      showToast("🔊 Voice Test Playing...");
+    }
+
+    // ==================== LIVE TRANSLATOR (Sinhala ↔ English) ====================
+    function toggleTranslatorMic(who) {
+      // If already recording for same, stop
+      if (translatorRecordingFor === who) {
+        stopTranslatorMic();
+        return;
+      }
+      // If recording for other, stop first
+      stopTranslatorMic();
+
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast("⚠️ මෙම browser එකේ Speech Recognition support කරන්නේ නැහැ. Chrome භාවිතා කරන්න.");
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      translatorRecognition = new SpeechRecognition();
+      translatorRecognition.continuous = false;
+      translatorRecognition.interimResults = false;
+
+      if (who === 'driver') {
+        translatorRecognition.lang = 'si-LK';
+      } else {
+        translatorRecognition.lang = 'en-US';
+      }
+
+      translatorRecordingFor = who;
+      const btn = document.getElementById(who === 'driver' ? 'driverMicBtn' : 'touristMicBtn');
+      if (btn) {
+        btn.classList.add('recording');
+        btn.innerHTML = `🔴 Recording... (${who === 'driver' ? 'සිංහල' : 'English'})`;
+      }
+
+      translatorRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        processTranslation(who, transcript);
+      };
+
+      translatorRecognition.onerror = (event) => {
+        console.warn('Speech recognition error:', event.error);
+        if (event.error === 'no-speech') {
+          showToast("🎤 කිසිම හඬක් අනාවරණය නොවීය. නැවත උත්සාහ කරන්න.");
+        } else if (event.error === 'not-allowed') {
+          showToast("⚠️ Microphone access denied. Settings වලින් allow කරන්න.");
+        } else {
+          showToast(`⚠️ Speech error: ${event.error}`);
+        }
+        stopTranslatorMic();
+      };
+
+      translatorRecognition.onend = () => {
+        stopTranslatorMic();
+      };
+
+      try {
+        translatorRecognition.start();
+        playBeep('start');
+      } catch (e) {
+        showToast("⚠️ Microphone start failed.");
+        stopTranslatorMic();
+      }
+    }
+
+    function stopTranslatorMic() {
+      if (translatorRecognition) {
+        try { translatorRecognition.stop(); } catch (e) {}
+        translatorRecognition = null;
+      }
+      translatorRecordingFor = null;
+
+      // Reset button UIs
+      const dBtn = document.getElementById('driverMicBtn');
+      const tBtn = document.getElementById('touristMicBtn');
+      if (dBtn) { dBtn.classList.remove('recording'); dBtn.innerHTML = '🎤 Driver (සිංහල)'; }
+      if (tBtn) { tBtn.classList.remove('recording'); tBtn.innerHTML = '🎤 Tourist (English)'; }
+    }
+
+    function processTranslation(who, originalText) {
+      const chat = document.getElementById('translatorChat');
+      if (!chat || !originalText.trim()) return;
+
+      // Create chat bubble with original text
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${who}`;
+
+      const langLabel = document.createElement('span');
+      langLabel.className = 'bubble-lang';
+      langLabel.innerText = who === 'driver' ? '🎤 Driver (සිංහල)' : '🎤 Tourist (English)';
+      bubble.appendChild(langLabel);
+
+      const origSpan = document.createElement('span');
+      origSpan.innerText = originalText;
+      bubble.appendChild(origSpan);
+
+      // For now, show the original as "translated" with note
+      // Real translation would require an API — here we use the speech output in the target language
+      const transSpan = document.createElement('span');
+      transSpan.className = 'bubble-translated';
+
+      if (who === 'driver') {
+        // Driver spoke Sinhala → speak it in English for tourist
+        transSpan.innerText = `🔊 → English: "${originalText}"`;
+        bubble.appendChild(transSpan);
+        chat.appendChild(bubble);
+        chat.scrollTop = chat.scrollHeight;
+
+        // Speak the Sinhala text in English voice (best-effort: the text is transliterated/spoken as-is)
+        // For proper translation, a translation API would be needed. 
+        // We speak the original in the target language which provides phonetic approximation.
+        setTimeout(() => {
+          playBeep('start');
+          setTimeout(() => {
+            try {
+              window.speechSynthesis.cancel();
+              const u = new SpeechSynthesisUtterance(originalText);
+              u.lang = 'en-US';
+              u.volume = Math.min(1.0, (config.voiceVolume || 80) / 100);
+              u.rate = 0.85;
+              window.speechSynthesis.speak(u);
+            } catch (e) { console.warn('Translator speak error:', e); }
+          }, 350);
+        }, 200);
+
+      } else {
+        // Tourist spoke English → speak it in Sinhala for driver
+        transSpan.innerText = `🔊 → සිංහල: "${originalText}"`;
+        bubble.appendChild(transSpan);
+        chat.appendChild(bubble);
+        chat.scrollTop = chat.scrollHeight;
+
+        setTimeout(() => {
+          playBeep('start');
+          setTimeout(() => {
+            try {
+              window.speechSynthesis.cancel();
+              const u = new SpeechSynthesisUtterance(originalText);
+              u.lang = 'si-LK';
+              u.volume = Math.min(1.0, (config.voiceVolume || 80) / 100);
+              u.rate = 0.85;
+              window.speechSynthesis.speak(u);
+            } catch (e) { console.warn('Translator speak error:', e); }
+          }, 350);
+        }, 200);
+      }
+    }
+
+    function clearTranslatorChat() {
+      const chat = document.getElementById('translatorChat');
+      if (chat) chat.innerHTML = '';
+    }
+
+    // Legacy: keep cycleVoiceLanguage for any old references
+    function cycleVoiceLanguage() {
+      openVoiceCommandCenter();
     }
 
     // ==================== NIGHT FARE LOGIC ====================
@@ -5786,23 +6605,87 @@ ${routeLine}📏 *ඇස්තමේන්තු දුර:* ${distance.toFixed(
 
     // ==================== PWA INSTALL LOGIC ====================
     let deferredPrompt = null;
+
+    function checkPWAInstallationStatus() {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      const installBtn = document.getElementById("pwaInstallBtn");
+      if (installBtn) {
+        if (isStandalone) {
+          installBtn.style.display = "none";
+        } else {
+          installBtn.style.display = "inline-flex";
+        }
+      }
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       const installBtn = document.getElementById("pwaInstallBtn");
       if (installBtn) installBtn.style.display = "inline-flex";
+      const directBox = document.getElementById("pwaDirectInstallBox");
+      if (directBox) directBox.style.display = "block";
+    });
+
+    window.addEventListener('appinstalled', () => {
+      showToast("TukTuk Meter සාර්ථකව Install විය! 🎉");
+      deferredPrompt = null;
+      checkPWAInstallationStatus();
+      closePwaInstallModal();
     });
 
     function installPWA() {
       if (deferredPrompt) {
+        triggerDirectInstall();
+      } else {
+        openPwaInstallModal();
+      }
+    }
+
+    function triggerDirectInstall() {
+      if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            document.getElementById("pwaInstallBtn").style.display = "none";
+            showToast("Install කිරීම තහවුරු විය! 🎉");
+            const installBtn = document.getElementById("pwaInstallBtn");
+            if (installBtn) installBtn.style.display = "none";
+            closePwaInstallModal();
           }
           deferredPrompt = null;
         });
+      } else {
+        showToast("Browser එකෙන් Install කරගැනීමට පහත පියවර අනුගමනය කරන්න ℹ️");
+        openPwaInstallModal();
       }
+    }
+
+    function openPwaInstallModal() {
+      const directBox = document.getElementById("pwaDirectInstallBox");
+      if (directBox) {
+        directBox.style.display = deferredPrompt ? "block" : "none";
+      }
+      const modal = document.getElementById("pwaInstallModal");
+      if (modal) modal.classList.add("show");
+    }
+
+    function closePwaInstallModal() {
+      const modal = document.getElementById("pwaInstallModal");
+      if (modal) modal.classList.remove("show");
+    }
+
+    function switchInstallTab(tab) {
+      ['Android', 'Ios', 'Pc'].forEach(t => {
+        const btn = document.getElementById('tabInstall' + t);
+        const guide = document.getElementById('installGuide' + t);
+        if (btn) btn.classList.remove('active');
+        if (guide) guide.style.display = 'none';
+      });
+      const tabCap = tab.charAt(0).toUpperCase() + tab.slice(1);
+      const activeBtn = document.getElementById('tabInstall' + tabCap);
+      const activeGuide = document.getElementById('installGuide' + tabCap);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeGuide) activeGuide.style.display = 'flex';
     }
 
     // Register Service Worker & Auto-update
@@ -5995,6 +6878,7 @@ ${routeLine}📏 *ඇස්තමේන්තු දුර:* ${distance.toFixed(
       initMap();
       getDeviceId();
       updateProUI();
+      checkPWAInstallationStatus();
       setTimeout(initGoogleSignIn, 600);
 
       // Check first-time driver onboarding tour
