@@ -22,6 +22,8 @@
   <!-- Leaflet Map CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Heatmap Plugin -->
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- Google Identity Services (GIS) -->
@@ -726,6 +728,57 @@
     .map-container.collapsed #map {
       height: 0px;
     }
+    .heatmap-btn {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .heatmap-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+    .heatmap-btn.active {
+      background: linear-gradient(135deg, #ef4444, #f59e0b);
+      color: #ffffff;
+      border-color: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
+    }
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: #090e17;
+      padding: 6px 10px;
+      border-top: 1px solid #1e293b;
+      font-size: 0.7rem;
+      color: #94a3b8;
+    }
+    .heat-gradient-bar {
+      height: 6px;
+      flex: 1;
+      border-radius: 3px;
+      background: linear-gradient(to right, #38bdf8, #10b981, #eab308, #ef4444);
+      margin: 0 4px;
+    }
+    .heat-status-pill {
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
 
     /* Action Button */
     .action-btn {
@@ -2330,13 +2383,25 @@
     <!-- Live Route Map -->
     <div class="map-container" id="mapContainer">
       <div class="map-header">
-        <span>📍 සජීවී ගමන් මාර්ගය (Live Path)</span>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <span id="mapPointCount">ලක්ෂ්‍ය: 0</span>
-          <button onclick="recenterMapToUser()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; cursor: pointer; font-weight: 600;" title="මගේ ස්ථානයට සිතියම ගෙන එන්න">🎯 My Location</button>
+        <span>📍 සජීවී සිතියම (Live Map)</span>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="heatmap-btn" id="heatmapToggleBtn" onclick="toggleHeatmap()" title="ඉහළ ඉල්ලුම ඇති කලාප (Hotspots) පෙන්වන්න">
+            <span>🔥</span> <span id="heatmapBtnText">Heatmap</span>
+          </button>
+          <span id="mapPointCount" style="font-size: 0.68rem; opacity: 0.8;">ලක්ෂ්‍ය: 0</span>
+          <button onclick="recenterMapToUser()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; border-radius: 6px; padding: 2px 7px; font-size: 0.72rem; cursor: pointer; font-weight: 600;" title="මගේ ස්ථානයට සිතියම ගෙන එන්න">🎯 My Location</button>
         </div>
       </div>
       <div id="map"></div>
+
+      <!-- Heatmap Demand Legend -->
+      <div class="heatmap-legend" id="heatmapLegend" style="display: none;">
+        <span>🔥 ඉල්ලුම:</span>
+        <span style="font-size: 0.66rem;">අඩු</span>
+        <div class="heat-gradient-bar"></div>
+        <span style="font-size: 0.66rem; color: #ef4444; font-weight: bold;">අධික (Surge)</span>
+        <span class="heat-status-pill" id="heatStatusPill">⚡ Peak Demand</span>
+      </div>
     </div>
 
     <!-- Trip Action Button -->
@@ -3639,6 +3704,7 @@
       petrolPrice: 320,
       oilServiceInterval: 1500,
       nightFareActive: false,
+      heatmapEnabled: false,
       adminPhone: "94771234567",
       adminBankDetails: "People's Bank - 169200150035183 (MD Haputhanthri)"
     };
@@ -4379,6 +4445,13 @@
 
         // Fetch user location immediately upon app load
         fetchInitialLocation();
+
+        // Restore heatmap if enabled
+        if (config.heatmapEnabled) {
+          setTimeout(() => {
+            if (!heatmapActive) toggleHeatmap();
+          }, 600);
+        }
       } catch (err) {
         console.error("Map initialization error:", err);
       }
@@ -4406,6 +4479,209 @@
         }, 300);
       }
     }
+
+    // ==================== ADVANCED DEMAND HEATMAP ENGINE ====================
+    let heatmapLayer = null;
+    let heatmapActive = false;
+    let hotspotMarkersLayer = null;
+
+    // Sri Lanka Primary Transit & Commercial Demand Hotspots
+    const SL_DEMAND_HOTSPOTS = [
+      // Colombo Core
+      { name: "Fort Railway Station", lat: 6.9344, lng: 79.8504, type: "transit", baseWeight: 0.95 },
+      { name: "Pettah Central Bus Stand", lat: 6.9360, lng: 79.8530, type: "transit", baseWeight: 0.95 },
+      { name: "Majestic City / Bambalapitiya", lat: 6.8938, lng: 79.8548, type: "mall", baseWeight: 0.85 },
+      { name: "One Galle Face / Galle Face Green", lat: 6.9271, lng: 79.8450, type: "leisure", baseWeight: 0.88 },
+      { name: "Colombo Town Hall / Lipton Circus", lat: 6.9147, lng: 79.8654, type: "office", baseWeight: 0.82 },
+      { name: "National Hospital Colombo", lat: 6.9190, lng: 79.8690, type: "hospital", baseWeight: 0.85 },
+      { name: "Borella Kanatte Junction", lat: 6.9145, lng: 79.8778, type: "transit", baseWeight: 0.82 },
+      { name: "Nugegoda Supermarket / Flyover", lat: 6.8722, lng: 79.8900, type: "mall", baseWeight: 0.86 },
+      { name: "Dehiwala Junction & Zoo Road", lat: 6.8512, lng: 79.8660, type: "commercial", baseWeight: 0.80 },
+      { name: "Maharagama Clock Tower / Bus Stand", lat: 6.8480, lng: 79.9267, type: "transit", baseWeight: 0.85 },
+      { name: "Kollupitiya Junction & Market", lat: 6.9080, lng: 79.8510, type: "office", baseWeight: 0.85 },
+      { name: "Kaduwela Express Interchange / Stand", lat: 6.9350, lng: 79.9830, type: "transit", baseWeight: 0.78 },
+      { name: "Moratuwa Bus Stand", lat: 6.7730, lng: 79.8816, type: "transit", baseWeight: 0.80 },
+
+      // Western Province & Airport
+      { name: "Bandaranaike Int Airport (BIA)", lat: 7.1808, lng: 79.8841, type: "airport", baseWeight: 1.0 },
+      { name: "Negombo Beach Road", lat: 7.2274, lng: 79.8390, type: "leisure", baseWeight: 0.86 },
+      { name: "Negombo Main Bus Stand", lat: 7.2090, lng: 79.8380, type: "transit", baseWeight: 0.82 },
+      { name: "Gampaha Railway Station", lat: 7.0917, lng: 79.9998, type: "transit", baseWeight: 0.82 },
+
+      // Outstations
+      { name: "Kandy Clock Tower / Station", lat: 7.2906, lng: 80.6337, type: "transit", baseWeight: 0.90 },
+      { name: "Kandy City Centre (KCC)", lat: 7.2936, lng: 80.6360, type: "mall", baseWeight: 0.88 },
+      { name: "Galle Fort & Main Bus Stand", lat: 6.0367, lng: 80.2170, type: "transit", baseWeight: 0.90 },
+      { name: "Matara Bus Stand", lat: 5.9496, lng: 80.5469, type: "transit", baseWeight: 0.80 },
+      { name: "Kurunegala Clock Tower", lat: 7.4863, lng: 80.3649, type: "transit", baseWeight: 0.80 },
+      { name: "Anuradhapura Bus Stand", lat: 8.3114, lng: 80.4037, type: "transit", baseWeight: 0.75 }
+    ];
+
+    function getHeatmapDemandInfo() {
+      const now = new Date();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+
+      if ((hour >= 7 && hour <= 9) || (hour === 9 && min <= 30)) {
+        return { name: "🌅 Morning Rush (උදෑසන තදබදය)", multiplier: 1.25, badge: "⚡ Morning Surge", rushType: "transit" };
+      } else if (hour >= 16 && hour <= 19) {
+        return { name: "🌇 Evening Rush (සවස කාර්යාල තදබදය)", multiplier: 1.35, badge: "🔥 Evening Surge", rushType: "evening" };
+      } else if (hour >= 20 && hour <= 23) {
+        return { name: "🌙 Night Leisure (රාත්‍රී හෝටල්/නගර)", multiplier: 1.15, badge: "✨ Night Demand", rushType: "night" };
+      } else if (hour >= 11 && hour <= 15) {
+        return { name: "☀️ Daytime Business (දහවල් වෙළඳ)", multiplier: 1.0, badge: "📊 Normal Demand", rushType: "day" };
+      } else {
+        return { name: "🌌 Late Night (මධ්‍යම රාත්‍රිය)", multiplier: 0.9, badge: "🌙 Low Demand", rushType: "late" };
+      }
+    }
+
+    function generateHeatmapPoints() {
+      const demand = getHeatmapDemandInfo();
+      const points = [];
+
+      // 1. Regional Hotspots
+      SL_DEMAND_HOTSPOTS.forEach(spot => {
+        let intensity = spot.baseWeight * demand.multiplier;
+        if (demand.rushType === "transit" && spot.type === "transit") intensity *= 1.2;
+        if (demand.rushType === "evening" && (spot.type === "transit" || spot.type === "office")) intensity *= 1.25;
+        if (demand.rushType === "night" && (spot.type === "leisure" || spot.type === "mall")) intensity *= 1.2;
+        intensity = Math.min(1.0, Math.max(0.2, intensity));
+
+        points.push([spot.lat, spot.lng, intensity]);
+        
+        const radiusOffsets = [
+          [0.002, 0.002, 0.75],
+          [-0.002, 0.002, 0.75],
+          [0.002, -0.002, 0.70],
+          [-0.002, -0.002, 0.70],
+          [0.0035, 0, 0.55],
+          [-0.0035, 0, 0.55],
+          [0, 0.0035, 0.55],
+          [0, -0.0035, 0.55]
+        ];
+        radiusOffsets.forEach(off => {
+          points.push([spot.lat + off[0], spot.lng + off[1], intensity * off[2]]);
+        });
+      });
+
+      // 2. Driver's own recorded trip pickup history
+      try {
+        const myPickups = JSON.parse(localStorage.getItem('tuktuk_pickup_hotspots') || '[]');
+        myPickups.forEach(p => {
+          if (p.lat && p.lng) {
+            points.push([p.lat, p.lng, 0.95]);
+            points.push([p.lat + 0.001, p.lng + 0.001, 0.75]);
+            points.push([p.lat - 0.001, p.lng - 0.001, 0.70]);
+          }
+        });
+      } catch (e) {}
+
+      return points;
+    }
+
+    function toggleHeatmap() {
+      if (typeof L === 'undefined' || typeof L.heatLayer === 'undefined') {
+        showToast("⚠️ Heatmap plugin එක load වෙමින් පවතී. සුළු මොහොතකින් නැවත උත්සාහ කරන්න.");
+        return;
+      }
+      if (!map) {
+        showToast("⚠️ Map එක load වී නැත.");
+        return;
+      }
+
+      heatmapActive = !heatmapActive;
+      config.heatmapEnabled = heatmapActive;
+      localStorage.setItem('tuktuk_rates_config', JSON.stringify(config));
+
+      const btn = document.getElementById("heatmapToggleBtn");
+      const legend = document.getElementById("heatmapLegend");
+      const statusPill = document.getElementById("heatStatusPill");
+
+      if (heatmapActive) {
+        if (btn) btn.classList.add("active");
+        if (legend) legend.style.display = "flex";
+
+        const demand = getHeatmapDemandInfo();
+        if (statusPill) statusPill.innerText = demand.badge;
+
+        updateHeatmapLayer();
+        showToast("🔥 Heatmap සක්‍රීයයි! ඉහළ ඉල්ලුම ඇති කලාප (Hotspots) සිතියමේ පෙන්වයි.");
+      } else {
+        if (btn) btn.classList.remove("active");
+        if (legend) legend.style.display = "none";
+        if (heatmapLayer && map.hasLayer(heatmapLayer)) {
+          map.removeLayer(heatmapLayer);
+          heatmapLayer = null;
+        }
+        if (hotspotMarkersLayer && map.hasLayer(hotspotMarkersLayer)) {
+          map.removeLayer(hotspotMarkersLayer);
+          hotspotMarkersLayer = null;
+        }
+        showToast("Heatmap අක්‍රීය විය.");
+      }
+    }
+
+    function updateHeatmapLayer() {
+      if (!map || !heatmapActive || typeof L.heatLayer === 'undefined') return;
+
+      const points = generateHeatmapPoints();
+      if (heatmapLayer && map.hasLayer(heatmapLayer)) {
+        map.removeLayer(heatmapLayer);
+      }
+
+      heatmapLayer = L.heatLayer(points, {
+        radius: 28,
+        blur: 18,
+        maxZoom: 17,
+        max: 1.0,
+        minOpacity: 0.35,
+        gradient: {
+          0.2: '#0284c7', // Cyan/blue (Normal)
+          0.4: '#10b981', // Emerald (Fair)
+          0.6: '#eab308', // Amber (High)
+          0.8: '#f97316', // Orange (Very High)
+          1.0: '#ef4444'  // Red (Peak Surge)
+        }
+      }).addTo(map);
+
+      // Add clickable interactive badges for key hotspots
+      if (hotspotMarkersLayer && map.hasLayer(hotspotMarkersLayer)) {
+        map.removeLayer(hotspotMarkersLayer);
+      }
+      hotspotMarkersLayer = L.layerGroup();
+      const demand = getHeatmapDemandInfo();
+
+      SL_DEMAND_HOTSPOTS.forEach(spot => {
+        const intPct = Math.min(100, Math.round(spot.baseWeight * demand.multiplier * 100));
+        const iconHtml = `<div style="background: rgba(239, 68, 68, 0.9); border: 1.5px solid #fff; border-radius: 12px; padding: 1px 6px; font-size: 10px; color: #fff; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.5); display: inline-flex; align-items: center; gap: 3px; cursor: pointer;">🔥 ${intPct}%</div>`;
+        const customIcon = L.divIcon({
+          html: iconHtml,
+          className: 'heat-custom-pill',
+          iconSize: [52, 22],
+          iconAnchor: [26, 11]
+        });
+        const marker = L.marker([spot.lat, spot.lng], { icon: customIcon });
+        marker.bindPopup(`<b>📍 ${spot.name}</b><br><span style="color:#f59e0b; font-weight:600;">ඉල්ලුම (Demand): ${intPct}%</span><br><span style="font-size:0.75rem; color:#94a3b8;">${demand.name}</span>`);
+        hotspotMarkersLayer.addLayer(marker);
+      });
+      hotspotMarkersLayer.addTo(map);
+    }
+
+    function recordPickupHotspot(lat, lng) {
+      if (!lat || !lng) return;
+      try {
+        let spots = JSON.parse(localStorage.getItem('tuktuk_pickup_hotspots') || '[]');
+        spots.unshift({ lat, lng, time: Date.now() });
+        if (spots.length > 50) spots.pop();
+        localStorage.setItem('tuktuk_pickup_hotspots', JSON.stringify(spots));
+        if (heatmapActive) {
+          updateHeatmapLayer();
+        }
+      } catch (e) {
+        console.warn('Error recording pickup hotspot:', e);
+      }
+    }
+
 
     function updateGpsUI(accuracy) {
       const dot = document.getElementById("gpsAccuracyDot");
@@ -4666,6 +4942,7 @@
                 fillOpacity: 1
               }).addTo(map).bindPopup("ගමන ආරම්භ කළ ස්ථානය").openPopup();
               map.setView(currentLatLng, 16);
+              recordPickupHotspot(latitude, longitude);
             }
 
             if (!currentMarker) {
